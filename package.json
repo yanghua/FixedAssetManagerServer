@@ -5,6 +5,7 @@
     "main"        : "app.js",
     "author"      : " ",
     "dependencies": {
-        "express" : "2.5.11"
+        "express"  : "2.5.11",
+        "easymysql": "0.2.7"
     }
 }
