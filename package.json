@@ -1,0 +1,10 @@
+{
+    "name"        : "FixedAssetManager_Server",
+    "description" : "it's a node server",
+    "version"     : "0.0.1",
+    "main"        : "app.js",
+    "author"      : " ",
+    "dependencies": {
+        "express" : "2.5.11"
+    }
+}
