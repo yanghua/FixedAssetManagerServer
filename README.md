@@ -35,6 +35,12 @@ root
    
 ```
 
+## module dependencies
+
+* express
+* easymysql
+
+
 ## reference
 
 [nodeclub](https://github.com/cnodejs/nodeclub) - node.js Chinese Club
