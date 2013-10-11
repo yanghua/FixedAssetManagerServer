@@ -33,6 +33,7 @@ root
    |-README.md                      --readme file
    |-routes.js                      --url 路由配置
    |-docs                           --文档资源文件夹
+   |-screenshots                    --终端图片截图(iOS/Android)
    
 ```
 
