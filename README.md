@@ -32,6 +32,7 @@ root
    |-package.json                   --项目描述文件
    |-README.md                      --readme file
    |-routes.js                      --url 路由配置
+   |-docs                           --文档资源文件夹
    
 ```
 
