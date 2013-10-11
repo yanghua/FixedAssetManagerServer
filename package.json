@@ -5,7 +5,8 @@
     "main"        : "app.js",
     "author"      : " ",
     "dependencies": {
-        "express"  : "2.5.11",
-        "easymysql": "0.2.7"
+        "express"   : "2.5.11",
+        "easymysql" : "0.2.7",
+        "eventproxy": "0.2.5"
     }
 }
