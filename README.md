@@ -32,7 +32,7 @@ root
    |-package.json                   --项目描述文件
    |-README.md                      --readme file
    |-routes.js                      --url 路由配置
-   |-docs                           --文档资源文件夹
+   |-docs                           --项目文档资源文件夹
    |-screenshots                    --终端图片截图(iOS/Android)
    
 ```
@@ -41,6 +41,7 @@ root
 
 * express
 * easymysql
+* eventproxy
 
 ## screen shots - iOS
 ![ios-1](https://github.com/yanghua/FixedAssetManager_Server/raw/master/screenshots/ios/1.png)
