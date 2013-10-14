@@ -23,8 +23,8 @@
   Desc: user - the controller of user
  */
 
-
-var User = require('../proxy/user');
+var resUtil = require("../libs/resUtil");
+var User    = require('../proxy/user');
 
 /**
  * get user info by userId
@@ -42,9 +42,8 @@ exports.getUserById = function (req, res, next){
             console.log(err);
         }else{
             if (rows.length > 0) {
-                res.send(rows[0]);
+                res.send(resUtil.generateRes(rows, "100000"));
             };
-            console.log(rows);
         }
     });
 }
