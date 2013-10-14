@@ -24,6 +24,8 @@
  */
 
 
+var User = require('../proxy/user');
+
 /**
  * get user info by userId
  * @param  {object}   req  request
@@ -35,5 +37,14 @@ exports.getUserById = function (req, res, next){
     console.log("controllers/user/getUserById");
     var userId=req.params.userId;
 
-    res.send(userId);
+    User.getUserInfoById(userId, function(err, rows){
+        if (err) {
+            console.log(err);
+        }else{
+            if (rows.length > 0) {
+                res.send(rows[0]);
+            };
+            console.log(rows);
+        }
+    });
 }
