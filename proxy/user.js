@@ -23,4 +23,35 @@
   Desc: user - the proxy of user
  */
 
-var User = require('../models/user');
+var User      = require("../models/user");
+var mysqlUtil = require("../libs/mysqlUtil"),
+mysqlClient   = mysqlUtil.getMysqlClient();
+
+
+/**
+ * get user info by user id
+ * @param  {string}   userId   user id
+ * @param  {Function} callback callback func
+ * @return {null}            
+ */
+exports.getUserInfoById=function (userId, callback) {
+    console.log("######getUserInfoById")
+
+    if (typeof(userId) == "undefined" || userId === "" || userId.length ==0) {
+        return;
+    }
+
+    mysqlClient.query({
+        sql : "SELECT * FROM USER WHERE USERID = :USERID",
+        params : {
+            "USERID"  : userId
+        }
+    }, function (err, rows){
+        if (err != null) {
+            console.log("getUserInfoById:"+err);
+        }else{
+            callback(err, rows);
+        }
+
+    });
+}
