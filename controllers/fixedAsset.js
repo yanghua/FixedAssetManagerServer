@@ -23,6 +23,10 @@
   Desc: fixedAsset - the controller of fixedAsset
  */
 
+var FixedAsset = require("../proxy/fixedAsset");
+var resUtil    = require("../libs/resUtil");
+var config     = require("../config").initConfig();
+
 
 /**
  * get fixed asset by faId
@@ -31,9 +35,15 @@
  * @param  {Function} next next handler
  * @return {null}        
  */
-exports.getFixedAssetById = function (req, res, next){
+exports.getFixedAssetByfaId = function (req, res, next){
     console.log("controllers/fixedAsset/getFixedAssetById");
     var faId=req.params.faId;
 
-    res.send(faId);
+    FixedAsset.getFixedAssetByfaID(faId, function(err, rows) {
+        if (err!=null) {
+            console.log("controllers/getFixedAssetByfaId");
+        }else{
+            res.send(resUtil.generateRes(rows, config.statusCode.SATUS_OK));
+        }
+    });
 }
