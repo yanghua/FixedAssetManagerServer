@@ -40,6 +40,12 @@ function initConfig () {
           "password"  : "123456"
       }
 
+      statusCode        : {
+          SATUS_OK        : "100000",
+          STATUS_NOTFOUND : "100404",
+          //....
+      }
+
     }
 
     return _configInfo;
