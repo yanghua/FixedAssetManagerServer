@@ -115,7 +115,7 @@ exports.modifyFixedAssetInfoBYfaId = function (faObj, callback){
     console.log("######modifyFixedAssetInfoBYfaId");
 
     mysqlClient.query({
-        sql     : "UPDATE USERASSETS SET  USERID = :USERID, 
+        sql     : "UPDATE USERASSETS SET  USERID          = :USERID, 
                                           EQUIPMENTTYPEID = :EQUIPMENTTYPEID 
                     WHERE ASSETSID = :ASSETSID",
         params  : {
