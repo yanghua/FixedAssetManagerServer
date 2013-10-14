@@ -27,7 +27,6 @@ var User      = require("../models/user");
 var mysqlUtil = require("../libs/mysqlUtil"),
 mysqlClient   = mysqlUtil.getMysqlClient();
 
-
 /**
  * get user info by user id
  * @param  {string}   userId   user id
@@ -37,7 +36,7 @@ mysqlClient   = mysqlUtil.getMysqlClient();
 exports.getUserInfoById=function (userId, callback) {
     console.log("######getUserInfoById")
 
-    if (typeof(userId) == "undefined" || userId === "" || userId.length ==0) {
+    if (typeof(userId) == "undefined" || userId.length ==0) {
         return;
     }
 
