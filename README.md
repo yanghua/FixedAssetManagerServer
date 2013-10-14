@@ -54,3 +54,5 @@ root
 ## reference
 
 [nodeclub](https://github.com/cnodejs/nodeclub) - node.js Chinese Club
+
+[Google Javascript 编程规范指南](http://alloyteam.github.io/JX/doc/specification/google-javascript.xml#%E4%BB%A3%E7%A0%81%E6%A0%BC%E5%BC%8F%E5%8C%96)
