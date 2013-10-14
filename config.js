@@ -38,11 +38,11 @@ function initConfig () {
           "port"      : "3306",
           "user"      : "root",
           "password"  : "123456"
-      }
+      },
 
       statusCode        : {
-          SATUS_OK        : "100000",
-          STATUS_NOTFOUND : "100404",
+          SATUS_OK        : 100000,
+          STATUS_NOTFOUND : 100404,
           //....
       }
 
