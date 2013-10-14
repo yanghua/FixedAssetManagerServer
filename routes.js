@@ -33,8 +33,9 @@ var fixedAsset = require("./controllers/fixedAsset");
 module.exports = function (app){
 
     app.get("/user/:userId", user.getUserById);
-    app.get("/fixedAsset/:faId", fixedAsset.getFixedAssetById);
-
+    app.get("/fixedAsset/:faId", fixedAsset.getFixedAssetByfaId);
+    // app.get("/user/:userId/fixedAsset", fixedAsset.)
+    
 }
 
 
