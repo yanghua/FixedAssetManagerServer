@@ -24,3 +24,111 @@
  */
 
 var User = require('../models/fixedAsset');
+
+var mysqlUtil  = require("../libs/mysqlUtil"),
+mysqlClient    = mysqlUtil.getMysqlClient();
+
+/**
+ * get fixed asset list by userId
+ * @param  {string}   userId   user id
+ * @param  {Function} callback callback func
+ * @return {null}            
+ */
+exports.getFixedAssetListByUserId = function (userId, callback){
+    console.log("######getFixedAssetListByUserId");
+
+    if (typeof(userId) == "undefined" || userId.length ==0) {
+        return;
+    }
+
+    mysqlClient.query({
+        sql     : "SELECT * FROM USERASSETS WHERE USERID = :USERID",
+        params  : {
+            "USERID"  : userId
+        }
+    }, function (err, rows){
+        if (err != null) {
+            console.log("getFixedAssetListByUserId:"+err);
+        }else{
+            callback(err, rows);
+        }
+
+    });
+};
+
+/**
+ * get fixed asset by faid
+ * @param  {string}   faId     fixed asset id
+ * @param  {Function} callback callback func
+ * @return {null}            
+ */
+exports.getFixedAssetByFAID = function (faId, callback){
+    console.log("######getFixedAssetByFAID");
+
+    if (typeof(faId) == "undefined" || faId.length == 0) {
+        return;
+    }
+
+    mysqlClient.query({
+        sql     : "SELECT * FROM USERASSETS WHERE ASSETSID = :ASSETSID",
+        params  : {
+            "ASSETSID"  : faId
+        }
+    }, function (err, rows){
+        if (err != null) {
+            console.log("getFixedAssetByFAID:"+err);
+        }else{
+            callback(err, rows);
+        }
+    });
+};
+
+/**
+ * get fixed asset list by fa type
+ * @param  {string}   faTypeId   fixed asset type
+ * @param  {Function} callback callback func
+ * @return {null}            
+ */
+exports.getFixedAssetListByFAType = function (faTypeId, callback){
+    console.log("######getFixedAssetListByFAType");
+
+    mysqlClient.query({
+        sql     : "SELECT * FROM USERASSETS WHERE EQUIPMENTTYPEID = :EQUIPMENTTYPEID",
+        params  : {
+            "ASSETSID"  : faTypeId
+        }
+    }, function (err, rows){
+        if (err != null) {
+            console.log("getFixedAssetListByFAType:"+err);
+        }else{
+            callback(err, rows);
+        }
+    });
+}
+
+/**
+ * modify fixed asset info 
+ * @param  {object}   faObj    fixed asset object
+ * @param  {Function} callback callback func
+ * @return {null}            
+ */
+exports.modifyFixedAssetInfoBYfaId = function (faObj, callback){
+    console.log("######modifyFixedAssetInfoBYfaId");
+
+    mysqlClient.query({
+        sql     : "UPDATE USERASSETS SET  USERID          = :USERID, 
+                                          EQUIPMENTTYPEID = :EQUIPMENTTYPEID 
+                    WHERE ASSETSID = :ASSETSID",
+        params  : {
+            "ASSETSID"        : faObj.faId,
+            "USERID"          : faObj.faOwnerId,
+            "EQUIPMENTTYPEID" : faObj.faTypeId
+        }
+    }, function (err, rows){
+        if (err != null) {
+            console.log("modifyFixedAssetInfoBYfaId:"+err);
+        }else{
+            callback(err, rows);
+        }
+    });
+}
