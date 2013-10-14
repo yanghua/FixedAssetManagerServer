@@ -29,10 +29,8 @@
  */
 function FixedAsset () {
     this.faId      = "";
-    this.faType    = "";
-    this.faOwner   = "";
-    this.applyDate = "";
-    this.deptId    = "";
+    this.faTypeId    = "";
+    this.faOwnerId   = "";
 }
 
 
