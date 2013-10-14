@@ -42,9 +42,7 @@ exports.getUserById = function (req, res, next){
         if (err) {
             console.log(err);
         }else{
-            if (rows.length > 0) {
-                res.send(resUtil.generateRes(rows, config.statusCode.SATUS_OK));
-            };
+            res.send(resUtil.generateRes(rows, config.statusCode.SATUS_OK));
         }
     });
 }
