@@ -25,6 +25,7 @@
 
 var resUtil = require("../libs/resUtil");
 var User    = require('../proxy/user');
+var config  = require("../config").initConfig();
 
 /**
  * get user info by userId
@@ -42,7 +43,7 @@ exports.getUserById = function (req, res, next){
             console.log(err);
         }else{
             if (rows.length > 0) {
-                res.send(resUtil.generateRes(rows, "100000"));
+                res.send(resUtil.generateRes(rows, config.statusCode.SATUS_OK));
             };
         }
     });
