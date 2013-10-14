@@ -62,8 +62,8 @@ exports.getFixedAssetListByUserId = function (userId, callback){
  * @param  {Function} callback callback func
  * @return {null}            
  */
-exports.getFixedAssetByFAID = function (faId, callback){
-    console.log("######getFixedAssetByFAID");
+exports.getFixedAssetByfaID = function (faId, callback){
+    console.log("######getFixedAssetByfaID");
 
     if (typeof(faId) == "undefined" || faId.length == 0) {
         return;
@@ -76,7 +76,7 @@ exports.getFixedAssetByFAID = function (faId, callback){
         }
     }, function (err, rows){
         if (err != null) {
-            console.log("getFixedAssetByFAID:"+err);
+            console.log("getFixedAssetByfaID:"+err);
         }else{
             callback(err, rows);
         }
@@ -89,8 +89,8 @@ exports.getFixedAssetByFAID = function (faId, callback){
  * @param  {Function} callback callback func
  * @return {null}            
  */
-exports.getFixedAssetListByFAType = function (faTypeId, callback){
-    console.log("######getFixedAssetListByFAType");
+exports.getFixedAssetListByfaType = function (faTypeId, callback){
+    console.log("######getFixedAssetListByfaType");
 
     mysqlClient.query({
         sql     : "SELECT * FROM USERASSETS WHERE EQUIPMENTTYPEID = :EQUIPMENTTYPEID",
@@ -99,7 +99,7 @@ exports.getFixedAssetListByFAType = function (faTypeId, callback){
         }
     }, function (err, rows){
         if (err != null) {
-            console.log("getFixedAssetListByFAType:"+err);
+            console.log("getFixedAssetListByfaType:"+err);
         }else{
             callback(err, rows);
         }
@@ -113,7 +113,7 @@ exports.getFixedAssetListByFAType = function (faTypeId, callback){
  * @return {null}            
  */
 exports.modifyFixedAssetInfoBYfaId = function (faObj, callback){
-    console.log("######modifyFixedAssetInfoBYfaId");
+    console.log("######modifyFixedAssetInfoBYFAId");
 
     mysqlClient.query({
         sql     : "UPDATE USERASSETS SET  USERID          = :USERID, 
