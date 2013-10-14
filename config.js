@@ -35,9 +35,9 @@ function initConfig () {
 
       mysqlConfig       : {
           "host"      : "172.16.206.16",
-          "port"      : "3306",
           "user"      : "root",
-          "password"  : "123456"
+          "password"  : "123456",
+          "database"  : "fixedAsset"
       },
 
       statusCode        : {
