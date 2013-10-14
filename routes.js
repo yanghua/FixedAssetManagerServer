@@ -29,8 +29,11 @@
 
 var user       = require("./controllers/user");
 var fixedAsset = require("./controllers/fixedAsset");
+var others     = require("./controllers/others");
 
 module.exports = function (app){
+
+    app.get("/", others.home);
 
     app.get("/user/:userId", user.getUserById);
     app.get("/fixedAsset/:faId", fixedAsset.getFixedAssetByfaId);
