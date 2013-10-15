@@ -42,6 +42,7 @@ root
 * express
 * easymysql
 * eventproxy
+* validator
 
 ## screen shots - iOS
 ![ios-1](https://github.com/yanghua/FixedAssetManager_Server/raw/master/screenshots/ios/1.png)
