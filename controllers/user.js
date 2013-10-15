@@ -40,9 +40,14 @@ exports.getUserById = function (req, res, next){
 
     User.getUserInfoById(userId, function(err, rows){
         if (err) {
-            console.log(err);
+            console.log("ERR FROM:getUserInfoById --" + err);
         }else{
-            res.send(resUtil.generateRes(rows, config.statusCode.SATUS_OK));
+            if (rows < 1) {
+                res.send(resUtil.generateRes(rows, config.statusCode.STATUS_NOTFOUND));
+            }else{
+                res.send(resUtil.generateRes(rows, config.statusCode.SATUS_OK));
+            }
+           
         }
     });
 }
