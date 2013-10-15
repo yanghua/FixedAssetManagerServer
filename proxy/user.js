@@ -34,7 +34,7 @@ mysqlClient   = mysqlUtil.getMysqlClient();
  * @return {null}            
  */
 exports.getUserInfoById=function (userId, callback) {
-    console.log("######getUserInfoById")
+    console.log("######getUserInfoById");
 
     if (typeof(userId) == "undefined" || userId.length ==0) {
         return;

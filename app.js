@@ -44,7 +44,7 @@ routes(app);
 
 //launch it!
 app.listen(8080);
-console.log("the app server run at port :8080")
+console.log("the app server run at port :8080");
 
 module.exports=app;
 
