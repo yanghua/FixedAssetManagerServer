@@ -32,7 +32,7 @@
  */
 exports.generateRes=function (data, resCode){
     return {
-        data      : data,
-        statusCode : resCode
+        statusCode  : resCode,
+        data        : data
     };
 }
