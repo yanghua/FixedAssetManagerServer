@@ -23,11 +23,28 @@
   Desc: fixedAsset - the test of fixedAsset
  */
 
+var should = require("should");
+var app    = require("../../app");
 
 describe("fixedAsset", function () {
+
+    before(function (done) {
+        app.listen(0, done);
+    });
+
+    after(function () {
+        app.close();
+    });
     
-    describe('test inspect', function () {
-      // body...
+    it('should response data', function (done) {
+        var param={
+            'qrCode' : "123"
+        };
+        app.request().post('/fixedAsset/inspeck').setBody(param).end(function (res){
+            console.dir(res.bodyJSON);
+            res.should.status(200);
+            done();
+        });
     });
 
 });
