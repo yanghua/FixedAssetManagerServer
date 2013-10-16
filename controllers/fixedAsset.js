@@ -56,10 +56,11 @@ exports.getFixedAssetByfaId = function (req, res, next){
  * @param  {Function} next next handler
  * @return {null}        
  */
-exports.inspect = function (req, res, next){
+exports.inspeck = function (req, res, next){
+    console.log("controllers/fixedAsset/inspeck");
     var action = req.body.action;
 
-    res.send(action);
-
+    console.dir(req.body);
+    res.send(req.body.qrCode);
 }
 
