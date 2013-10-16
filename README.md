@@ -5,16 +5,25 @@ It's a node server.
 ## install
 
 ```
-cd projectPath/
+$ cd projectPath/
 
-npm install
+$ npm install
+```
+
+## test
+```
+$ npm install -g mocha
+
+$ cd projectPath/
+
+$ mocha test
 ```
 
 ## run
 ```
-cd projectPath/
+$ cd projectPath/
 
-node app.js
+$ node app.js
 ```
 
 ## project structure
@@ -43,6 +52,11 @@ root
 * easymysql
 * eventproxy
 * validator
+
+devDependencies
+
+* should
+* mocha
 
 ## screen shots - iOS
 ![ios-1](https://github.com/yanghua/FixedAssetManager_Server/raw/master/screenshots/ios/1.png)
