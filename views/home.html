@@ -4,12 +4,48 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
     <head>
-        <title></title>
+        <title>home</title>
+        <link rel="stylesheet" type="text/css" href="./public/stylesheets/home.css">
     </head>
 
     <body>
-        <p></p>
-        
+        <div id="main_div">
+            <p>service list</p>
+            <p>
+                <table>
+                    <tr>
+                        <th>service name</th>
+                        <th>HTTP method</th>
+                        <th>request params</th>
+                        <th>available</th>
+                    </tr>
+                    <tr>
+                        <td>/user/:userId</td>
+                        <td>GET</td>
+                        <td>
+                            <li>userId</li>
+                        </td>
+                        <td>yes</td>
+                    </tr>
+                    <tr>
+                        <td>/fixedAsset/inspect</td>
+                        <td>POST</td>
+                        <td>
+                            <li>qrCode</li>
+                        </td>
+                        <td>yes</td>
+                    </tr>
+                    <tr>
+                        <td>/fixedAsset/:faId</td>
+                        <td>GET</td>
+                        <td>
+                            <li>faId</li>
+                        </td>
+                        <td>no</td>
+                    </tr>
+                </table>
+            </p>
+        </div>
 
     </body>
 </html>
