@@ -41,8 +41,8 @@ function initConfig () {
       },
 
       statusCode        : {
-          SATUS_OK        : 100000,
-          STATUS_NOTFOUND : 100404,
+          SATUS_OK        : 0,
+          STATUS_NOTFOUND : 1,
           //....
       }
 
