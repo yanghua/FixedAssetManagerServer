@@ -31,20 +31,43 @@ var routes  = require("./routes");
 
 var app     = express.createServer();
 
+//config for all env
 app.configure(function() {
-    app.set("view engine", "html");
-    app.set("views", path.join(__dirname, "views"));
+    //template engine
+    app.set('view engine', 'html');
+    app.set('views', path.join(__dirname, 'views'));
+    app.set("view options", {layout : false});
+    app.register('.html', require('ejs'));
+
+    //middleware
+    app.use(express.logger());
+    app.use(express.bodyParser());
+});
+
+var maxAge = 3600000 * 24 * 30;
+var staticDir = path.join(__dirname, 'public');
+
+//config for devp env
+app.configure('development', function() {
+    app.use("/public", express.static(staticDir));
+    //error / exception handler
+    app.use(express.errorHandler(
+      { showStack : true, dumpException : true }
+    ));
+});
+
+
+//config for production env
+app.configure("production", function (){
 
 });
 
-app.use(express.bodyParser());
-app.use(express.logger());
 
 routes(app);
 
 //launch it!
-app.listen(8080);
-console.log("the app server run at port :8080");
+app.listen(8088);
+console.log("the app server run at port :8088");
 
 module.exports=app;
 
