@@ -37,7 +37,7 @@ module.exports = function (app){
 
     app.get("/user/:userId", user.getUserById);
     app.get("/fixedAsset/:faId", fixedAsset.getFixedAssetByfaId);
-    // app.get("/user/:userId/fixedAsset", fixedAsset.)
+    app.post("/fixedAsset/inspeck", fixedAsset.inspeck);
     
 }
 
