@@ -26,7 +26,8 @@
 var FixedAsset = require("../proxy/fixedAsset");
 var resUtil    = require("../libs/resUtil");
 var config     = require("../config").initConfig();
-
+var check      = require("validator").check;
+var sanitize   = require("validator").sanitize;
 
 /**
  * get fixed asset by faId
@@ -47,3 +48,18 @@ exports.getFixedAssetByfaId = function (req, res, next){
         }
     });
 }
+
+/**
+ * inspect fixed asset
+ * @param  {object}   req  request
+ * @param  {object}   res  response
+ * @param  {Function} next next handler
+ * @return {null}        
+ */
+exports.inspect = function (req, res, next){
+    var action = req.body.action;
+
+    res.send(action);
+
+}
+
