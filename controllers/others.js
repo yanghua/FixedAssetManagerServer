@@ -25,5 +25,6 @@
 
 
 exports.home = function (req, res, next){
-    res.redirect("https://github.com/yanghua/FixedAssetManager_Server");
+    console.log("#######controllers/others->home");
+    res.render('home');
 } 
