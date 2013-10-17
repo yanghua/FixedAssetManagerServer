@@ -23,10 +23,11 @@
   Desc: fixedAsset - the proxy of fixedAsset
  */
 
-var User = require('../models/fixedAsset');
-
-var mysqlUtil  = require("../libs/mysqlUtil"),
-mysqlClient    = mysqlUtil.getMysqlClient();
+var User         = require('../models/fixedAsset');
+var HostComputer = require("./HostComputer");
+var mysqlUtil    = require("../libs/mysqlUtil"),
+mysqlClient      = mysqlUtil.getMysqlClient();
+var EventProxy   = require("eventproxy");
 
 /**
  * get fixed asset list by userId
@@ -34,7 +35,7 @@ mysqlClient    = mysqlUtil.getMysqlClient();
  * @param  {Function} callback callback func
  * @return {null}            
  */
-exports.getFixedAssetListByUserId = function (userId, callback){
+exports.getFixedAssetListByUserID = function (userId, callback){
     console.log("######getFixedAssetListByUserId");
 
     if (typeof(userId) == "undefined" || userId.length ==0) {
@@ -63,25 +64,87 @@ exports.getFixedAssetListByUserId = function (userId, callback){
  * @return {null}            
  */
 exports.getFixedAssetByfaID = function (faId, callback){
-    console.log("######getFixedAssetByfaID");
+    console.log("######proxy/fixedAsset/getFixedAssetByfaID");
+
+    if (typeof(faId) == "undefined" || faId.length == 0) {
+        return;
+    }
+
+    var eq = EventProxy.create();
+
+    mysqlClient.query({
+        sql     : "SELECT * FROM WHOLEEQUIPMENT WHERE EQUIPMENTID = :EQUIPMENTID",
+        params  : {
+            "EQUIPMENTID"  : faId
+        }
+    }, function (err, rows){
+        if (err != null) {
+            console.log("getFixedAssetByfaID error:"+err);
+        }else{
+            console.log("emit afterFAType");
+            if (rows && rows.length>0) {
+                var faInfo={};
+                faInfo["faId"]       = rows[0].equipmentId;
+                faInfo["faType"]     = rows[0].equipmentSqlName;
+                faInfo["faTypeName"] = rows[0].equipmentName;
+                eq.emitLater("afterFAType", faInfo);
+            }
+        }
+    });
+
+    eq.once("afterFAType", function(faInfo){
+
+        //split with equipment type
+        if (faInfo.faType === "HOSTCOMPUTER") {
+            HostComputer.getHostComputerByID(faInfo.faId, function(err, rows){
+                if (err != null) {
+                    console.log("getFixedAssetByfaID error:"+err);
+                }else{            
+                    console.log("emit afterFADetail");
+                    eq.emitLater("afterFADetail_", rows);
+                }
+            });
+        }
+    });
+
+    eq.once("afterFADetail_", function(rows){
+        callback(null, rows);
+    });
+};
+
+
+/**
+ * check fixed asset by faId
+ * @param  {string}   faId     fixed asset id
+ * @param  {Function} callback callback func
+ * @return {null}            
+ */
+exports.checkFixedAssetByfaID = function (faId, callback){
+    console.log("######proxy/checkFixedAssetByfaID");
 
     if (typeof(faId) == "undefined" || faId.length == 0) {
         return;
     }
 
     mysqlClient.query({
-        sql     : "SELECT * FROM USERASSETS WHERE ASSETSID = :ASSETSID",
+        sql     : "SELECT COUNT(1) AS 'count' FROM WHOLEEQUIPMENT WHERE EQUIPMENTID = :EQUIPMENTID",
         params  : {
-            "ASSETSID"  : faId
+            "EQUIPMENTID"  : faId
         }
     }, function (err, rows){
         if (err != null) {
-            console.log("getFixedAssetByfaID:"+err);
+            console.log("checkFixedAssetByfaID:"+err);
         }else{
-            callback(err, rows);
+            var hasFA;
+            if (rows[0] && rows[0].count > 0) {
+                hasFA = true;
+            }else {
+                hasFA = false;
+            }
+            callback(err, hasFA);
         }
     });
-};
+}
 
 /**
  * get fixed asset list by fa type
@@ -95,7 +158,7 @@ exports.getFixedAssetListByfaType = function (faTypeId, callback){
     mysqlClient.query({
         sql     : "SELECT * FROM USERASSETS WHERE EQUIPMENTTYPEID = :EQUIPMENTTYPEID",
         params  : {
-            "ASSETSID"  : faTypeId
+            "EQUIPMENTTYPEID"  : faTypeId
         }
     }, function (err, rows){
         if (err != null) {
@@ -112,7 +175,7 @@ exports.getFixedAssetListByfaType = function (faTypeId, callback){
  * @param  {Function} callback callback func
  * @return {null}            
  */
-exports.modifyFixedAssetInfoBYfaId = function (faObj, callback){
+exports.modifyFixedAssetInfoBYfaID = function (faObj, callback){
     console.log("######modifyFixedAssetInfoBYFAId");
 
     mysqlClient.query({

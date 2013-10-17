@@ -28,6 +28,7 @@ var resUtil    = require("../libs/resUtil");
 var config     = require("../config").initConfig();
 var check      = require("validator").check;
 var sanitize   = require("validator").sanitize;
+var EventProxy = require("eventproxy");
 
 /**
  * get fixed asset by faId
@@ -58,9 +59,55 @@ exports.getFixedAssetByfaId = function (req, res, next){
  */
 exports.inspeck = function (req, res, next){
     console.log("controllers/fixedAsset/inspeck");
-    var action = req.body.action;
 
-    console.dir(req.body);
-    res.send(req.body.qrCode);
+    var qrCode = req.body.qrCode;
+    var ep = EventProxy.create();
+
+    var userDetail = null;
+    var faDetail   = null;
+
+    FixedAsset.checkFixedAssetByfaID(qrCode, function (err, hasFA){
+        if (err) {
+            return ep.emitLater("error", err);
+        }
+
+        if (hasFA) {
+            console.log("emit  checkedFA");
+            ep.emitLater("checkedFA");
+        }
+    });
+
+    ep.once("checkedFA", function (){
+        FixedAsset.getFixedAssetByfaID(qrCode, function(err, rows){
+            if (err) {
+                return ep.emitLater("error", err);
+            }else{
+                console.log("emit  afterFADetail");
+                faDetail = rows;
+
+                ep.emit("afterFADetail",rows);
+            }
+        });
+    });
+
+    ep.once("afterFADetail", function(data) {
+        //get user info
+        userDetail = {"userId" : "123", "userName" : "yang hua"};
+        ep.emit("afterUserDetail",null);
+    });
+
+    ep.once("afterUserDetail", function() {
+        //generate res data
+        var data ={};
+        data["userDetail"] = userDetail;
+        data["faDetail"]   = faDetail;
+        console.dir(resUtil.generateRes(data, config.statusCode.SATUS_OK));
+        res.send(resUtil.generateRes(data, config.statusCode.SATUS_OK));
+    });
+
+    ep.fail(function (err){
+        res.send(resUtil.generateRes(null, config.statusCode.STATUS_NOTFOUND));
+    });
+
 }
 
