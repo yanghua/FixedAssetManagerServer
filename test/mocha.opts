@@ -1,3 +1,4 @@
+--recursive
 --require should
 --require test/support/http.js
 --growl
