@@ -111,6 +111,7 @@ exports.getFixedAssetByfaID = function (faId, callback){
         callback(null, rows);
     });
 
+    //error handler
     eq.fail(function (err){
         callback(err, null);
     });

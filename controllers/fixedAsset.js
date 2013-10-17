@@ -106,6 +106,7 @@ exports.inspeck = function (req, res, next){
         res.send(resUtil.generateRes(data, config.statusCode.SATUS_OK));
     });
 
+    //error handler
     ep.fail(function (err){
         console.log("*********enter fail handler");
         res.send(resUtil.generateRes(null, config.statusCode.STATUS_NOTFOUND));
