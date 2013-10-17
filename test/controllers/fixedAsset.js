@@ -46,4 +46,14 @@ describe("fixedAsset", function () {
         });
     });
 
+    it('should enter error handler', function (done) {
+        var param={
+            'qrCode' : "#####"
+        };
+        app.request().post('/fixedAsset/inspeck').setBody(param).end(function (res){
+            console.dir(res.bodyJSON);
+            done();
+        });
+    });
+
 });
