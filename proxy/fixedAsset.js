@@ -79,7 +79,7 @@ exports.getFixedAssetByfaID = function (faId, callback){
         }
     }, function (err, rows){
         if (err != null) {
-            console.log("getFixedAssetByfaID error:"+err);
+            return ep.emitLater("error", err);
         }else{
             console.log("emit afterFAType");
             if (rows && rows.length>0) {
@@ -87,28 +87,32 @@ exports.getFixedAssetByfaID = function (faId, callback){
                 faInfo["faId"]       = rows[0].equipmentId;
                 faInfo["faType"]     = rows[0].equipmentSqlName;
                 faInfo["faTypeName"] = rows[0].equipmentName;
-                eq.emitLater("afterFAType", faInfo);
+                eq.emitLater("afterFAType_proxy", faInfo);
             }
         }
     });
 
-    eq.once("afterFAType", function(faInfo){
+    eq.once("afterFAType_proxy", function(faInfo){
 
         //split with equipment type
         if (faInfo.faType === "HOSTCOMPUTER") {
             HostComputer.getHostComputerByID(faInfo.faId, function(err, rows){
                 if (err != null) {
-                    console.log("getFixedAssetByfaID error:"+err);
+                    return ep.emitLater("error", err);
                 }else{            
-                    console.log("emit afterFADetail");
-                    eq.emitLater("afterFADetail_", rows);
+                    console.log("emit afterFADetail_proxy");
+                    eq.emitLater("afterFADetail_proxy", rows);
                 }
             });
         }
     });
 
-    eq.once("afterFADetail_", function(rows){
+    eq.once("afterFADetail_proxy", function(rows){
         callback(null, rows);
+    });
+
+    eq.fail(function (err){
+        callback(err, null);
     });
 };
 

@@ -74,6 +74,8 @@ exports.inspeck = function (req, res, next){
         if (hasFA) {
             console.log("emit  checkedFA");
             ep.emitLater("checkedFA");
+        }else{
+            return ep.emitLater("error", "the fixedAsset not exists");
         }
     });
 
@@ -84,7 +86,6 @@ exports.inspeck = function (req, res, next){
             }else{
                 console.log("emit  afterFADetail");
                 faDetail = rows;
-
                 ep.emit("afterFADetail",rows);
             }
         });
@@ -106,6 +107,7 @@ exports.inspeck = function (req, res, next){
     });
 
     ep.fail(function (err){
+        console.log("*********enter fail handler");
         res.send(resUtil.generateRes(null, config.statusCode.STATUS_NOTFOUND));
     });
 
