@@ -56,4 +56,26 @@ describe("fixedAsset", function () {
         });
     });
 
+    it('should response data', function (done) {
+        var param = {
+            userId : "12345"
+        };
+
+        app.request().get("/fixedAsset/"+param.userId+"/info").end(function (res){
+            console.dir(res.bodyJSON);
+            done();
+        });
+    });
+
+    it('should response data', function (done) {
+        var param = {
+            userId : "01312100"
+        }
+
+        app.request().get("/user/"+ param.userId +"/fixedassets").end(function (res){
+            console.dir(res.bodyJSON);
+            done();
+        });
+    });
+
 });

@@ -44,6 +44,18 @@ function initConfig () {
           SATUS_OK        : 0,
           STATUS_NOTFOUND : 1,
           //....
+      },
+
+      faType            : {
+          ENUM_HC         : "HOSTCOMPUTER",
+          ENUM_MOB        : "MOBILE",
+          ENUM_MON        : "MONITOR",
+          ENUM_NOT        : "NOTEBOOK",
+          ENUM_OE         : "OFFICEEQUIPMENT",
+          ENUM_OF         : "OFFICEFURNITURE",
+          ENUM_OTE        : "OTHEREQUIPMENT",
+          ENUM_SERVER     : "SERVER",
+          ENUM_VE         : "VIRTUALEQUIPMENT"
       }
 
     }

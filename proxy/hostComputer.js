@@ -28,13 +28,13 @@ var mysqlUtil    = require("../libs/mysqlUtil"),
 mysqlClient      = mysqlUtil.getMysqlClient();
 
 /**
- * get host computer by id
- * @param  {string} hcId host computer id
+ * get fixed asset by id
+ * @param  {string} faId fixed asset id
  * @param  {Function} callback call back func
  * @return {null}      
  */
-exports.getHostComputerByID = function (hcId, callback) {
-    console.log("##########proxy/hostComputer/getHostComputerByID");
+exports.getFADetailByID = function (faId, callback) {
+    console.log("##########proxy/hostComputer/getFADetailByID");
     mysqlClient.query({
         sql     : "SELECT * FROM HOSTCOMPUTER WHERE newId = :newId",
         params  : {
@@ -42,9 +42,20 @@ exports.getHostComputerByID = function (hcId, callback) {
         }
     }, function (err, rows){
         if (err != null) {
-            console.log("getHostComputerByID error:"+err);
+            console.log("getFADetailByID error:"+err);
         }else{            
             callback(err, rows);
         }
     });
 };
+
+
+/**
+ * modify fixed asset detail
+ * @param  {object}   faDetail the model of fixed asset
+ * @param  {Function} callback the callback func
+ * @return {null}            
+ */
+exports.modifyFADetail = function (faDetail, callback){
+
+}

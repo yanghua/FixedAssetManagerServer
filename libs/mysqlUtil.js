@@ -52,6 +52,7 @@ function initMysql () {
             inited = true;
         }
     });
+
 }
 
 /**

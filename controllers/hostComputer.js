@@ -23,14 +23,17 @@
   Desc: fixedAsset(hostComputer) - the controller of fixedAsset
  */
 
+var HostComputer = require("../proxy/hostComputer");
+
 
 /**
- * get host computer by id
- * @param  {string} hcId host computer id
- * @param  {Function} callback call back func
- * @return {null}      
+ * get fixed asset detail 
+ * @param  {object}   req  request object
+ * @param  {object}   res  response object
+ * @param  {Function} next the next handler
+ * @return {null}        
  */
-exports.getHostComputerByID = function (hcId, callback) {
+exports.getFADetailByID = function (req, res, next) {
     
 };
 

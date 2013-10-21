@@ -27,9 +27,10 @@
  routes - the router of url request
  */
 
-var user       = require("./controllers/user");
-var fixedAsset = require("./controllers/fixedAsset");
-var others     = require("./controllers/others");
+var user           = require("./controllers/user");
+var fixedAsset     = require("./controllers/fixedAsset");
+var others         = require("./controllers/others");
+
 
 module.exports = function (app){
 
@@ -37,6 +38,8 @@ module.exports = function (app){
 
     app.get("/user/:userId", user.getUserById);
     app.get("/fixedAsset/:faId/info", fixedAsset.getFixedAssetByfaId);
+    // app.get("/fixedAsset/:faId/detail", getFixedAssetDetailByID);
+    app.get("/user/:userId/fixedassets", fixedAsset.getFixedAssetListByUserID);
 
     //params:qrCode
     app.post("/fixedAsset/inspeck", fixedAsset.inspeck);

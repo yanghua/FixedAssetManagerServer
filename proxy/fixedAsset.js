@@ -28,6 +28,7 @@ var HostComputer = require("./hostComputer");
 var mysqlUtil    = require("../libs/mysqlUtil"),
 mysqlClient      = mysqlUtil.getMysqlClient();
 var EventProxy   = require("eventproxy");
+var config       = require("../config").initConfig();
 
 /**
  * get fixed asset list by userId
@@ -36,24 +37,20 @@ var EventProxy   = require("eventproxy");
  * @return {null}            
  */
 exports.getFixedAssetListByUserID = function (userId, callback){
-    console.log("######getFixedAssetListByUserId");
+    console.log("######/proxy/fixedAsset/getFixedAssetListByUserId");
 
     if (typeof(userId) == "undefined" || userId.length ==0) {
-        return;
+        return callback("userId illegal", null);
     }
 
     mysqlClient.query({
-        sql     : "SELECT * FROM USERASSETS WHERE USERID = :USERID",
+        sql     : "SELECT * FROM fixedAsset.EQUIPMENT EQ "+
+                  " WHERE lastUserId =:lastUserId",
         params  : {
-            "USERID"  : userId
+            "lastUserId"  : userId
         }
     }, function (err, rows){
-        if (err != null) {
-            console.log("getFixedAssetListByUserId:"+err);
-        }else{
             callback(err, rows);
-        }
-
     });
 };
 
@@ -67,13 +64,13 @@ exports.getFixedAssetByfaID = function (faId, callback){
     console.log("######proxy/fixedAsset/getFixedAssetByfaID");
 
     if (typeof(faId) == "undefined" || faId.length == 0) {
-        return;
+        return callback("userId illegal", null);
     }
 
     var eq = EventProxy.create();
 
     mysqlClient.query({
-        sql     : "SELECT * FROM WHOLEEQUIPMENT WHERE EQUIPMENTID = :EQUIPMENTID",
+        sql     : "SELECT * FROM EQUIPMENT WHERE EQUIPMENTID = :EQUIPMENTID",
         params  : {
             "EQUIPMENTID"  : faId
         }
@@ -95,8 +92,8 @@ exports.getFixedAssetByfaID = function (faId, callback){
     eq.once("afterFAType_proxy", function(faInfo){
 
         //split with equipment type
-        if (faInfo.faType === "HOSTCOMPUTER") {
-            HostComputer.getHostComputerByID(faInfo.faId, function(err, rows){
+        if (faInfo.faType == config.faType.ENUM_HC) {
+            require("./fixedAsset").getFixedAssetDetail(faInfo.faId, config.faType.ENUM_HC, function(err, rows){
                 if (err != null) {
                     return ep.emitLater("error", err);
                 }else{            
@@ -128,11 +125,11 @@ exports.checkFixedAssetByfaID = function (faId, callback){
     console.log("######proxy/checkFixedAssetByfaID");
 
     if (typeof(faId) == "undefined" || faId.length == 0) {
-        return;
+        return callback("userId illegal", null);
     }
 
     mysqlClient.query({
-        sql     : "SELECT COUNT(1) AS 'count' FROM WHOLEEQUIPMENT WHERE EQUIPMENTID = :EQUIPMENTID",
+        sql     : "SELECT COUNT(1) AS 'count' FROM EQUIPMENT WHERE EQUIPMENTID = :EQUIPMENTID",
         params  : {
             "EQUIPMENTID"  : faId
         }
@@ -147,29 +144,6 @@ exports.checkFixedAssetByfaID = function (faId, callback){
                 hasFA = false;
             }
             callback(err, hasFA);
-        }
-    });
-}
-
-/**
- * get fixed asset list by fa type
- * @param  {string}   faTypeId   fixed asset type
- * @param  {Function} callback callback func
- * @return {null}            
- */
-exports.getFixedAssetListByfaType = function (faTypeId, callback){
-    console.log("######getFixedAssetListByfaType");
-
-    mysqlClient.query({
-        sql     : "SELECT * FROM USERASSETS WHERE EQUIPMENTTYPEID = :EQUIPMENTTYPEID",
-        params  : {
-            "EQUIPMENTTYPEID"  : faTypeId
-        }
-    }, function (err, rows){
-        if (err != null) {
-            console.log("getFixedAssetListByfaType:"+err);
-        }else{
-            callback(err, rows);
         }
     });
 }
@@ -200,3 +174,99 @@ exports.modifyFixedAssetInfoBYfaID = function (faObj, callback){
         }
     });
 }
+
+/**
+ * get fixed asset detail
+ * @param  {string}   faId     the fixed asset id
+ * @param  {string}   faType   the fixed asset type
+ * @param  {Function} callback the callback func
+ * @return {null}            
+ */
+exports.getFixedAssetDetail = function (faId, faType, callback) {
+    console.log("##########proxy/fixedAsset/getFixedAssetDetail");
+    mysqlClient.query({
+        sql     : "SELECT * FROM "+ faType +" WHERE newId = :newId",
+        params  : {
+            "newId"  : faId
+        }
+    }, function (err, rows){          
+        callback(err, rows);
+    });
+}
+
+/**
+ * modify fixed asset detail
+ * @param  {object}   faObj    the fixed asset detail
+ * @param  {Function} callback the callback func
+ * @return {null}            
+ */
+exports.modifyFixedAssetDetail = function (faObj, callback) {
+    console.log("##########proxy/fixedAsset/modifyFixedAssetDetail");
+    mysqlClient.query({
+        sql     : SQL_PATTERN_CONFIG[faObj.faType+"_MODIFY"],
+        params  : faObj
+    }, function (err, rows){          
+        callback(err, rows);
+    });
+}
+
+
+
+
+var SQL_PATTERN_CONFIG = {
+    "HOSTCOMPUTER_MODIFY"       : "UPDATE HOSTCOMPUTER " + 
+                                  " SET oldId=:oldId, brand=:brand, cpu=:cpu, "+
+                                  "cpuFrequency=:cpuFrequency, ram=:ram, hd=:hd,"+
+                                  " mac=:mac, price=:price, purpose=:purpose, "+
+                                  "position=:position, remark=:remark "+
+                                  " WHERE newId=:newId",
+
+    "MOBILE_MODIFY"             : "UPDATE MOBILE " + 
+                                  " SET deviceName=:deviceName, type=:type, "+
+                                  "configure=:configure, price=:price, "+
+                                  "purpose=:purpose, remark=:remark "+
+                                  " WHERE newId=:newId",
+
+    "MONITOR_MODIFY"            : "UPDATE MONITOR " + 
+                                  " SET price=:price, position=:position, "+
+                                  "supplier=:supplier, remark=:remark "+
+                                  " WHERE newId=:newId",
+
+    "NOTEBOOK_MODIFY"           : "UPDATE NOTEBOOK " + 
+                                  " SET oldId=:oldId, type=:type, cpu=:cpu, "+
+                                  "ram=:ram, hd=:hd, price=:price, purpose=:purpose, "+
+                                  "serviceCode=:serviceCode, remark=:remark, "+
+                                  "Mac1=:Mac1, Mac2=:Mac2 "+
+                                  " WHERE newId=:newId",
+
+    "OFFICEEQUIPMENT_MODIFY"    : "UPDATE OFFICEEQUIPMENT " + 
+                                  " SET equipmentName=:equipmentName, price=:price, "+
+                                  " purpose=:purpose, position=:position, "+
+                                  " supplier=:supplier, remark=:remark "+
+                                  " WHERE newId=:newId",
+
+    "OFFICEFURNITURE_MODIFY"    : "UPDATE OFFICEFURNITURE " + 
+                                  " SET furnitureName=:furnitureName, amount=:amount, "+
+                                  " equipmentId=:equipmentId, equipmentName=:equipmentName, "+
+                                  " lastUserId=:lastUserId, purchaseDate=:purchaseDate, "+
+                                  " possessDate=:possessDate, reject=:reject, "+
+                                  " rejectDate=:rejectDate "+
+                                  " WHERE newId=:newId",
+
+    "OTHEREQUIPMENT_MODIFY"     : "UPDATE OTHEREQUIPMENT " + 
+                                  " SET equipmentName=:equipmentName, supplier=:supplier, "+
+                                  " price=:price, remark=:remark "+
+                                  " WHERE newId=:newId",
+
+    "SERVER_MODIFY"             : "UPDATE SERVER " + 
+                                  " SET purpose=:purpose, brand=:brand, cpu=:cpu, "+
+                                  " cpuFrequency=:cpuFrequency, ram=:ram, "+
+                                  " ramSize=:ramSize, ramFrequency=:ramFrequency, "+
+                                  " hd=:hd, price=:price, position=:position, mac=:mac, "+
+                                  " ipRange=:ipRange, remark=:remark "+
+                                  " WHERE newId=:newId",
+
+    "VIRTUALEQUIPMENT_MODIFY"   : "UPDATE VIRTUALEQUIPMENT " + 
+                                  " SET equipmentName=:equipmentName, supplier=:supplier, price=:price, remark=:remark "+
+                                  " WHERE newId=:newId",
+};

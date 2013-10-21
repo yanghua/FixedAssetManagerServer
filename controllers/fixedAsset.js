@@ -38,12 +38,12 @@ var EventProxy = require("eventproxy");
  * @return {null}        
  */
 exports.getFixedAssetByfaId = function (req, res, next){
-    console.log("controllers/fixedAsset/getFixedAssetById");
+    console.log("******controllers/fixedAsset/getFixedAssetById");
     var faId=req.params.faId;
 
     FixedAsset.getFixedAssetByfaID(faId, function(err, rows) {
-        if (err!=null) {
-            console.log("controllers/getFixedAssetByfaId");
+        if (err) {
+            res.send(resUtil.generateRes(null, config.statusCode.STATUS_NOTFOUND));
         }else{
             res.send(resUtil.generateRes(rows, config.statusCode.SATUS_OK));
         }
@@ -58,7 +58,7 @@ exports.getFixedAssetByfaId = function (req, res, next){
  * @return {null}        
  */
 exports.inspeck = function (req, res, next){
-    console.log("controllers/fixedAsset/inspeck");
+    console.log("******controllers/fixedAsset/inspeck");
 
     var qrCode = req.body.qrCode;
     var ep = EventProxy.create();
@@ -108,9 +108,36 @@ exports.inspeck = function (req, res, next){
 
     //error handler
     ep.fail(function (err){
-        console.log("*********enter fail handler");
+        console.log("enter fail handler");
         res.send(resUtil.generateRes(null, config.statusCode.STATUS_NOTFOUND));
     });
+
+}
+
+
+/**
+ * get fixed asset list by userId
+ * @param  {object}   req  request object
+ * @param  {object}   res  response object
+ * @param  {Function} next the next handler
+ * @return {null}        
+ */
+exports.getFixedAssetListByUserID = function (req, res, next){
+    console.log("******controllers/fixedAsset/getFixedAssetListByUserID");
+    var userId = req.params.userId;
+    FixedAsset.getFixedAssetListByUserID(userId, function (err, rows){
+        if (err) {
+            console.log(err);
+            res.send(resUtil.generateRes(null, config.statusCode.STATUS_NOTFOUND));
+        }else{
+            res.send(resUtil.generateRes(rows, config.statusCode.SATUS_OK));
+        }
+    });
+
+}
+
+exports.getFixedAssetDetailByID = function (req, res, next){
+    console.log("******controllers/fixedAsset/getFixedAssetDetailByID");
 
 }
 
