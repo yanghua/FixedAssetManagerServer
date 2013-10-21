@@ -37,8 +37,28 @@ var EventProxy = require("eventproxy");
  * @param  {Function} next next handler
  * @return {null}        
  */
+exports.getFixedAssetDetailByfaId = function (req, res, next){
+    console.log("******controllers/fixedAsset/getFixedAssetDetailByfaId");
+    var faId=req.params.faId;
+
+    FixedAsset.getFixedAssetDetailByfaID(faId, function(err, rows) {
+        if (err) {
+            res.send(resUtil.generateRes(null, config.statusCode.STATUS_NOTFOUND));
+        }else{
+            res.send(resUtil.generateRes(rows, config.statusCode.SATUS_OK));
+        }
+    });
+}
+
+/**
+ * get fixed asset by faId
+ * @param  {object}   req  request
+ * @param  {object}   res  response
+ * @param  {Function} next next handler
+ * @return {null}        
+ */
 exports.getFixedAssetByfaId = function (req, res, next){
-    console.log("******controllers/fixedAsset/getFixedAssetById");
+    console.log("******controllers/fixedAsset/getFixedAssetByfaId");
     var faId=req.params.faId;
 
     FixedAsset.getFixedAssetByfaID(faId, function(err, rows) {

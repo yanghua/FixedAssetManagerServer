@@ -37,9 +37,10 @@ module.exports = function (app){
     app.get("/", others.home);
 
     app.get("/user/:userId", user.getUserById);
-    app.get("/fixedasset/:faId/info", fixedAsset.getFixedAssetByfaId);
-    // app.get("/fixedAsset/:faId/detail", getFixedAssetDetailByID);
     app.get("/user/:userId/fixedassets", fixedAsset.getFixedAssetListByUserID);
+    app.get("/fixedasset/:faId/info", fixedAsset.getFixedAssetByfaId);
+    app.get("/fixedAsset/:faId/detail", fixedAsset.getFixedAssetDetailByfaId);
+    
 
     //params:qrCode
     app.post("/fixedasset/inspeck", fixedAsset.inspeck);

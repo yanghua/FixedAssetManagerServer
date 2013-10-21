@@ -40,7 +40,7 @@ describe("fixedAsset", function () {
         var param={
             'qrCode' : "12345"
         };
-        app.request().post('/fixedAsset/inspeck').setBody(param).end(function (res){
+        app.request().post('/fixedasset/inspeck').setBody(param).end(function (res){
             console.dir(res.bodyJSON);
             done();
         });
@@ -50,7 +50,7 @@ describe("fixedAsset", function () {
         var param={
             'qrCode' : "#####"
         };
-        app.request().post('/fixedAsset/inspeck').setBody(param).end(function (res){
+        app.request().post('/fixedasset/inspeck').setBody(param).end(function (res){
             console.dir(res.bodyJSON);
             done();
         });
@@ -58,10 +58,22 @@ describe("fixedAsset", function () {
 
     it('should response data', function (done) {
         var param = {
-            userId : "12345"
+            faId : "12345"
         };
 
-        app.request().get("/fixedAsset/"+param.userId+"/info").end(function (res){
+        app.request().get("/fixedasset/"+param.faId+"/info").end(function (res){
+            console.dir(res.bodyJSON);
+            done();
+        });
+    });
+
+
+    it('should response data for fadetail', function (done) {
+        var param = {
+            faId : "12345"
+        };
+
+        app.request().get("/fixedasset/"+param.faId+"/detail").end(function (res){
             console.dir(res.bodyJSON);
             done();
         });

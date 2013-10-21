@@ -55,12 +55,43 @@ exports.getFixedAssetListByUserID = function (userId, callback){
 };
 
 /**
- * get fixed asset by faid
+ * get fixed asset detail by faid
  * @param  {string}   faId     fixed asset id
  * @param  {Function} callback callback func
  * @return {null}            
  */
 exports.getFixedAssetByfaID = function (faId, callback){
+    console.log("######proxy/fixedAsset/getFixedAssetDetailByfaID");
+
+    if (typeof(faId) == "undefined" || faId.length == 0) {
+        return callback("userId illegal", null);
+    }
+
+
+    mysqlClient.query({
+        sql     : "SELECT * FROM EQUIPMENT WHERE EQUIPMENTID = :EQUIPMENTID",
+        params  : {
+            "EQUIPMENTID"  : faId
+        }
+    }, function (err, rows){
+            if (rows && rows.length>0) {
+                var data=rows[0];
+                callback(err, data);
+            }else{
+                callback(err, null);
+            }
+            
+    });
+
+}
+
+/**
+ * get fixed asset by faid
+ * @param  {string}   faId     fixed asset id
+ * @param  {Function} callback callback func
+ * @return {null}            
+ */
+exports.getFixedAssetDetailByfaID = function (faId, callback){
     console.log("######proxy/fixedAsset/getFixedAssetByfaID");
 
     if (typeof(faId) == "undefined" || faId.length == 0) {
@@ -78,13 +109,8 @@ exports.getFixedAssetByfaID = function (faId, callback){
         if (err != null) {
             return ep.emitLater("error", err);
         }else{
-            console.log("emit afterFAType");
             if (rows && rows.length>0) {
-                var faInfo={};
-                faInfo["faId"]       = rows[0].equipmentId;
-                faInfo["faType"]     = rows[0].equipmentSqlName;
-                faInfo["faTypeName"] = rows[0].equipmentName;
-                eq.emitLater("afterFAType_proxy", faInfo);
+                eq.emitLater("afterFAType_proxy", rows[0]);
             }
         }
     });
@@ -92,19 +118,27 @@ exports.getFixedAssetByfaID = function (faId, callback){
     eq.once("afterFAType_proxy", function(faInfo){
 
         //split with equipment type
-        if (faInfo.faType == config.faType.ENUM_HC) {
-            require("./fixedAsset").getFixedAssetDetail(faInfo.faId, config.faType.ENUM_HC, function(err, rows){
-                if (err != null) {
+        if (faInfo.equipmentSqlName == config.faType.ENUM_HC) {
+            require("./fixedAsset").getFixedAssetDetail(faInfo.equipmentId, config.faType.ENUM_HC, function(err, rows){
+                if (err) {
                     return ep.emitLater("error", err);
-                }else{            
-                    console.log("emit afterFADetail_proxy");
-                    eq.emitLater("afterFADetail_proxy", rows);
+                }else{
+                    if (rows.length==0) {
+                        return ep.emitLater("error", err);
+                    }else{
+                        faAll={};
+                        faAll["faInfo"]=faInfo;
+                        faAll["faDetail"]=rows[0];
+
+                        eq.emitLater("afterFADetail_proxy", faAll);
+                    }
                 }
             });
         }
     });
 
     eq.once("afterFADetail_proxy", function(rows){
+        console.log("afterFADetail_proxy");
         callback(null, rows);
     });
 
@@ -112,6 +146,7 @@ exports.getFixedAssetByfaID = function (faId, callback){
     eq.fail(function (err){
         callback(err, null);
     });
+
 };
 
 
