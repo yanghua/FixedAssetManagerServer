@@ -34,7 +34,7 @@ mysqlClient   = mysqlUtil.getMysqlClient();
  * @return {null}            
  */
 exports.getUserInfoById=function (userId, callback) {
-    console.log("######getUserInfoById");
+    console.log("######/proxy/user/getUserInfoById");
 
     if (typeof(userId) == "undefined" || userId.length ==0) {
         return;
@@ -46,11 +46,10 @@ exports.getUserInfoById=function (userId, callback) {
             "USERID"  : userId
         }
     }, function (err, rows){
-        if (err != null) {
-            console.log("getUserInfoById:"+err);
-        }else{
-            callback(err, rows);
-        }
-
+            if (rows && rows.length >0) {
+                callback(err, rows[0]);
+            }else{
+                callback(err, null);
+            }
     });
 }
