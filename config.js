@@ -42,7 +42,7 @@ function initConfig () {
 
       statusCode        : {
           SATUS_OK                  : 0,
-          STATUS_NOTFOUND           : 1,
+          STATUS_NOTFOUND           : 1,        //means data not found not url request
           STATUS_SERVER_ERROR       : 2,
           STATUS_INVAILD_PARAMS     : 3
           //....
