@@ -25,15 +25,13 @@
 
 var Client = require("easymysql");
 var config = require("../config").initConfig();
-var mysql  = null;
-var inited = false;
-
 
 /**
  * init mysql
  * @return {null} 
  */
-function initMysql () {
+exports.initMysql = function  () {
+    var mysql  = null;
     mysql = Client.create({
         'maxconnections' : config.default_max_conns
     });
@@ -52,17 +50,6 @@ function initMysql () {
             inited = true;
         }
     });
-
-}
-
-/**
- * get mysql client
- * @return {object} mysql client
- */
-exports.getMysqlClient=function (){
-    if (!inited) {
-        initMysql();
-    }
 
     return mysql;
 }
