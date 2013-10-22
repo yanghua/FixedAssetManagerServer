@@ -38,9 +38,15 @@ var EventProxy = require("eventproxy");
  * @param  {Function} next next handler
  * @return {null}        
  */
-exports.getFixedAssetDetailByfaId = function (req, res, next){
+exports.getFixedAssetDetailByfaID = function (req, res, next){
     console.log("******controllers/fixedAsset/getFixedAssetDetailByfaId");
     var faId=req.params.faId;
+
+    if (typeof(faId)=="undefined" || !check(faId).notEmpty()) {
+        return res.send(resUtil.generateRes(null, config.statusCode.STATUS_INVAILD_PARAMS));
+    };
+
+    faId=sanitize(sanitize(faId).trim()).xss();
 
     FixedAsset.getFixedAssetDetailByfaID(faId, function(err, rows) {
         if (err) {
@@ -58,9 +64,15 @@ exports.getFixedAssetDetailByfaId = function (req, res, next){
  * @param  {Function} next next handler
  * @return {null}        
  */
-exports.getFixedAssetByfaId = function (req, res, next){
+exports.getFixedAssetByfaID = function (req, res, next){
     console.log("******controllers/fixedAsset/getFixedAssetByfaId");
     var faId=req.params.faId;
+
+    if (typeof(faId)=="undefined" || !check(faId).notEmpty()) {
+        return res.send(resUtil.generateRes(null, config.statusCode.STATUS_INVAILD_PARAMS));
+    };
+
+    faId=sanitize(sanitize(faId).trim()).xss();
 
     FixedAsset.getFixedAssetByfaID(faId, function(err, rows) {
         if (err) {
@@ -82,6 +94,12 @@ exports.inspeck = function (req, res, next){
     console.log("******controllers/fixedAsset/inspeck");
 
     var qrCode = req.body.qrCode;
+    if (typeof(qrCode)=="undefined" || !check(qrCode).notEmpty()) {
+        return res.send(resUtil.generateRes(null, config.statusCode.STATUS_INVAILD_PARAMS));
+    }
+
+    qrCode=sanitize(sanitize(qrCode).trim()).xss();
+
     var ep = EventProxy.create();
 
     var userDetail = null;
@@ -155,6 +173,13 @@ exports.inspeck = function (req, res, next){
 exports.getFixedAssetListByUserID = function (req, res, next){
     console.log("******controllers/fixedAsset/getFixedAssetListByUserID");
     var userId = req.params.userId;
+
+    if (typeof(userId)=="undefined" || !check(userId).notEmpty()) {
+        return res.send(resUtil.generateRes(null, config.statusCode.STATUS_INVAILD_PARAMS));
+    };
+
+    userId=sanitize(sanitize(userId).trim()).xss();
+
     FixedAsset.getFixedAssetListByUserID(userId, function (err, rows){
         if (err) {
             console.log(err);
@@ -163,11 +188,6 @@ exports.getFixedAssetListByUserID = function (req, res, next){
             res.send(resUtil.generateRes(rows, config.statusCode.SATUS_OK));
         }
     });
-
-}
-
-exports.getFixedAssetDetailByID = function (req, res, next){
-    console.log("******controllers/fixedAsset/getFixedAssetDetailByID");
 
 }
 

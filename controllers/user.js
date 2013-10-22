@@ -23,9 +23,11 @@
   Desc: user - the controller of user
  */
 
-var resUtil = require("../libs/resUtil");
-var User    = require('../proxy/user');
-var config  = require("../config").initConfig();
+var resUtil  = require("../libs/resUtil");
+var User     = require('../proxy/user');
+var config   = require("../config").initConfig();
+var check    = require("validator").check;
+var sanitize = require("validator").sanitize;
 
 /**
  * get user info by userId
@@ -37,6 +39,12 @@ var config  = require("../config").initConfig();
 exports.getUserById = function (req, res, next){
     console.log("controllers/user/getUserById");
     var userId=req.params.userId;
+
+    if (typeof(userId)=="undefined" || !check(userId).notEmpty()) {
+        return res.send(resUtil.generateRes(null, config.statusCode.STATUS_INVAILD_PARAMS));
+    };
+
+    userId=sanitize(sanitize((userId).trim())).xss();
 
     User.getUserInfoById(userId, function(err, rows){
         if (err) {
