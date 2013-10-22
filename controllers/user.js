@@ -37,7 +37,7 @@ var sanitize = require("validator").sanitize;
  * @return {null}        
  */
 exports.getUserById = function (req, res, next){
-    console.log("controllers/user/getUserById");
+    console.log("******controllers/user/getUserById");
     var userId=req.params.userId;
 
     if (typeof(userId)=="undefined" || !check(userId).notEmpty()) {
@@ -48,14 +48,9 @@ exports.getUserById = function (req, res, next){
 
     User.getUserInfoById(userId, function(err, rows){
         if (err) {
-            console.log("ERR FROM:getUserInfoById --" + err);
+            return res.send(resUtil.generateRes(null, err.statusCode));
         }else{
-            if (rows < 1) {
-                res.send(resUtil.generateRes(rows, config.statusCode.STATUS_NOTFOUND));
-            }else{
-                res.send(resUtil.generateRes(rows, config.statusCode.SATUS_OK));
-            }
-           
+            res.send(resUtil.generateRes(rows, config.statusCode.SATUS_OK));           
         }
     });
 }

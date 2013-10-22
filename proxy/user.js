@@ -46,10 +46,14 @@ exports.getUserInfoById=function (userId, callback) {
             "USERID"  : userId
         }
     }, function (err, rows){
+            if (err) {
+                callback(new ServerError(), null);
+            };
+
             if (rows && rows.length >0) {
-                callback(err, rows[0]);
+                callback(null, rows[0]);
             }else{
-                callback(err, null);
+                callback(new DataNotFoundError(), null);
             }
     });
 }

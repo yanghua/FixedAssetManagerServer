@@ -23,13 +23,13 @@
   Desc: fixedAsset - the controller of fixedAsset
  */
 
-var FixedAsset = require("../proxy/fixedAsset");
-var User       = require("../proxy/user");
-var resUtil    = require("../libs/resUtil");
-var config     = require("../config").initConfig();
-var check      = require("validator").check;
-var sanitize   = require("validator").sanitize;
-var EventProxy = require("eventproxy");
+var FixedAsset        = require("../proxy/fixedAsset");
+var User              = require("../proxy/user");
+var resUtil           = require("../libs/resUtil");
+var config            = require("../config").initConfig();
+var check             = require("validator").check;
+var sanitize          = require("validator").sanitize;
+var EventProxy        = require("eventproxy");
 
 /**
  * get fixed asset by faId
@@ -50,12 +50,12 @@ exports.getFixedAssetDetailByfaID = function (req, res, next){
 
     FixedAsset.getFixedAssetDetailByfaID(faId, function(err, rows) {
         if (err) {
-            res.send(resUtil.generateRes(null, config.statusCode.STATUS_NOTFOUND));
+            res.send(resUtil.generateRes(null, err.statusCode));
         }else{
             res.send(resUtil.generateRes(rows, config.statusCode.SATUS_OK));
         }
     });
-}
+};
 
 /**
  * get fixed asset by faId
@@ -76,12 +76,12 @@ exports.getFixedAssetByfaID = function (req, res, next){
 
     FixedAsset.getFixedAssetByfaID(faId, function(err, rows) {
         if (err) {
-            res.send(resUtil.generateRes(null, config.statusCode.STATUS_NOTFOUND));
+            res.send(resUtil.generateRes(null, err.statusCode));
         }else{
             res.send(resUtil.generateRes(rows, config.statusCode.SATUS_OK));
         }
     });
-}
+};
 
 /**
  * inspect fixed asset
@@ -114,7 +114,7 @@ exports.inspeck = function (req, res, next){
             console.log("emit  checkedFA");
             ep.emitLater("checkedFA");
         }else{
-            return ep.emitLater("error", "the fixedAsset not exists");
+            return ep.emitLater("error", new DataNotFoundError());
         }
     });
 
@@ -134,7 +134,7 @@ exports.inspeck = function (req, res, next){
 
         if (!faInfo || typeof(faInfo.lastUserId) == "undefined" || 
                                   faInfo.lastUserId.length ===0 ) {
-            return ep.emitLater("error", err);
+            return ep.emitLater("error", new ServerError());
         };
         
         User.getUserInfoById(faInfo.lastUserId, function (err, rows) {
@@ -157,7 +157,7 @@ exports.inspeck = function (req, res, next){
     //error handler
     ep.fail(function (err){
         console.log("enter fail handler");
-        res.send(resUtil.generateRes(null, config.statusCode.STATUS_NOTFOUND));
+        res.send(resUtil.generateRes(null, err.statusCode));
     });
 
 }
@@ -183,7 +183,7 @@ exports.getFixedAssetListByUserID = function (req, res, next){
     FixedAsset.getFixedAssetListByUserID(userId, function (err, rows){
         if (err) {
             console.log(err);
-            res.send(resUtil.generateRes(null, config.statusCode.STATUS_NOTFOUND));
+            res.send(resUtil.generateRes(null, err.statusCode));
         }else{
             res.send(resUtil.generateRes(rows, config.statusCode.SATUS_OK));
         }

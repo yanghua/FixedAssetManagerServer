@@ -40,7 +40,7 @@ exports.getFixedAssetListByUserID = function (userId, callback){
     console.log("######/proxy/fixedAsset/getFixedAssetListByUserId");
 
     if (typeof(userId) == "undefined" || userId.length ==0) {
-        return callback("userId illegal", null);
+        return callback(new InvalidParamError(), null);
     }
 
     mysqlClient.query({
@@ -50,7 +50,11 @@ exports.getFixedAssetListByUserID = function (userId, callback){
             "lastUserId"  : userId
         }
     }, function (err, rows){
-            callback(err, rows);
+            if (err) {
+                callback(new ServerError(), null);
+            };
+
+            callback(null, rows);
     });
 };
 
@@ -64,7 +68,7 @@ exports.getFixedAssetByfaID = function (faId, callback){
     console.log("######proxy/fixedAsset/getFixedAssetDetailByfaID");
 
     if (typeof(faId) == "undefined" || faId.length == 0) {
-        return callback("userId illegal", null);
+        return callback(new InvalidParamError(), null);
     }
 
 
@@ -74,11 +78,15 @@ exports.getFixedAssetByfaID = function (faId, callback){
             "EQUIPMENTID"  : faId
         }
     }, function (err, rows){
+            if (err) {
+                callback(new ServerError(), null);
+            };
+
             if (rows && rows.length>0) {
                 var data=rows[0];
-                callback(err, data);
+                callback(null, data);
             }else{
-                callback(err, null);
+                callback(new DataNotFoundError(), null);
             }
             
     });
@@ -95,7 +103,7 @@ exports.getFixedAssetDetailByfaID = function (faId, callback){
     console.log("######proxy/fixedAsset/getFixedAssetByfaID");
 
     if (typeof(faId) == "undefined" || faId.length == 0) {
-        return callback("userId illegal", null);
+        return callback(new InvalidParamError(), null);
     }
 
     var eq = EventProxy.create();
@@ -106,11 +114,13 @@ exports.getFixedAssetDetailByfaID = function (faId, callback){
             "EQUIPMENTID"  : faId
         }
     }, function (err, rows){
-        if (err != null) {
-            return ep.emitLater("error", err);
+        if (err) {
+            return ep.emitLater("error", new ServerError());
         }else{
             if (rows && rows.length>0) {
                 eq.emitLater("afterFAType_proxy", rows[0]);
+            }else{
+                return ep.emitLater("error", new DataNotFoundError());
             }
         }
     });
@@ -121,10 +131,10 @@ exports.getFixedAssetDetailByfaID = function (faId, callback){
         if (faInfo.equipmentSqlName == config.faType.ENUM_HC) {
             require("./fixedAsset").getFixedAssetDetail(faInfo.equipmentId, config.faType.ENUM_HC, function(err, rows){
                 if (err) {
-                    return ep.emitLater("error", err);
+                    return ep.emitLater("error", new ServerError());
                 }else{
                     if (rows.length==0) {
-                        return ep.emitLater("error", err);
+                        return ep.emitLater("error", new DataNotFoundError());
                     }else{
                         faAll={};
                         faAll["faInfo"]=faInfo;
@@ -160,7 +170,7 @@ exports.checkFixedAssetByfaID = function (faId, callback){
     console.log("######proxy/checkFixedAssetByfaID");
 
     if (typeof(faId) == "undefined" || faId.length == 0) {
-        return callback("userId illegal", null);
+        return callback(new InvalidParamError(), null);
     }
 
     mysqlClient.query({
@@ -169,8 +179,8 @@ exports.checkFixedAssetByfaID = function (faId, callback){
             "EQUIPMENTID"  : faId
         }
     }, function (err, rows){
-        if (err != null) {
-            console.log("checkFixedAssetByfaID:"+err);
+        if (err) {
+            callback(new ServerError(), null);
         }else{
             var hasFA;
             if (rows[0] && rows[0].count > 0) {
@@ -178,7 +188,7 @@ exports.checkFixedAssetByfaID = function (faId, callback){
             }else {
                 hasFA = false;
             }
-            callback(err, hasFA);
+            callback(null, hasFA);
         }
     });
 }
@@ -202,10 +212,10 @@ exports.modifyFixedAssetInfoBYfaID = function (faObj, callback){
             "EQUIPMENTTYPEID" : faObj.faTypeId
         }
     }, function (err, rows){
-        if (err != null) {
-            console.log("modifyFixedAssetInfoBYfaId:"+err);
+        if (err) {
+            callback(new DataNotFoundError(), null);
         }else{
-            callback(err, rows);
+            callback(null, rows);
         }
     });
 }
@@ -224,8 +234,12 @@ exports.getFixedAssetDetail = function (faId, faType, callback) {
         params  : {
             "newId"  : faId
         }
-    }, function (err, rows){          
-        callback(err, rows);
+    }, function (err, rows){
+        if (err) {
+            callback(new ServerError(), null);
+        }else{
+            callback(null, rows);
+        }      
     });
 }
 
@@ -241,7 +255,11 @@ exports.modifyFixedAssetDetail = function (faObj, callback) {
         sql     : SQL_PATTERN_CONFIG[faObj.faType+"_MODIFY"],
         params  : faObj
     }, function (err, rows){          
-        callback(err, rows);
+        if (err) {
+            callback(new ServerError(), null);
+        }else{
+            callback(null, rows);
+        } 
     });
 }
 
