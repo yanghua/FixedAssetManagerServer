@@ -218,7 +218,7 @@ exports.modifyFixedAssetInfoBYfaID = function (faObj, callback){
  * @return {null}            
  */
 exports.getFixedAssetDetail = function (faId, faType, callback) {
-    console.log("##########proxy/fixedAsset/getFixedAssetDetail");
+    console.log("######proxy/fixedAsset/getFixedAssetDetail");
     mysqlClient.query({
         sql     : "SELECT * FROM "+ faType +" WHERE newId = :newId",
         params  : {
@@ -236,7 +236,7 @@ exports.getFixedAssetDetail = function (faId, faType, callback) {
  * @return {null}            
  */
 exports.modifyFixedAssetDetail = function (faObj, callback) {
-    console.log("##########proxy/fixedAsset/modifyFixedAssetDetail");
+    console.log("######proxy/fixedAsset/modifyFixedAssetDetail");
     mysqlClient.query({
         sql     : SQL_PATTERN_CONFIG[faObj.faType+"_MODIFY"],
         params  : faObj
