@@ -25,7 +25,7 @@
 
 
 var mysqlUtil    = require("../libs/mysqlUtil"),
-mysqlClient      = mysqlUtil.getMysqlClient();
+mysqlClient      = mysqlUtil.initMysql();
 
 /**
  * get fixed asset by id
