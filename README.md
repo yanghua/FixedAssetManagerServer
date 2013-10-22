@@ -43,6 +43,7 @@ root
    |-routes.js                      --url 路由配置
    |-docs                           --项目文档资源文件夹
    |-screenshots                    --终端图片截图(iOS/Android)
+   |-common                         --系统公用文件定义
    
 ```
 
