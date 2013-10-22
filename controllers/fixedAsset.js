@@ -90,7 +90,7 @@ exports.getFixedAssetByfaID = function (req, res, next){
  * @param  {Function} next next handler
  * @return {null}        
  */
-exports.inspeck = function (req, res, next){
+exports.inspection = function (req, res, next){
     console.log("******controllers/fixedAsset/inspeck");
 
     var qrCode = req.body.qrCode;
@@ -160,6 +160,42 @@ exports.inspeck = function (req, res, next){
         res.send(resUtil.generateRes(null, err.statusCode));
     });
 
+}
+
+
+exports.rejection = function (req, res, next) {
+    console.log("******controllers/fixedAsset/rejection");
+
+    var faId = req.body.faId;
+    var reject = req.body.reject;
+
+    try {
+        if (typeof(faId)=="undefined" || !check(faId).notEmpty()) {
+            return res.send(resUtil.generateRes(null, config.statusCode.STATUS_INVAILD_PARAMS));
+        }
+
+        if (typeof(reject)=="undefined" || !check(reject).notEmpty) {
+            return res.send(resUtil.generateRes(null, config.statusCode.STATUS_INVAILD_PARAMS));
+        }
+
+        //sanitize
+        faId = sanitize(sanitize(faId).trim()).xss();
+        if (!check(reject).isInt()) {
+            reject = sanitize(reject).toInt();
+        }
+
+    } catch (e) {
+        return res.send(resUtil.generateRes(null, config.statusCode.STATUS_INVAILD_PARAMS));
+    }
+    
+    FixedAsset.rejectFixedAsset({ equipmentId : faId, reject: reject }, function (err, rows) {
+        if (err) {
+            res.send(resUtil.generateRes(null, err.statusCode));
+        }else{
+            console.dir(rows);
+            res.send(resUtil.generateRes(null, config.statusCode.SATUS_OK))
+        }
+    });
 }
 
 
