@@ -43,8 +43,14 @@ module.exports = function (app){
     app.get("/fixedasset/:faId/detail", fixedAsset.getFixedAssetDetailByfaID);
     
 
+    /************************************************************************/
+    /*                Resful: URI Represent a Resource!!!                   */
+    /************************************************************************/
     //params:qrCode
-    app.post("/fixedasset/inspeck", fixedAsset.inspeck);
+    app.post("/fixedasset/inspection", fixedAsset.inspection);
+
+    //params:faId / reject
+    app.post("/fixedasset/rejection", fixedAsset.rejection);
     
 }
 
