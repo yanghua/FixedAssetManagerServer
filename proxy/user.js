@@ -25,7 +25,7 @@
 
 var User      = require("../models/user");
 var mysqlUtil = require("../libs/mysqlUtil"),
-mysqlClient   = mysqlUtil.getMysqlClient();
+mysqlClient   = mysqlUtil.initMysql();
 
 /**
  * get user info by user id
