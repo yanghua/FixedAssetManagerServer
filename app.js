@@ -28,6 +28,7 @@ var fs      = require("fs");
 var path    = require("path");
 var express = require("express");
 var routes  = require("./routes");
+var common  = require("./common/Error");
 
 var app     = express.createServer();
 

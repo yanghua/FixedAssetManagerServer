@@ -38,8 +38,9 @@ module.exports = function (app){
 
     app.get("/user/:userId", user.getUserById);
     app.get("/user/:userId/fixedassets", fixedAsset.getFixedAssetListByUserID);
-    app.get("/fixedasset/:faId/info", fixedAsset.getFixedAssetByfaId);
-    app.get("/fixedAsset/:faId/detail", fixedAsset.getFixedAssetDetailByfaId);
+
+    app.get("/fixedasset/:faId/info", fixedAsset.getFixedAssetByfaID);
+    app.get("/fixedasset/:faId/detail", fixedAsset.getFixedAssetDetailByfaID);
     
 
     //params:qrCode
