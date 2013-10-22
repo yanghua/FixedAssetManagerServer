@@ -26,7 +26,7 @@
 var User         = require('../models/fixedAsset');
 var HostComputer = require("./hostComputer");
 var mysqlUtil    = require("../libs/mysqlUtil"),
-mysqlClient      = mysqlUtil.getMysqlClient();
+mysqlClient      = mysqlUtil.initMysql();
 var EventProxy   = require("eventproxy");
 var config       = require("../config").initConfig();
 
@@ -193,32 +193,29 @@ exports.checkFixedAssetByfaID = function (faId, callback){
     });
 }
 
-/**
- * modify fixed asset info 
- * @param  {object}   faObj    fixed asset object
- * @param  {Function} callback callback func
- * @return {null}            
- */
-exports.modifyFixedAssetInfoBYfaID = function (faObj, callback){
-    console.log("######modifyFixedAssetInfoBYFAId");
 
+/**
+ * reject fixed asset or not
+ * @param  {object}   rejectionInfo the operate data
+ * @param  {Function} callback      callback func
+ * @return {null}                 
+ */
+exports.rejectFixedAsset = function (rejectionInfo, callback){
+    console.log("######proxy/fixedAsset/rejectFixedAsset");
     mysqlClient.query({
-        sql     : "UPDATE USERASSETS SET  USERID          = :USERID,          " +
-                  "                       EQUIPMENTTYPEID = :EQUIPMENTTYPEID  " +
-                  "  WHERE ASSETSID = :ASSETSID",
-        params  : {
-            "ASSETSID"        : faObj.faId,
-            "USERID"          : faObj.faOwnerId,
-            "EQUIPMENTTYPEID" : faObj.faTypeId
-        }
-    }, function (err, rows){
-        if (err) {
+        sql     : "UPDATE EQUIPMENT SET reject=:reject WHERE equipmentId = :equipmentId",
+        params  : rejectionInfo
+    }, function (err, rows) {
+        if (err || rows==null) {
+            callback(new ServerError(), null);
+        }else if(rows.affectedRows==0){
             callback(new DataNotFoundError(), null);
-        }else{
+        }else {
             callback(null, rows);
         }
     });
 }
+
 
 /**
  * get fixed asset detail
@@ -239,7 +236,7 @@ exports.getFixedAssetDetail = function (faId, faType, callback) {
             callback(new ServerError(), null);
         }else{
             callback(null, rows);
-        }      
+        }  
     });
 }
 
