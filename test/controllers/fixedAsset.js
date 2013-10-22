@@ -40,8 +40,8 @@ describe("fixedAsset", function () {
         var param={
             'qrCode' : "12345"
         };
-        app.request().post('/fixedasset/inspeck').setBody(param).end(function (res){
-            console.dir(res.bodyJSON);
+        app.request().post('/fixedasset/inspection').setBody(param).end(function (res){
+            console.dir(res.bodyJSON());
             done();
         });
     });
@@ -50,8 +50,8 @@ describe("fixedAsset", function () {
         var param={
             'qrCode' : "#####"
         };
-        app.request().post('/fixedasset/inspeck').setBody(param).end(function (res){
-            console.dir(res.bodyJSON);
+        app.request().post('/fixedasset/inspection').setBody(param).end(function (res){
+            console.dir(res.bodyJSON());
             done();
         });
     });
@@ -62,7 +62,7 @@ describe("fixedAsset", function () {
         };
 
         app.request().get("/fixedasset/"+param.faId+"/info").end(function (res){
-            console.dir(res.bodyJSON);
+            console.dir(res.bodyJSON());
             done();
         });
     });
@@ -74,7 +74,7 @@ describe("fixedAsset", function () {
         };
 
         app.request().get("/fixedasset/"+param.faId+"/detail").end(function (res){
-            console.dir(res.bodyJSON);
+            console.dir(res.bodyJSON());
             done();
         });
     });
@@ -85,7 +85,19 @@ describe("fixedAsset", function () {
         }
 
         app.request().get("/user/"+ param.userId +"/fixedassets").end(function (res){
-            console.dir(res.bodyJSON);
+            console.dir(res.bodyJSON());
+            done();
+        });
+    });
+
+    it('is testing func: reject fixed asset', function (done) {
+        var param ={
+            faId    : 12345,
+            reject  : 0
+        };
+
+        app.request().post("/fixedasset/rejection").setBody(param).end( function (res){
+            console.dir(res.bodyJSON());
             done();
         });
     });
