@@ -91,7 +91,7 @@ exports.getFixedAssetByfaID = function (req, res, next){
  * @return {null}        
  */
 exports.inspection = function (req, res, next){
-    console.log("******controllers/fixedAsset/inspeck");
+    console.log("******controllers/fixedAsset/inspection");
 
     var qrCode = req.body.qrCode;
     if (typeof(qrCode)=="undefined" || !check(qrCode).notEmpty()) {
