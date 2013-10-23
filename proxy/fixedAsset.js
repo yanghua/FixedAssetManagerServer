@@ -5,7 +5,7 @@
   Copyright 2013 yanghua Inc. All Rights Reserved.
  
   Licensed under the Apache License, Version 2.0 (the "License");
-  you may not use this file except in compliance with the License.
+  you may not use this file exceqt in compliance with the License.
   You may obtain a copy of the License at
  
      http://www.apache.org/licenses/LICENSE-2.0
@@ -115,12 +115,12 @@ exports.getFixedAssetDetailByfaID = function (faId, callback){
         }
     }, function (err, rows){
         if (err) {
-            return ep.emitLater("error", new ServerError());
+            return eq.emitLater("error", new ServerError());
         }else{
             if (rows && rows.length>0) {
                 eq.emitLater("afterFAType_proxy", rows[0]);
             }else{
-                return ep.emitLater("error", new DataNotFoundError());
+                return eq.emitLater("error", new DataNotFoundError());
             }
         }
     });
@@ -131,10 +131,10 @@ exports.getFixedAssetDetailByfaID = function (faId, callback){
         if (faInfo.equipmentSqlName == config.faType.ENUM_HC) {
             require("./fixedAsset").getFixedAssetDetail(faInfo.equipmentId, config.faType.ENUM_HC, function(err, rows){
                 if (err) {
-                    return ep.emitLater("error", new ServerError());
+                    return eq.emitLater("error", new ServerError());
                 }else{
                     if (rows.length==0) {
-                        return ep.emitLater("error", new DataNotFoundError());
+                        return eq.emitLater("error", new DataNotFoundError());
                     }else{
                         faAll={};
                         faAll["faInfo"]=faInfo;
