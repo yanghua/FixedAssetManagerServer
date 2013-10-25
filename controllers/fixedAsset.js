@@ -23,35 +23,38 @@
   Desc: fixedAsset - the controller of fixedAsset
  */
 
-var FixedAsset        = require("../proxy/fixedAsset");
-var User              = require("../proxy/user");
-var resUtil           = require("../libs/resUtil");
-var config            = require("../config").initConfig();
-var check             = require("validator").check;
-var sanitize          = require("validator").sanitize;
-var EventProxy        = require("eventproxy");
+//mode:
+'use strict';
+
+var FixedAsset = require("../proxy/fixedAsset");
+var User       = require("../proxy/user");
+var resUtil    = require("../libs/resUtil");
+var config     = require("../config").initConfig();
+var check      = require("validator").check;
+var sanitize   = require("validator").sanitize;
+var EventProxy = require("eventproxy");
 
 /**
  * get fixed asset by faId
  * @param  {object}   req  request
  * @param  {object}   res  response
  * @param  {Function} next next handler
- * @return {null}        
+ * @return {null}
  */
-exports.getFixedAssetDetailByfaID = function (req, res, next){
+exports.getFixedAssetDetailByfaID = function (req, res, next) {
     console.log("******controllers/fixedAsset/getFixedAssetDetailByfaId");
-    var faId=req.params.faId;
+    var faId = req.params.faId || "";
 
-    if (typeof(faId)=="undefined" || !check(faId).notEmpty()) {
+    if (!check(faId).notEmpty()) {
         return res.send(resUtil.generateRes(null, config.statusCode.STATUS_INVAILD_PARAMS));
-    };
+    }
 
-    faId=sanitize(sanitize(faId).trim()).xss();
+    faId = sanitize(sanitize(faId).trim()).xss();
 
-    FixedAsset.getFixedAssetDetailByfaID(faId, function(err, rows) {
+    FixedAsset.getFixedAssetDetailByfaID(faId, function (err, rows) {
         if (err) {
             res.send(resUtil.generateRes(null, err.statusCode));
-        }else{
+        } else {
             res.send(resUtil.generateRes(rows, config.statusCode.SATUS_OK));
         }
     });
@@ -62,22 +65,22 @@ exports.getFixedAssetDetailByfaID = function (req, res, next){
  * @param  {object}   req  request
  * @param  {object}   res  response
  * @param  {Function} next next handler
- * @return {null}        
+ * @return {null}
  */
-exports.getFixedAssetByfaID = function (req, res, next){
+exports.getFixedAssetByfaID = function (req, res, next) {
     console.log("******controllers/fixedAsset/getFixedAssetByfaId");
-    var faId=req.params.faId;
+    var faId = req.params.faId || "";
 
-    if (typeof(faId)=="undefined" || !check(faId).notEmpty()) {
+    if (!check(faId).notEmpty()) {
         return res.send(resUtil.generateRes(null, config.statusCode.STATUS_INVAILD_PARAMS));
-    };
+    }
 
-    faId=sanitize(sanitize(faId).trim()).xss();
+    faId = sanitize(sanitize(faId).trim()).xss();
 
-    FixedAsset.getFixedAssetByfaID(faId, function(err, rows) {
+    FixedAsset.getFixedAssetByfaID(faId, function (err, rows) {
         if (err) {
             res.send(resUtil.generateRes(null, err.statusCode));
-        }else{
+        } else {
             res.send(resUtil.generateRes(rows, config.statusCode.SATUS_OK));
         }
     });
@@ -88,24 +91,24 @@ exports.getFixedAssetByfaID = function (req, res, next){
  * @param  {object}   req  request
  * @param  {object}   res  response
  * @param  {Function} next next handler
- * @return {null}        
+ * @return {null}
  */
-exports.inspection = function (req, res, next){
+exports.inspection = function (req, res, next) {
     console.log("******controllers/fixedAsset/inspection");
+    var qrCode = req.body.qrCode || "";
 
-    var qrCode = req.body.qrCode;
-    if (typeof(qrCode)=="undefined" || !check(qrCode).notEmpty()) {
+    if (!check(qrCode).notEmpty()) {
         return res.send(resUtil.generateRes(null, config.statusCode.STATUS_INVAILD_PARAMS));
     }
 
-    qrCode=sanitize(sanitize(qrCode).trim()).xss();
+    qrCode = sanitize(sanitize(qrCode).trim()).xss();
 
     var ep = EventProxy.create();
 
     var userDetail = null;
-    var faDetail   = null;
+    var faDetail = null;
 
-    FixedAsset.checkFixedAssetByfaID(qrCode, function (err, hasFA){
+    FixedAsset.checkFixedAssetByfaID(qrCode, function (err, hasFA) {
         if (err) {
             return ep.emitLater("error", err);
         }
@@ -113,68 +116,72 @@ exports.inspection = function (req, res, next){
         if (hasFA) {
             console.log("emit  checkedFA");
             ep.emitLater("checkedFA");
-        }else{
+        } else {
             return ep.emitLater("error", new DataNotFoundError());
         }
     });
 
-    ep.once("checkedFA", function (){
-        FixedAsset.getFixedAssetByfaID(qrCode, function (err, rows){
+    ep.once("checkedFA", function () {
+        FixedAsset.getFixedAssetByfaID(qrCode, function (err, rows) {
             if (err) {
                 return ep.emitLater("error", err);
-            }else{
-                console.log("emit  afterFAInfo");
-                faDetail = rows;
-                ep.emit("afterFAInfo",rows);
             }
+
+            console.log("emit  afterFAInfo");
+            faDetail = rows;
+            ep.emit("afterFAInfo", rows);
         });
     });
 
-    ep.once("afterFAInfo", function(faInfo) {
-
-        if (!faInfo || typeof(faInfo.lastUserId) == "undefined" || 
-                                  faInfo.lastUserId.length ===0 ) {
+    ep.once("afterFAInfo", function (faInfo) {
+        if (!faInfo || faInfo.lastUserId === undefined ||
+                faInfo.lastUserId.length === 0) {
             return ep.emitLater("error", new ServerError());
-        };
-        
+        }
+
         User.getUserInfoById(faInfo.lastUserId, function (err, rows) {
             if (err) {
                 return ep.emitLater("error", err);
-            }else{
-                ep.emitLater("afterUserDetail",rows);
             }
+            ep.emitLater("afterUserDetail", rows);
         });
     });
 
     ep.once("afterUserDetail", function (userInfo) {
-        var data ={};
+        var data = {};
         data["userDetail"] = userInfo;
-        data["faDetail"]   = faDetail;
+        data["faDetail"] = faDetail;
         console.dir(resUtil.generateRes(data, config.statusCode.SATUS_OK));
         res.send(resUtil.generateRes(data, config.statusCode.SATUS_OK));
     });
 
     //error handler
-    ep.fail(function (err){
+    ep.fail(function (err) {
         console.log("enter fail handler");
         res.send(resUtil.generateRes(null, err.statusCode));
     });
 
-}
+};
 
-
+/**
+ * reject equipment
+ * @param  {object}   req  the request object
+ * @param  {object}   res  the response object
+ * @param  {Function} next the next func
+ * @return {null}        
+ */
 exports.rejection = function (req, res, next) {
     console.log("******controllers/fixedAsset/rejection");
 
-    var faId = req.body.faId;
-    var reject = req.body.reject;
+    var faId   = req.body.faId || "";
+    var reject = req.body.reject || 1;
 
     try {
-        if (typeof(faId)=="undefined" || !check(faId).notEmpty()) {
+        if (!check(faId).notEmpty()) {
             return res.send(resUtil.generateRes(null, config.statusCode.STATUS_INVAILD_PARAMS));
         }
 
-        if (typeof(reject)=="undefined" || !check(reject).notEmpty) {
+        if (!check(reject).notEmpty) {
             return res.send(resUtil.generateRes(null, config.statusCode.STATUS_INVAILD_PARAMS));
         }
 
@@ -187,16 +194,19 @@ exports.rejection = function (req, res, next) {
     } catch (e) {
         return res.send(resUtil.generateRes(null, config.statusCode.STATUS_INVAILD_PARAMS));
     }
-    
-    FixedAsset.rejectFixedAsset({ equipmentId : faId, reject: reject }, function (err, rows) {
+
+    FixedAsset.rejectFixedAsset({
+        equipmentId: faId,
+        reject: reject
+    }, function (err, rows) {
         if (err) {
             res.send(resUtil.generateRes(null, err.statusCode));
-        }else{
+        } else {
             console.dir(rows);
-            res.send(resUtil.generateRes(null, config.statusCode.SATUS_OK))
+            res.send(resUtil.generateRes(null, config.statusCode.SATUS_OK));
         }
     });
-}
+};
 
 
 /**
@@ -204,26 +214,24 @@ exports.rejection = function (req, res, next) {
  * @param  {object}   req  request object
  * @param  {object}   res  response object
  * @param  {Function} next the next handler
- * @return {null}        
+ * @return {null}
  */
-exports.getFixedAssetListByUserID = function (req, res, next){
+exports.getFixedAssetListByUserID = function (req, res, next) {
     console.log("******controllers/fixedAsset/getFixedAssetListByUserID");
-    var userId = req.params.userId;
+    var userId = req.params.userId || "";
 
-    if (typeof(userId)=="undefined" || !check(userId).notEmpty()) {
+    if (!check(userId).notEmpty()) {
         return res.send(resUtil.generateRes(null, config.statusCode.STATUS_INVAILD_PARAMS));
-    };
+    }
 
-    userId=sanitize(sanitize(userId).trim()).xss();
+    userId = sanitize(sanitize(userId).trim()).xss();
 
-    FixedAsset.getFixedAssetListByUserID(userId, function (err, rows){
+    FixedAsset.getFixedAssetListByUserID(userId, function (err, rows) {
         if (err) {
             console.log(err);
             res.send(resUtil.generateRes(null, err.statusCode));
-        }else{
+        } else {
             res.send(resUtil.generateRes(rows, config.statusCode.SATUS_OK));
         }
     });
-
-}
-
+};

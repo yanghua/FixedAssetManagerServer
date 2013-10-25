@@ -33,10 +33,16 @@ var common  = require("./common/Error");
 var app     = express.createServer();
 
 //config for all env
-app.configure(function() {
+app.configure(function () {
+
+    //reference:
+    //http://stackoverflow.com/questions/1335851/what-does-use-strict-do-in-javascript-and-what-is-the-reasoning-behind-it
+    "use strict";
     //template engine
     app.set('view engine', 'html');
+    /*jslint nomen: true*/
     app.set('views', path.join(__dirname, 'views'));
+    /*jslint nomen: false*/
     app.set("view options", {layout : false});
     app.register('.html', require('ejs'));
 
@@ -46,22 +52,25 @@ app.configure(function() {
 });
 
 var maxAge = 3600000 * 24 * 30;
+/*jslint nomen: true*/
 var staticDir = path.join(__dirname, 'public');
+/*jslint nomen: false*/
 
 //config for devp env
-app.configure('development', function() {
+app.configure('development', function () {
+    "use strict";
     app.use("/public", express.static(staticDir));
     //error / exception handler
     app.use(express.errorHandler(
-      { showStack : true, dumpException : true }
+        { showStack : true, dumpException : true }
     ));
 });
 
 
 //config for production env
-app.configure("production", function (){
-
-});
+// app.configure("production", function () {
+//     "use strict";
+// });
 
 
 routes(app);
@@ -70,5 +79,5 @@ routes(app);
 app.listen(8088);
 console.log("the app server run at port :8088");
 
-module.exports=app;
+module.exports = app;
 

@@ -23,10 +23,13 @@
   Desc: fixedAsset - the proxy of fixedAsset
  */
 
+//mode
+'use strict';
+
 var User         = require('../models/fixedAsset');
 var HostComputer = require("./hostComputer");
 var mysqlUtil    = require("../libs/mysqlUtil"),
-mysqlClient      = mysqlUtil.initMysql();
+    mysqlClient  = mysqlUtil.initMysql();
 var EventProxy   = require("eventproxy");
 var config       = require("../config").initConfig();
 
@@ -36,25 +39,26 @@ var config       = require("../config").initConfig();
  * @param  {Function} callback callback func
  * @return {null}            
  */
-exports.getFixedAssetListByUserID = function (userId, callback){
+exports.getFixedAssetListByUserID = function (userId, callback) {
     console.log("######/proxy/fixedAsset/getFixedAssetListByUserId");
 
-    if (typeof(userId) == "undefined" || userId.length ==0) {
+    userId = userId || "";
+
+    if (userId.length === 0) {
         return callback(new InvalidParamError(), null);
     }
 
     mysqlClient.query({
-        sql     : "SELECT * FROM fixedAsset.EQUIPMENT EQ "+
+        sql     : "SELECT * FROM fixedAsset.EQUIPMENT EQ " +
                   " WHERE lastUserId =:lastUserId",
         params  : {
             "lastUserId"  : userId
         }
-    }, function (err, rows){
-            if (err) {
-                callback(new ServerError(), null);
-            };
-
-            callback(null, rows);
+    }, function (err, rows) {
+        if (err) {
+            callback(new ServerError(), null);
+        }
+        callback(null, rows);
     });
 };
 
@@ -64,34 +68,33 @@ exports.getFixedAssetListByUserID = function (userId, callback){
  * @param  {Function} callback callback func
  * @return {null}            
  */
-exports.getFixedAssetByfaID = function (faId, callback){
+exports.getFixedAssetByfaID = function (faId, callback) {
     console.log("######proxy/fixedAsset/getFixedAssetDetailByfaID");
 
-    if (typeof(faId) == "undefined" || faId.length == 0) {
+    faId = faId || "";
+
+    if (faId.length === 0) {
         return callback(new InvalidParamError(), null);
     }
-
 
     mysqlClient.query({
         sql     : "SELECT * FROM EQUIPMENT WHERE EQUIPMENTID = :EQUIPMENTID",
         params  : {
             "EQUIPMENTID"  : faId
         }
-    }, function (err, rows){
-            if (err) {
-                callback(new ServerError(), null);
-            };
+    }, function (err, rows) {
+        if (err) {
+            callback(new ServerError(), null);
+        }
 
-            if (rows && rows.length>0) {
-                var data=rows[0];
-                callback(null, data);
-            }else{
-                callback(new DataNotFoundError(), null);
-            }
-            
+        if (rows && rows.length > 0) {
+            var data = rows[0];
+            callback(null, data);
+        } else {
+            callback(new DataNotFoundError(), null);
+        }
     });
-
-}
+};
 
 /**
  * get fixed asset by faid
@@ -99,10 +102,12 @@ exports.getFixedAssetByfaID = function (faId, callback){
  * @param  {Function} callback callback func
  * @return {null}            
  */
-exports.getFixedAssetDetailByfaID = function (faId, callback){
+exports.getFixedAssetDetailByfaID = function (faId, callback) {
     console.log("######proxy/fixedAsset/getFixedAssetByfaID");
 
-    if (typeof(faId) == "undefined" || faId.length == 0) {
+    faId = faId || "";
+
+    if (faId.length === 0) {
         return callback(new InvalidParamError(), null);
     }
 
@@ -113,47 +118,45 @@ exports.getFixedAssetDetailByfaID = function (faId, callback){
         params  : {
             "EQUIPMENTID"  : faId
         }
-    }, function (err, rows){
+    }, function (err, rows) {
         if (err) {
             return eq.emitLater("error", new ServerError());
-        }else{
-            if (rows && rows.length>0) {
-                eq.emitLater("afterFAType_proxy", rows[0]);
-            }else{
-                return eq.emitLater("error", new DataNotFoundError());
-            }
+        }
+        if (rows && rows.length > 0) {
+            eq.emitLater("afterFAType_proxy", rows[0]);
+        } else {
+            return eq.emitLater("error", new DataNotFoundError());
         }
     });
 
-    eq.once("afterFAType_proxy", function(faInfo){
+    eq.once("afterFAType_proxy", function (faInfo) {
 
         //split with equipment type
-        if (faInfo.equipmentSqlName == config.faType.ENUM_HC) {
-            require("./fixedAsset").getFixedAssetDetail(faInfo.equipmentId, config.faType.ENUM_HC, function(err, rows){
+        if (faInfo.equipmentSqlName === config.faType.ENUM_HC) {
+            require("./fixedAsset").getFixedAssetDetail(faInfo.equipmentId, config.faType.ENUM_HC, function (err, rows) {
                 if (err) {
                     return eq.emitLater("error", new ServerError());
-                }else{
-                    if (rows.length==0) {
-                        return eq.emitLater("error", new DataNotFoundError());
-                    }else{
-                        faAll={};
-                        faAll["faInfo"]=faInfo;
-                        faAll["faDetail"]=rows[0];
-
-                        eq.emitLater("afterFADetail_proxy", faAll);
-                    }
                 }
+
+                if (rows.length === 0) {
+                    return eq.emitLater("error", new DataNotFoundError());
+                }
+                var faAll = {};
+                faAll["faInfo"] = faInfo;
+                faAll["faDetail"] = rows[0];
+
+                eq.emitLater("afterFADetail_proxy", faAll);
             });
         }
     });
 
-    eq.once("afterFADetail_proxy", function(rows){
+    eq.once("afterFADetail_proxy", function (rows) {
         console.log("afterFADetail_proxy");
         callback(null, rows);
     });
 
     //error handler
-    eq.fail(function (err){
+    eq.fail(function (err) {
         callback(err, null);
     });
 
@@ -166,10 +169,12 @@ exports.getFixedAssetDetailByfaID = function (faId, callback){
  * @param  {Function} callback callback func
  * @return {null}            
  */
-exports.checkFixedAssetByfaID = function (faId, callback){
+exports.checkFixedAssetByfaID = function (faId, callback) {
     console.log("######proxy/checkFixedAssetByfaID");
 
-    if (typeof(faId) == "undefined" || faId.length == 0) {
+    faId = faId || "";
+
+    if (faId.length === 0) {
         return callback(new InvalidParamError(), null);
     }
 
@@ -178,20 +183,20 @@ exports.checkFixedAssetByfaID = function (faId, callback){
         params  : {
             "EQUIPMENTID"  : faId
         }
-    }, function (err, rows){
+    }, function (err, rows) {
         if (err) {
             callback(new ServerError(), null);
-        }else{
+        } else {
             var hasFA;
             if (rows[0] && rows[0].count > 0) {
                 hasFA = true;
-            }else {
+            } else {
                 hasFA = false;
             }
             callback(null, hasFA);
         }
     });
-}
+};
 
 
 /**
@@ -200,21 +205,28 @@ exports.checkFixedAssetByfaID = function (faId, callback){
  * @param  {Function} callback      callback func
  * @return {null}                 
  */
-exports.rejectFixedAsset = function (rejectionInfo, callback){
+exports.rejectFixedAsset = function (rejectionInfo, callback) {
     console.log("######proxy/fixedAsset/rejectFixedAsset");
+
+    rejectionInfo = rejectionInfo || null;
+
+    if (!rejectionInfo) {
+        return callback(new InvalidParamError(), null);
+    }
+
     mysqlClient.query({
         sql     : "UPDATE EQUIPMENT SET reject=:reject WHERE equipmentId = :equipmentId",
         params  : rejectionInfo
     }, function (err, rows) {
-        if (err || rows==null) {
+        if (err || !rows) {
             callback(new ServerError(), null);
-        }else if(rows.affectedRows==0){
+        } else if (rows.affectedRows === 0) {
             callback(new DataNotFoundError(), null);
-        }else {
+        } else {
             callback(null, rows);
         }
     });
-}
+};
 
 
 /**
@@ -226,19 +238,27 @@ exports.rejectFixedAsset = function (rejectionInfo, callback){
  */
 exports.getFixedAssetDetail = function (faId, faType, callback) {
     console.log("######proxy/fixedAsset/getFixedAssetDetail");
+
+    faId   = faId || "";
+    faType = faType || "";
+
+    if (faId.length === 0 || faType.length === 0) {
+        return callback(new InvalidParamError(), null);
+    }
+
     mysqlClient.query({
-        sql     : "SELECT * FROM "+ faType +" WHERE newId = :newId",
+        sql     : "SELECT * FROM " + faType + " WHERE newId = :newId",
         params  : {
             "newId"  : faId
         }
-    }, function (err, rows){
+    }, function (err, rows) {
         if (err) {
             callback(new ServerError(), null);
-        }else{
+        } else {
             callback(null, rows);
-        }  
+        }
     });
-}
+};
 
 /**
  * modify fixed asset detail
@@ -246,77 +266,77 @@ exports.getFixedAssetDetail = function (faId, faType, callback) {
  * @param  {Function} callback the callback func
  * @return {null}            
  */
-exports.modifyFixedAssetDetail = function (faObj, callback) {
-    console.log("######proxy/fixedAsset/modifyFixedAssetDetail");
-    mysqlClient.query({
-        sql     : SQL_PATTERN_CONFIG[faObj.faType+"_MODIFY"],
-        params  : faObj
-    }, function (err, rows){          
-        if (err) {
-            callback(new ServerError(), null);
-        }else{
-            callback(null, rows);
-        } 
-    });
-}
+// exports.modifyFixedAssetDetail = function (faObj, callback) {
+//     console.log("######proxy/fixedAsset/modifyFixedAssetDetail");
+//     mysqlClient.query({
+//         sql     : SQL_PATTERN_CONFIG[ faObj.faType + "_MODIFY" ],
+//         params  : faObj
+//     }, function (err, rows) {
+//         if (err) {
+//             callback(new ServerError(), null);
+//         } else {
+//             callback(null, rows);
+//         }
+//     });
+// };
 
 
 
 
-var SQL_PATTERN_CONFIG = {
-    "HOSTCOMPUTER_MODIFY"       : "UPDATE HOSTCOMPUTER " + 
-                                  " SET oldId=:oldId, brand=:brand, cpu=:cpu, "+
-                                  "cpuFrequency=:cpuFrequency, ram=:ram, hd=:hd,"+
-                                  " mac=:mac, price=:price, purpose=:purpose, "+
-                                  "position=:position, remark=:remark "+
-                                  " WHERE newId=:newId",
+// var SQL_PATTERN_CONFIG = {
+//     "HOSTCOMPUTER_MODIFY"       : "UPDATE HOSTCOMPUTER " +
+//                                   " SET oldId=:oldId, brand=:brand, cpu=:cpu, " +
+//                                   "cpuFrequency=:cpuFrequency, ram=:ram, hd=:hd," +
+//                                   " mac=:mac, price=:price, purpose=:purpose, " +
+//                                   "position=:position, remark=:remark " +
+//                                   " WHERE newId=:newId",
 
-    "MOBILE_MODIFY"             : "UPDATE MOBILE " + 
-                                  " SET deviceName=:deviceName, type=:type, "+
-                                  "configure=:configure, price=:price, "+
-                                  "purpose=:purpose, remark=:remark "+
-                                  " WHERE newId=:newId",
+//     "MOBILE_MODIFY"             : "UPDATE MOBILE " +
+//                                   " SET deviceName=:deviceName, type=:type, " +
+//                                   "configure=:configure, price=:price, " +
+//                                   "purpose=:purpose, remark=:remark " +
+//                                   " WHERE newId=:newId",
 
-    "MONITOR_MODIFY"            : "UPDATE MONITOR " + 
-                                  " SET price=:price, position=:position, "+
-                                  "supplier=:supplier, remark=:remark "+
-                                  " WHERE newId=:newId",
+//     "MONITOR_MODIFY"            : "UPDATE MONITOR " +
+//                                   " SET price=:price, position=:position, " +
+//                                   "supplier=:supplier, remark=:remark " +
+//                                   " WHERE newId=:newId",
 
-    "NOTEBOOK_MODIFY"           : "UPDATE NOTEBOOK " + 
-                                  " SET oldId=:oldId, type=:type, cpu=:cpu, "+
-                                  "ram=:ram, hd=:hd, price=:price, purpose=:purpose, "+
-                                  "serviceCode=:serviceCode, remark=:remark, "+
-                                  "Mac1=:Mac1, Mac2=:Mac2 "+
-                                  " WHERE newId=:newId",
+//     "NOTEBOOK_MODIFY"           : "UPDATE NOTEBOOK " +
+//                                   " SET oldId=:oldId, type=:type, cpu=:cpu, " +
+//                                   "ram=:ram, hd=:hd, price=:price, purpose=:purpose, " +
+//                                   "serviceCode=:serviceCode, remark=:remark, " +
+//                                   "Mac1=:Mac1, Mac2=:Mac2 " +
+//                                   " WHERE newId=:newId",
 
-    "OFFICEEQUIPMENT_MODIFY"    : "UPDATE OFFICEEQUIPMENT " + 
-                                  " SET equipmentName=:equipmentName, price=:price, "+
-                                  " purpose=:purpose, position=:position, "+
-                                  " supplier=:supplier, remark=:remark "+
-                                  " WHERE newId=:newId",
+//     "OFFICEEQUIPMENT_MODIFY"    : "UPDATE OFFICEEQUIPMENT " +
+//                                   " SET equipmentName=:equipmentName, price=:price, " +
+//                                   " purpose=:purpose, position=:position, " +
+//                                   " supplier=:supplier, remark=:remark " +
+//                                   " WHERE newId=:newId",
 
-    "OFFICEFURNITURE_MODIFY"    : "UPDATE OFFICEFURNITURE " + 
-                                  " SET furnitureName=:furnitureName, amount=:amount, "+
-                                  " equipmentId=:equipmentId, equipmentName=:equipmentName, "+
-                                  " lastUserId=:lastUserId, purchaseDate=:purchaseDate, "+
-                                  " possessDate=:possessDate, reject=:reject, "+
-                                  " rejectDate=:rejectDate "+
-                                  " WHERE newId=:newId",
+//     "OFFICEFURNITURE_MODIFY"    : "UPDATE OFFICEFURNITURE " +
+//                                   " SET furnitureName=:furnitureName, amount=:amount, " +
+//                                   " equipmentId=:equipmentId, equipmentName=:equipmentName, " +
+//                                   " lastUserId=:lastUserId, purchaseDate=:purchaseDate, " +
+//                                   " possessDate=:possessDate, reject=:reject, " +
+//                                   " rejectDate=:rejectDate " +
+//                                   " WHERE newId=:newId",
 
-    "OTHEREQUIPMENT_MODIFY"     : "UPDATE OTHEREQUIPMENT " + 
-                                  " SET equipmentName=:equipmentName, supplier=:supplier, "+
-                                  " price=:price, remark=:remark "+
-                                  " WHERE newId=:newId",
+//     "OTHEREQUIPMENT_MODIFY"     : "UPDATE OTHEREQUIPMENT " +
+//                                   " SET equipmentName=:equipmentName, supplier=:supplier, " +
+//                                   " price=:price, remark=:remark " +
+//                                   " WHERE newId=:newId",
 
-    "SERVER_MODIFY"             : "UPDATE SERVER " + 
-                                  " SET purpose=:purpose, brand=:brand, cpu=:cpu, "+
-                                  " cpuFrequency=:cpuFrequency, ram=:ram, "+
-                                  " ramSize=:ramSize, ramFrequency=:ramFrequency, "+
-                                  " hd=:hd, price=:price, position=:position, mac=:mac, "+
-                                  " ipRange=:ipRange, remark=:remark "+
-                                  " WHERE newId=:newId",
+//     "SERVER_MODIFY"             : "UPDATE SERVER " +
+//                                   " SET purpose=:purpose, brand=:brand, cpu=:cpu, " +
+//                                   " cpuFrequency=:cpuFrequency, ram=:ram, " +
+//                                   " ramSize=:ramSize, ramFrequency=:ramFrequency, " +
+//                                   " hd=:hd, price=:price, position=:position, mac=:mac, " +
+//                                   " ipRange=:ipRange, remark=:remark " +
+//                                   " WHERE newId=:newId",
 
-    "VIRTUALEQUIPMENT_MODIFY"   : "UPDATE VIRTUALEQUIPMENT " + 
-                                  " SET equipmentName=:equipmentName, supplier=:supplier, price=:price, remark=:remark "+
-                                  " WHERE newId=:newId",
-};
+//     "VIRTUALEQUIPMENT_MODIFY"   : "UPDATE VIRTUALEQUIPMENT " +
+//                                   " SET equipmentName=:equipmentName, supplier=:supplier, price=:price, remark=:remark " +
+//                                   " WHERE newId=:newId",
+// };

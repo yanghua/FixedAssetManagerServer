@@ -27,12 +27,15 @@
  routes - the router of url request
  */
 
+//mode
+'use strict';
+
 var user           = require("./controllers/user");
 var fixedAsset     = require("./controllers/fixedAsset");
 var others         = require("./controllers/others");
 
 
-module.exports = function (app){
+module.exports = function (app) {
 
     app.get("/", others.home);
 
@@ -41,7 +44,6 @@ module.exports = function (app){
 
     app.get("/fixedasset/:faId/info", fixedAsset.getFixedAssetByfaID);
     app.get("/fixedasset/:faId/detail", fixedAsset.getFixedAssetDetailByfaID);
-    
 
     /************************************************************************/
     /*                Resful: URI Represent a Resource!!!                   */
@@ -51,7 +53,4 @@ module.exports = function (app){
 
     //params:faId / reject
     app.post("/fixedasset/rejection", fixedAsset.rejection);
-    
-}
-
-
+};

@@ -23,6 +23,9 @@
   Desc: fixedAsset - the test of fixedAsset
  */
 
+//mode:
+'use strict';
+
 var should = require("should");
 var app    = require("../../app");
 
@@ -35,22 +38,22 @@ describe("fixedAsset", function () {
     after(function () {
         app.close();
     });
-    
+
     it('should response data', function (done) {
-        var param={
+        var param = {
             'qrCode' : "12345"
         };
-        app.request().post('/fixedasset/inspection').setBody(param).end(function (res){
+        app.request().post('/fixedasset/inspection').setBody(param).end(function (res) {
             console.dir(res.bodyJSON());
             done();
         });
     });
 
     it('should enter error handler', function (done) {
-        var param={
+        var param = {
             'qrCode' : "#####"
         };
-        app.request().post('/fixedasset/inspection').setBody(param).end(function (res){
+        app.request().post('/fixedasset/inspection').setBody(param).end(function (res) {
             console.dir(res.bodyJSON());
             done();
         });
@@ -61,7 +64,7 @@ describe("fixedAsset", function () {
             faId : "12345"
         };
 
-        app.request().get("/fixedasset/"+param.faId+"/info").end(function (res){
+        app.request().get("/fixedasset/" + param.faId + "/info").end(function (res) {
             console.dir(res.bodyJSON());
             done();
         });
@@ -73,7 +76,7 @@ describe("fixedAsset", function () {
             faId : "12345"
         };
 
-        app.request().get("/fixedasset/"+param.faId+"/detail").end(function (res){
+        app.request().get("/fixedasset/" + param.faId + "/detail").end(function (res) {
             console.dir(res.bodyJSON());
             done();
         });
@@ -82,21 +85,21 @@ describe("fixedAsset", function () {
     it('should response data', function (done) {
         var param = {
             userId : "01312100"
-        }
+        };
 
-        app.request().get("/user/"+ param.userId +"/fixedassets").end(function (res){
+        app.request().get("/user/" + param.userId + "/fixedassets").end(function (res) {
             console.dir(res.bodyJSON());
             done();
         });
     });
 
     it('is testing func: reject fixed asset', function (done) {
-        var param ={
+        var param = {
             faId    : 12345,
             reject  : 0
         };
 
-        app.request().post("/fixedasset/rejection").setBody(param).end( function (res){
+        app.request().post("/fixedasset/rejection").setBody(param).end(function (res) {
             console.dir(res.bodyJSON());
             done();
         });

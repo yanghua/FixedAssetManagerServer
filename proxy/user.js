@@ -23,9 +23,12 @@
   Desc: user - the proxy of user
  */
 
-var User      = require("../models/user");
-var mysqlUtil = require("../libs/mysqlUtil"),
-mysqlClient   = mysqlUtil.initMysql();
+//mode
+'use strict';
+
+var User        = require("../models/user");
+var mysqlUtil   = require("../libs/mysqlUtil"),
+    mysqlClient = mysqlUtil.initMysql();
 
 /**
  * get user info by user id
@@ -33,11 +36,13 @@ mysqlClient   = mysqlUtil.initMysql();
  * @param  {Function} callback callback func
  * @return {null}            
  */
-exports.getUserInfoById=function (userId, callback) {
+exports.getUserInfoById = function (userId, callback) {
     console.log("######/proxy/user/getUserInfoById");
 
-    if (typeof(userId) == "undefined" || userId.length ==0) {
-        return;
+    userId = userId || "";
+
+    if (userId.length === 0) {
+        return callback(new InvalidParamError(), null);
     }
 
     mysqlClient.query({
@@ -45,15 +50,15 @@ exports.getUserInfoById=function (userId, callback) {
         params : {
             "USERID"  : userId
         }
-    }, function (err, rows){
-            if (err) {
-                callback(new ServerError(), null);
-            };
+    }, function (err, rows) {
+        if (err) {
+            callback(new ServerError(), null);
+        }
 
-            if (rows && rows.length >0) {
-                callback(null, rows[0]);
-            }else{
-                callback(new DataNotFoundError(), null);
-            }
+        if (rows && rows.length > 0) {
+            callback(null, rows[0]);
+        } else {
+            callback(new DataNotFoundError(), null);
+        }
     });
-}
+};

@@ -23,6 +23,9 @@
   Desc: user - the controller of user
  */
 
+//mode:
+'use strict';
+
 var resUtil  = require("../libs/resUtil");
 var User     = require('../proxy/user');
 var config   = require("../config").initConfig();
@@ -36,21 +39,20 @@ var sanitize = require("validator").sanitize;
  * @param  {Function} next next handler
  * @return {null}        
  */
-exports.getUserById = function (req, res, next){
+exports.getUserById = function (req, res, next) {
     console.log("******controllers/user/getUserById");
-    var userId=req.params.userId;
+    var userId = req.params.userId || "";
 
-    if (typeof(userId)=="undefined" || !check(userId).notEmpty()) {
+    if (!check(userId).notEmpty()) {
         return res.send(resUtil.generateRes(null, config.statusCode.STATUS_INVAILD_PARAMS));
-    };
+    }
 
-    userId=sanitize(sanitize((userId).trim())).xss();
+    userId = sanitize(sanitize(userId.trim())).xss();
 
-    User.getUserInfoById(userId, function(err, rows){
+    User.getUserInfoById(userId, function (err, rows) {
         if (err) {
             return res.send(resUtil.generateRes(null, err.statusCode));
-        }else{
-            res.send(resUtil.generateRes(rows, config.statusCode.SATUS_OK));           
         }
+        res.send(resUtil.generateRes(rows, config.statusCode.SATUS_OK));
     });
-}
+};

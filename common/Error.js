@@ -23,10 +23,12 @@
   Desc: Error definition and inherit
  */
 
+//mode
+'use strict';
+
 var config = require("../config").initConfig();
 
-
-function BaseError (message) {
+function BaseError(message) {
     this.name       = "BaseError";
     this.message    = message || "Base Error.";
     this.statusCode = -1;
@@ -35,7 +37,7 @@ function BaseError (message) {
 BaseError.prototype = new Error();
 BaseError.prototype.constructor = BaseError;
 
-function DataNotFoundError (message) {
+function DataNotFoundError(message) {
     this.name       = "DataNotFoundError";
     this.message    = message || "Data not found Error.";
     this.statusCode = config.statusCode.STATUS_NOTFOUND;
@@ -45,7 +47,7 @@ DataNotFoundError.prototype = new BaseError();
 DataNotFoundError.prototype.constructor = DataNotFoundError;
 
 
-function ServerError (message) {
+function ServerError(message) {
     this.name       = "ServerError";
     this.message    = message || "Server Error";
     this.statusCode = config.statusCode.STATUS_SERVER_ERROR;
@@ -54,7 +56,7 @@ function ServerError (message) {
 ServerError.prototype = new BaseError();
 ServerError.prototype.constructor = ServerError;
 
-function InvalidParamError (message) {
+function InvalidParamError(message) {
     this.name       = "InvalidParamError";
     this.message    = message || "InvalidParam Error";
     this.statusCode = config.statusCode.STATUS_INVAILD_PARAMS;
@@ -62,7 +64,6 @@ function InvalidParamError (message) {
 
 InvalidParamError.prototype = new BaseError();
 InvalidParamError.prototype.constructor = InvalidParamError;
-
 
 
 global.BaseError         = BaseError;

@@ -23,20 +23,22 @@
   Desc: app - the test of server
  */
 
+//mode:
+"use strict";
+
 var app = require("../app");
 
 describe("app.js", function () {
-    
-    before(function (done){
+    before(function (done) {
         app.listen(0, done);
     });
 
-    after(function (){
+    after(function () {
         app.close();
     });
 
     it("should / status 200", function (done) {
-        app.request().get("/").end(function (res){
+        app.request().get("/").end(function (res) {
             res.should.status(200);
             done();
         });
