@@ -39,6 +39,7 @@ describe("fixedAsset", function () {
         app.close();
     });
 
+    //test: /fixedasset/inspection (success)
     it('should response data', function (done) {
         var param = {
             'qrCode' : "12345"
@@ -49,6 +50,7 @@ describe("fixedAsset", function () {
         });
     });
 
+    //test: /fixedasset/inspection (failure)
     it('should enter error handler', function (done) {
         var param = {
             'qrCode' : "#####"
@@ -59,6 +61,7 @@ describe("fixedAsset", function () {
         });
     });
 
+    //test: fixedasset/:faId/info
     it('should response data', function (done) {
         var param = {
             faId : "12345"
@@ -70,7 +73,7 @@ describe("fixedAsset", function () {
         });
     });
 
-
+    //test: fixedasset/:faId/detail
     it('should response data for fadetail', function (done) {
         var param = {
             faId : "12345"
@@ -82,6 +85,7 @@ describe("fixedAsset", function () {
         });
     });
 
+    //test: /user/:userId/fixedassets
     it('should response data', function (done) {
         var param = {
             userId : "01312100"
@@ -93,6 +97,7 @@ describe("fixedAsset", function () {
         });
     });
 
+    //test: /fixedasset/rejection
     it('is testing func: reject fixed asset', function (done) {
         var param = {
             faId    : 12345,
@@ -104,5 +109,193 @@ describe("fixedAsset", function () {
             done();
         });
     });
+
+    /********************** fixed asset detail insertion test start *********************/
+
+    //test: /fixedasset/insertion (HOSTCOMPUTER)
+    it('is testing func: /fixedasset/insertion for HOSTCOMPUTER', function (done) {
+        var param = {
+            faType        : "HOSTCOMPUTER",
+            newId         : "1",
+            oldId         : "2",
+            brand         : "",
+            cpu           : "",
+            cpuFrequency  : "",
+            ram           : "",
+            hd            : "",
+            mac           : "",
+            price         : "",
+            purpose       : "",
+            position      : "",
+            remark        : ""
+        };
+
+        app.request().post("/fixedasset/insertion").setBody(param).end(function (res) {
+            console.dir(res.bodyJSON());
+            done();
+        });
+    });
+
+    //test: /fixedasset/insertion (MOBILE)
+    it('is testing func: /fixedasset/insertion for MOBILE', function (done) {
+        var param = {
+            faType          : "MOBILE",
+            newId           : "1",
+            deviceName      : "2",
+            type            : "",
+            configure       : "",
+            price           : "",
+            purpose         : "",
+            remark          : ""
+        };
+
+        app.request().post("/fixedasset/insertion").setBody(param).end(function (res) {
+            console.dir(res.bodyJSON());
+            done();
+        });
+    });
+
+    //test: /fixedasset/insertion (MONITOR)
+    it('is testing func: /fixedasset/insertion for MONITOR', function (done) {
+        var param = {
+            faType          : "MONITOR",
+            newId           : "1",
+            oldId           : "2",
+            brand           : "",
+            size            : "",
+            screenType      : "",
+            purpose         : "",
+            position        : "",
+            remark          : ""
+        };
+
+        app.request().post("/fixedasset/insertion").setBody(param).end(function (res) {
+            console.dir(res.bodyJSON());
+            done();
+        });
+    });
+
+    //test: /fixedasset/insertion (NOTEBOOK)
+    it('is testing func: /fixedasset/insertion for NOTEBOOK', function (done) {
+        var param = {
+            faType          : "NOTEBOOK",
+            newId           : "1",
+            oldId           : "2",
+            type            : "",
+            cpu             : "",
+            ram             : "",
+            hd              : "",
+            price           : "",
+            purpose         : "",
+            serviceCode     : "",
+            remark          : "",
+            mac1            : "",
+            mac2            : ""
+        };
+
+        app.request().post("/fixedasset/insertion").setBody(param).end(function (res) {
+            console.dir(res.bodyJSON());
+            done();
+        });
+    });
+
+    //test: /fixedasset/insertion (OFFICEEQUIPMENT)
+    it('is testing func: /fixedasset/insertion for OFFICEEQUIPMENT', function (done) {
+        var param = {
+            faType          : "OFFICEEQUIPMENT",
+            newId           : "1",
+            equipmentName   : "",
+            type            : "",
+            price           : "",
+            purpose         : "",
+            position        : "",
+        };
+
+        app.request().post("/fixedasset/insertion").setBody(param).end(function (res) {
+            console.dir(res.bodyJSON());
+            done();
+        });
+    });
+
+    //test: /fixedasset/insertion (OFFICEFURNITURE)
+    it('is testing func: /fixedasset/insertion for OFFICEFURNITURE', function (done) {
+        var param = {
+            faType          : "OFFICEFURNITURE",
+            newId           : "1",
+            furnitureName   : "",
+            amount          : "",
+            price           : "",
+            position        : "",
+            supplier        : "",
+            remark          : ""
+        };
+
+        app.request().post("/fixedasset/insertion").setBody(param).end(function (res) {
+            console.dir(res.bodyJSON());
+            done();
+        });
+    });
+
+    //test: /fixedasset/insertion (OTHEREQUIPMENT)
+    it('is testing func: /fixedasset/insertion for OTHEREQUIPMENT', function (done) {
+        var param = {
+            faType          : "OTHEREQUIPMENT",
+            newId           : "1",
+            equipmentName   : "",
+            supplier        : "",
+            price           : "",
+            remark          : ""
+        };
+
+        app.request().post("/fixedasset/insertion").setBody(param).end(function (res) {
+            console.dir(res.bodyJSON());
+            done();
+        });
+    });
+
+    //test: /fixedasset/insertion (SERVER)
+    it('is testing func: /fixedasset/insertion for SERVER', function (done) {
+        var param = {
+            faType          : "SERVER",
+            newId           : "1",
+            purpose         : "",
+            brand           : "",
+            cpu             : "",
+            cpuFrequency    : "",
+            ram             : "",
+            ramSize         : "",
+            hd              : "",
+            price           : "",
+            liable          : "",
+            position        : "",
+            mac             : "",
+            ipRange         : "",
+            remark          : ""
+        };
+
+        app.request().post("/fixedasset/insertion").setBody(param).end(function (res) {
+            console.dir(res.bodyJSON());
+            done();
+        });
+    });
+
+    //test: /fixedasset/insertion (VIRTUALEQUIPMENT)
+    it('is testing func: /fixedasset/insertion for VIRTUALEQUIPMENT', function (done) {
+        var param = {
+            faType          : "VIRTUALEQUIPMENT",
+            newId           : "1",
+            equipmentName   : "",
+            supplier        : "",
+            price           : "",
+            remark          : ""
+        };
+
+        app.request().post("/fixedasset/insertion").setBody(param).end(function (res) {
+            console.dir(res.bodyJSON());
+            done();
+        });
+    });
+
+    /********************** fixed asset detail insertion test end *********************/
 
 });
