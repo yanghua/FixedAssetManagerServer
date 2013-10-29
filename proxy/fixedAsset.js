@@ -32,6 +32,7 @@ var mysqlUtil    = require("../libs/mysqlUtil"),
     mysqlClient  = mysqlUtil.initMysql();
 var EventProxy   = require("eventproxy");
 var config       = require("../config").initConfig();
+var SQL_PATTERN  = require("./SQLS").getSqlConfig();
 
 /**
  * get fixed asset list by userId
@@ -279,64 +280,50 @@ exports.getFixedAssetDetail = function (faId, faType, callback) {
 //         }
 //     });
 // };
+// 
 
+exports.addNewFixedAssetDetail = function (faDetailObj, faType, callback) {
+    console.log("######proxy/addNewFixedAssetDetail");
 
+    var sqlPattern = "";
 
+    if (faType === config.faType.ENUM_HC) {
+        sqlPattern = SQL_PATTERN["HOSTCOMPUTER_INSERT"];
+    } else if (faType === config.faType.ENUM_MOB) {
+        sqlPattern = SQL_PATTERN["MOBILE_INSERT"];
+    } else if (faType === config.faType.ENUM_MON) {
+        sqlPattern = SQL_PATTERN["MONITOR_INSERT"];
+    } else if (faType === config.faType.ENUM_NOT) {
+        sqlPattern = SQL_PATTERN["NOTEBOOK_INSERT"];
+    } else if (faType === config.faType.ENUM_OE) {
+        sqlPattern = SQL_PATTERN["OFFICEEQUIPMENT_INSERT"];
+    } else if (faType === config.faType.ENUM_OF) {
+        sqlPattern = SQL_PATTERN["OFFICEFURNITURE_INSERT"];
+    } else if (faType === config.faType.ENUM_OTE) {
+        sqlPattern = SQL_PATTERN["OTHEREQUIPMENT_INSERT"];
+    } else if (faType === config.faType.ENUM_SERVER) {
+        sqlPattern = SQL_PATTERN["SERVER_INSERT"];
+    } else if (faType === config.faType.ENUM_VE) {
+        sqlPattern = SQL_PATTERN["VIRTUALEQUIPMENT_INSERT"];
+    } else {
+        return callback(new InvalidParamError(), null);
+    }
 
-// var SQL_PATTERN_CONFIG = {
-//     "HOSTCOMPUTER_MODIFY"       : "UPDATE HOSTCOMPUTER " +
-//                                   " SET oldId=:oldId, brand=:brand, cpu=:cpu, " +
-//                                   "cpuFrequency=:cpuFrequency, ram=:ram, hd=:hd," +
-//                                   " mac=:mac, price=:price, purpose=:purpose, " +
-//                                   "position=:position, remark=:remark " +
-//                                   " WHERE newId=:newId",
+    // console.dir("sql pattern for addNewFixedAssetDetail:"+sqlPattern);
 
-//     "MOBILE_MODIFY"             : "UPDATE MOBILE " +
-//                                   " SET deviceName=:deviceName, type=:type, " +
-//                                   "configure=:configure, price=:price, " +
-//                                   "purpose=:purpose, remark=:remark " +
-//                                   " WHERE newId=:newId",
+    mysqlClient.query({
+        sql         : sqlPattern,
+        params      : faDetailObj
+    }, function (err, rows) {
+        if (err || !rows) {
+            console.dir(err);
+            return callback(new ServerError(), null);
+        }
 
-//     "MONITOR_MODIFY"            : "UPDATE MONITOR " +
-//                                   " SET price=:price, position=:position, " +
-//                                   "supplier=:supplier, remark=:remark " +
-//                                   " WHERE newId=:newId",
+        if (rows.affectedRows === 0) {
+            return callback(new DataNotFoundError(), null);
+        }
 
-//     "NOTEBOOK_MODIFY"           : "UPDATE NOTEBOOK " +
-//                                   " SET oldId=:oldId, type=:type, cpu=:cpu, " +
-//                                   "ram=:ram, hd=:hd, price=:price, purpose=:purpose, " +
-//                                   "serviceCode=:serviceCode, remark=:remark, " +
-//                                   "Mac1=:Mac1, Mac2=:Mac2 " +
-//                                   " WHERE newId=:newId",
-
-//     "OFFICEEQUIPMENT_MODIFY"    : "UPDATE OFFICEEQUIPMENT " +
-//                                   " SET equipmentName=:equipmentName, price=:price, " +
-//                                   " purpose=:purpose, position=:position, " +
-//                                   " supplier=:supplier, remark=:remark " +
-//                                   " WHERE newId=:newId",
-
-//     "OFFICEFURNITURE_MODIFY"    : "UPDATE OFFICEFURNITURE " +
-//                                   " SET furnitureName=:furnitureName, amount=:amount, " +
-//                                   " equipmentId=:equipmentId, equipmentName=:equipmentName, " +
-//                                   " lastUserId=:lastUserId, purchaseDate=:purchaseDate, " +
-//                                   " possessDate=:possessDate, reject=:reject, " +
-//                                   " rejectDate=:rejectDate " +
-//                                   " WHERE newId=:newId",
-
-//     "OTHEREQUIPMENT_MODIFY"     : "UPDATE OTHEREQUIPMENT " +
-//                                   " SET equipmentName=:equipmentName, supplier=:supplier, " +
-//                                   " price=:price, remark=:remark " +
-//                                   " WHERE newId=:newId",
-
-//     "SERVER_MODIFY"             : "UPDATE SERVER " +
-//                                   " SET purpose=:purpose, brand=:brand, cpu=:cpu, " +
-//                                   " cpuFrequency=:cpuFrequency, ram=:ram, " +
-//                                   " ramSize=:ramSize, ramFrequency=:ramFrequency, " +
-//                                   " hd=:hd, price=:price, position=:position, mac=:mac, " +
-//                                   " ipRange=:ipRange, remark=:remark " +
-//                                   " WHERE newId=:newId",
-
-//     "VIRTUALEQUIPMENT_MODIFY"   : "UPDATE VIRTUALEQUIPMENT " +
-//                                   " SET equipmentName=:equipmentName, supplier=:supplier, price=:price, remark=:remark " +
-//                                   " WHERE newId=:newId",
-// };
+        callback(null, rows);
+    });
+};

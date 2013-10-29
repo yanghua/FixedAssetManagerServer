@@ -210,6 +210,36 @@ exports.rejection = function (req, res, next) {
 
 
 /**
+ * fixed asset insertion
+ * @param  {object}   req  the object of request
+ * @param  {object}   res  the object of response
+ * @param  {Function} next the next handler
+ * @return {null}        
+ */
+exports.insertion = function (req, res, next) {
+    console.log("******controllers/fixedAsset/insertion");
+
+    var faType = req.body.faType || "";
+
+    if (!check(faType).notEmpty()) {
+        return res.send(resUtil.generateRes(null, config.statusCode.STATUS_INVAILD_PARAMS));
+    }
+
+    faType = sanitize(sanitize(faType).trim()).xss();
+    var detailObj = req.body;
+
+    FixedAsset.addNewFixedAssetDetail(detailObj, faType, function (err, rows) {
+        if (err) {
+            return res.send(resUtil.generateRes(null, err.statusCode));
+        }
+
+        res.send(resUtil.generateRes(null, config.statusCode.SATUS_OK));
+    });
+
+};
+
+
+/**
  * get fixed asset list by userId
  * @param  {object}   req  request object
  * @param  {object}   res  response object

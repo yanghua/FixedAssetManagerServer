@@ -53,4 +53,7 @@ module.exports = function (app) {
 
     //params:faId / reject
     app.post("/fixedasset/rejection", fixedAsset.rejection);
+
+    //params:faType / ...(the field's key and value pair)
+    app.post("/fixedasset/insertion", fixedAsset.insertion);
 };
