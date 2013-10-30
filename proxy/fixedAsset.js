@@ -33,6 +33,7 @@ var mysqlUtil    = require("../libs/mysqlUtil"),
 var EventProxy   = require("eventproxy");
 var config       = require("../config").initConfig();
 var SQL_PATTERN  = require("./SQLS").getSqlConfig();
+require("../libs/DateUtil");
 
 /**
  * get fixed asset list by userId
@@ -263,57 +264,23 @@ exports.getFixedAssetDetail = function (faId, faType, callback) {
 
 /**
  * modify fixed asset detail
- * @param  {object}   faObj    the fixed asset detail
- * @param  {Function} callback the callback func
- * @return {null}            
+ * @param  {object}   faDetailObj the detail object of the fixed asset
+ * @param  {string}   faId        the fixed asset id
+ * @param  {Function} callback    the callback func
+ * @return {null}               
  */
-// exports.modifyFixedAssetDetail = function (faObj, callback) {
-//     console.log("######proxy/fixedAsset/modifyFixedAssetDetail");
-//     mysqlClient.query({
-//         sql     : SQL_PATTERN_CONFIG[ faObj.faType + "_MODIFY" ],
-//         params  : faObj
-//     }, function (err, rows) {
-//         if (err) {
-//             callback(new ServerError(), null);
-//         } else {
-//             callback(null, rows);
-//         }
-//     });
-// };
-// 
+exports.modifyFixedAssetDetail = function (faDetailObj, faId, callback) {
+    console.log("######proxy/fixedAsset/modifyFixedAssetDetail");
 
-exports.addNewFixedAssetDetail = function (faDetailObj, faType, callback) {
-    console.log("######proxy/addNewFixedAssetDetail");
+    var sqlPattern = SQL_PATTERN[faDetailObj.faType + "_MODIFY"] || "";
 
-    var sqlPattern = "";
-
-    if (faType === config.faType.ENUM_HC) {
-        sqlPattern = SQL_PATTERN["HOSTCOMPUTER_INSERT"];
-    } else if (faType === config.faType.ENUM_MOB) {
-        sqlPattern = SQL_PATTERN["MOBILE_INSERT"];
-    } else if (faType === config.faType.ENUM_MON) {
-        sqlPattern = SQL_PATTERN["MONITOR_INSERT"];
-    } else if (faType === config.faType.ENUM_NOT) {
-        sqlPattern = SQL_PATTERN["NOTEBOOK_INSERT"];
-    } else if (faType === config.faType.ENUM_OE) {
-        sqlPattern = SQL_PATTERN["OFFICEEQUIPMENT_INSERT"];
-    } else if (faType === config.faType.ENUM_OF) {
-        sqlPattern = SQL_PATTERN["OFFICEFURNITURE_INSERT"];
-    } else if (faType === config.faType.ENUM_OTE) {
-        sqlPattern = SQL_PATTERN["OTHEREQUIPMENT_INSERT"];
-    } else if (faType === config.faType.ENUM_SERVER) {
-        sqlPattern = SQL_PATTERN["SERVER_INSERT"];
-    } else if (faType === config.faType.ENUM_VE) {
-        sqlPattern = SQL_PATTERN["VIRTUALEQUIPMENT_INSERT"];
-    } else {
+    if (sqlPattern.length === 0) {
         return callback(new InvalidParamError(), null);
     }
 
-    // console.dir("sql pattern for addNewFixedAssetDetail:"+sqlPattern);
-
     mysqlClient.query({
-        sql         : sqlPattern,
-        params      : faDetailObj
+        sql     : SQL_PATTERN[faDetailObj.faType + "_MODIFY"],
+        params  : faDetailObj
     }, function (err, rows) {
         if (err || !rows) {
             console.dir(err);
@@ -326,4 +293,94 @@ exports.addNewFixedAssetDetail = function (faDetailObj, faType, callback) {
 
         callback(null, rows);
     });
+};
+
+/**
+ * add a fixed asset 
+ * @param {object}   faInfo   the object of fixed asset
+ * @param {Function} callback the callback func
+ */
+exports.addFixedAsset = function (faInfo, callback) {
+    console.log("######proxy/addFixedAsset");
+
+    mysqlClient.query({
+        sql     : "INSERT INTO EQUIPMENT VALUES(:equipmentId, :equipmentName, " +
+                  ":equipmentSqlName, :lastUserId, :purchaseDate, :possessDate, " +
+                  ":reject, :rejectDate)",
+        params  : faInfo
+    }, function (err, rows) {
+        if (err || !rows) {
+            return callback(new ServerError(), null);
+        }
+
+        if (rows.affectedRows === 0) {
+            return callback(new ServerError(), null);
+        }
+
+        callback(null, rows);
+    });
+};
+
+
+/**
+ * add a new fixed asset detail
+ * @param {object}   faDetailObj the fixed asset detail object
+ * @param {Function} callback    the callback func
+ */
+exports.addNewFixedAssetDetail = function (faDetailObj, callback) {
+    console.log("######proxy/addNewFixedAssetDetail");
+
+    var sqlPattern = SQL_PATTERN[faDetailObj.faType + "_INSERT"] || "";
+
+    if (sqlPattern.length === 0) {
+        return callback(new InvalidParamError(), null);
+    }
+
+    var eq = EventProxy.create();
+
+    mysqlClient.query({
+        sql         : SQL_PATTERN[faDetailObj.faType + "_INSERT"],
+        params      : faDetailObj
+    }, function (err, rows) {
+        if (err || !rows) {
+            console.dir(err);
+            return eq.emitLater("error", new ServerError());
+        }
+
+        if (rows.affectedRows === 0) {
+            return eq.emitLater("error", new DataNotFoundError());
+        }
+
+        eq.emitLater("after_addDetail");
+    });
+
+    eq.once("after_addDetail", function () {
+        var faInfo = {
+            equipmentId         : faDetailObj.newId,
+            equipmentName       : faDetailObj.faType,
+            equipmentSqlName    : faDetailObj.faType,
+            lastUserId          : "",
+            purchaseDate        : new Date().Format("yyyy-MM-dd"),
+            possessDate         : "",
+            reject              : 0,
+            rejectDate          : ""
+        };
+
+        require("./fixedAsset").addFixedAsset(faInfo, function (err, rows) {
+            if (err) {
+                return eq.emitLater("error", err);
+            }
+
+            eq.emitLater("after_addFixedAsset");
+        });
+    });
+
+    eq.once("after_addFixedAsset", function () {
+        callback(null, null);
+    });
+
+    eq.fail(function (err) {
+        return callback(err, null);
+    });
+
 };

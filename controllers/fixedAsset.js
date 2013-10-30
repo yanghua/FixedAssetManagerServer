@@ -228,7 +228,7 @@ exports.insertion = function (req, res, next) {
     faType = sanitize(sanitize(faType).trim()).xss();
     var detailObj = req.body;
 
-    FixedAsset.addNewFixedAssetDetail(detailObj, faType, function (err, rows) {
+    FixedAsset.addNewFixedAssetDetail(detailObj, function (err, rows) {
         if (err) {
             return res.send(resUtil.generateRes(null, err.statusCode));
         }
@@ -238,6 +238,35 @@ exports.insertion = function (req, res, next) {
 
 };
 
+
+/**
+ * the modification of fixed asset
+ * @param  {object}   req  the request object
+ * @param  {object}   res  the response object
+ * @param  {Function} next the next handler
+ * @return {null}        
+ */
+exports.modification = function (req, res, next) {
+    console.log("******controllers/fixedAsset/modification");
+
+    var faId = req.params.faId || "";
+
+    if (!check(faId).notEmpty()) {
+        return res.send(resUtil.generateRes(null, config.statusCode.STATUS_INVAILD_PARAMS));
+    }
+
+    faId = sanitize(sanitize(faId).trim()).xss();
+
+    var detailObj = req.body;
+
+    FixedAsset.modifyFixedAssetDetail(detailObj, faId, function (err, rows) {
+        if (err) {
+            return res.send(resUtil.generateRes(null, err.statusCode));
+        }
+
+        res.send(resUtil.generateRes(null, config.statusCode.SATUS_OK));
+    });
+};
 
 /**
  * get fixed asset list by userId
