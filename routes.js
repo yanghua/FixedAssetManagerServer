@@ -56,4 +56,7 @@ module.exports = function (app) {
 
     //params:faType / ...(the field's key and value pair)
     app.post("/fixedasset/insertion", fixedAsset.insertion);
+
+    app.post("/fixedasset/:faId/modification", fixedAsset.modification);
+
 };
