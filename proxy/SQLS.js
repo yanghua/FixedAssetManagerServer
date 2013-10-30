@@ -86,10 +86,8 @@ exports.getSqlConfig = function () {
 
         "OFFICEFURNITURE_MODIFY"    : "UPDATE OFFICEFURNITURE " +
                                       " SET furnitureName=:furnitureName, amount=:amount, " +
-                                      " equipmentId=:equipmentId, equipmentName=:equipmentName, " +
-                                      " lastUserId=:lastUserId, purchaseDate=:purchaseDate, " +
-                                      " possessDate=:possessDate, reject=:reject, " +
-                                      " rejectDate=:rejectDate " +
+                                      " price=:price, position=:position, " +
+                                      " supplier=:supplier, remark=:remark " +
                                       " WHERE newId=:newId",
 
         "OTHEREQUIPMENT_INSERT"     : "INSERT INTO OTHEREQUIPMENT " +
