@@ -384,3 +384,36 @@ exports.addNewFixedAssetDetail = function (faDetailObj, callback) {
     });
 
 };
+
+
+/**
+ * allocate fixed asset
+ * @param  {string}   faId     fixed asset id
+ * @param  {string}   userId   user id
+ * @param  {Function} callback the callback func
+ * @return {null}            
+ */
+exports.allocateFixedAsset = function (faId, userId, callback) {
+    console.log("######proxy/fixedAsset/allocateFixedAsset");
+
+    mysqlClient.query({
+        sql         : "UPDATE EQUIPMENT SET lastUserId=:lastUserId, possessDate=:possessDate " +
+                      " WHERE equipmentId=:equipmentId",
+        params      : {
+            lastUserId      : userId,
+            possessDate     : new Date().Format("yyyy-MM-dd"),
+            equipmentId     : faId
+        }
+    }, function (err, rows) {
+        if (err || !rows) {
+            console.dir(err);
+            return callback(new ServerError(), null);
+        }
+
+        if (rows.affectedRows === 0) {
+            return callback(new ServerError(), null);
+        }
+
+        callback(null, null);
+    });
+};

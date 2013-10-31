@@ -486,4 +486,17 @@ describe("fixedAsset", function () {
 
     /********************** fixed asset detail CRUD test end *********************/
 
+    it('is testing func: /fixedasset/:faId/allocation', function (done) {
+        var param = {
+            faId        : "65143",
+            userId      : "123456"
+        };
+
+        app.request().post("/fixedasset/65143/allocation").setBody(param).end(function (res) {
+            console.dir(res.bodyJSON());
+            done();
+        });
+
+    });
+
 });

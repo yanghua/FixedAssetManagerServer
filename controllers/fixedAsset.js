@@ -288,9 +288,40 @@ exports.getFixedAssetListByUserID = function (req, res, next) {
     FixedAsset.getFixedAssetListByUserID(userId, function (err, rows) {
         if (err) {
             console.log(err);
-            res.send(resUtil.generateRes(null, err.statusCode));
-        } else {
-            res.send(resUtil.generateRes(rows, config.statusCode.SATUS_OK));
-        }
+            return res.send(resUtil.generateRes(null, err.statusCode));
+        } 
+            
+        res.send(resUtil.generateRes(rows, config.statusCode.SATUS_OK));
     });
+};
+
+
+/**
+ * the allocation of fixed asset
+ * @param  {object}   req  the object of request
+ * @param  {object}   res  the object of response
+ * @param  {Function} next the next handler
+ * @return {null}        
+ */
+exports.allocation = function (req, res, next) {
+    console.log("******controllers/fixedAsset/allocation");
+
+    var faId   = req.body.faId || "";
+    var userId = req.body.userId || "";
+
+    if (!check(faId).notEmpty() || !check(userId).notEmpty()) {
+        return res.send(resUtil.generateRes(null, config.statusCode.STATUS_INVAILD_PARAMS));
+    }
+
+    faId   = sanitize(sanitize(faId).trim()).xss();
+    userId = sanitize(sanitize(userId).trim()).xss();
+
+    FixedAsset.allocateFixedAsset(faId, userId, function (err, rows) {
+        if (err) {
+            return res.send(resUtil.generateRes(null, err.statusCode));
+        }
+
+        res.send(resUtil.generateRes(rows, config.statusCode.SATUS_OK));
+    });
+
 };
