@@ -134,17 +134,21 @@ exports.inspection = function (req, res, next) {
     });
 
     ep.once("afterFAInfo", function (faInfo) {
-        if (!faInfo || faInfo.lastUserId === undefined ||
-                faInfo.lastUserId.length === 0) {
+        if (!faInfo) {
             return ep.emitLater("error", new ServerError());
         }
 
-        User.getUserInfoById(faInfo.lastUserId, function (err, rows) {
-            if (err) {
-                return ep.emitLater("error", err);
-            }
-            ep.emitLater("afterUserDetail", rows);
-        });
+        if (faInfo.lastUserId === undefined || faInfo.lastUserId.length === 0) {
+            ep.emitLater("afterUserDetail", {});
+        } else {
+            User.getUserInfoById(faInfo.lastUserId, function (err, rows) {
+                if (err) {
+                    return ep.emitLater("error", err);
+                }
+                ep.emitLater("afterUserDetail", rows);
+            });
+        }
+        
     });
 
     ep.once("afterUserDetail", function (userInfo) {
