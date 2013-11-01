@@ -138,7 +138,8 @@ exports.inspection = function (req, res, next) {
             return ep.emitLater("error", new ServerError());
         }
 
-        if (faInfo.lastUserId === undefined || faInfo.lastUserId.length === 0) {
+        faInfo.lastUserId = faInfo.lastUserId || "";
+        if (faInfo.lastUserId.length === 0) {
             ep.emitLater("afterUserDetail", {});
         } else {
             User.getUserInfoById(faInfo.lastUserId, function (err, rows) {
