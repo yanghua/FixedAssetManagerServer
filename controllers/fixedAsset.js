@@ -103,7 +103,7 @@ exports.inspection = function (req, res, next) {
                 return ep.emitLater("error", err);
             }
 
-            res.send(resUtil.generateRes(faInfo, null));
+            res.send(resUtil.generateRes(faInfo, config.statusCode.SATUS_OK));
         });
     });
 
@@ -252,7 +252,10 @@ exports.allocation = function (req, res, next) {
     var faId   = req.body.faId || "";
     var userId = req.body.userId || "";
 
-    if (!check(faId).notEmpty() || !check(userId).notEmpty()) {
+    try {
+        check(faId).notEmpty();
+        check(userId).notEmpty();
+    } catch (e) {
         return res.send(resUtil.generateRes(null, config.statusCode.STATUS_INVAILD_PARAMS));
     }
 
