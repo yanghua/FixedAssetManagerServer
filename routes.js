@@ -33,6 +33,7 @@
 var user           = require("./controllers/user");
 var fixedAsset     = require("./controllers/fixedAsset");
 var faType         = require("./controllers/faType");
+var department     = require("./controllers/department");
 var others         = require("./controllers/others");
 
 
@@ -44,6 +45,7 @@ module.exports = function (app) {
     app.get("/user/:userId/fixedassets", fixedAsset.getFixedAssetListByUserID);
     app.get("/fixedasset/:faId/info", fixedAsset.getFixedAssetByfaID);
     app.get("/fatypes", faType.getAllFATypes);
+    app.get("/departments", department.getAllDepartments);
 
     /************************************************************************/
     /*                Resful: URI Represent a Resource!!!                   */
