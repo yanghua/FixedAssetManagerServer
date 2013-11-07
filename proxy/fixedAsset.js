@@ -91,8 +91,10 @@ exports.getFixedAssetByfaID = function (faId, callback) {
             return ep.emitLater("error", new ServerError());
         }
 
+        var faInfo = {};
         if (rows && rows.length > 0) {
-            var faInfo = rows[0];
+            var faDetail       = rows[0];
+            faInfo["faDetail"] = faDetail;
             ep.emitLater("after_getFAInfo", faInfo);
         } else {
             return ep.emitLater("error", new DataNotFoundError());
@@ -101,13 +103,13 @@ exports.getFixedAssetByfaID = function (faId, callback) {
 
     ep.once("after_getFAInfo", function (faInfo) {
 
-        faInfo.userId  = faInfo.userId || "";
+        faInfo.faDetail.userId  = faInfo.faDetail.userId || "";
 
-        if (faInfo.userId.length != 0) {
+        if (faInfo.faDetail.userId.length != 0) {
             mysqlClient.query({
                 sql     : "SELECT * FROM USER WHERE userId = :userId",
                 params  : {
-                    "userId"  : faInfo.userId
+                    "userId"  : faInfo.faDetail.userId
                 }
             }, function (err, rows) {
                 if (err) {
@@ -129,13 +131,13 @@ exports.getFixedAssetByfaID = function (faId, callback) {
     });
 
     ep.once("after_getUserInfo", function (faInfo) {
-        faInfo.departmentId = faInfo.departmentId || "";
+        faInfo.faDetail.departmentId = faInfo.faDetail.departmentId || "";
 
-        if (faInfo.departmentId.length != 0) {
+        if (faInfo.faDetail.departmentId.length != 0) {
             mysqlClient.query({
                 sql     : "SELECT * FROM DEPARTMENT WHERE departmentId = :departmentId",
                 params  : {
-                    "departmentId"  : faInfo.departmentId
+                    "departmentId"  : faInfo.faDetail.departmentId
                 }
             }, function (err, rows) {
                 if (err) {
@@ -157,13 +159,13 @@ exports.getFixedAssetByfaID = function (faId, callback) {
     });
 
     ep.once("after_getDeptInfo", function (faInfo) {
-        faInfo.typeId = faInfo.typeId || "";
+        faInfo.faDetail.typeId = faInfo.faDetail.typeId || "";
 
-        if (faInfo.typeId.length != 0) {
+        if (faInfo.faDetail.typeId.length != 0) {
             mysqlClient.query({
                 sql     : "SELECT * FROM ASSETTPYE WHERE typeId = :typeId",
                 params  : {
-                    "typeId"  : faInfo.typeId
+                    "typeId"  : faInfo.faDetail.typeId
                 }
             }, function (err, rows) {
                 if (err) {
