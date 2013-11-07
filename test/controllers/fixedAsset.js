@@ -42,7 +42,7 @@ describe("fixedAsset", function () {
     //test: /fixedasset/inspection (success)
     it('should response data', function (done) {
         var param = {
-            'qrCode' : "2000901-03-0001"
+            'qrCode' : "2"
         };
         app.request().post('/fixedasset/inspection').setBody(param).end(function (res) {
             console.dir(res.bodyJSON());
@@ -64,7 +64,7 @@ describe("fixedAsset", function () {
     //test: fixedasset/:faId/info
     it('should response data', function (done) {
         var param = {
-            faId : "12345"
+            faId : "2"
         };
 
         app.request().get("/fixedasset/" + param.faId + "/info").end(function (res) {
@@ -88,7 +88,7 @@ describe("fixedAsset", function () {
     //test: /fixedasset/rejection
     it('is testing func: reject fixed asset', function (done) {
         var param = {
-            faId    : "2000901-03-0001",
+            faId    : "2",
             reject  : 0
         };
 
@@ -105,8 +105,8 @@ describe("fixedAsset", function () {
         var param = {
             newId               : "2",
             oldId               : "",
-            userId              : "",
-            departmentId        : "",
+            userId              : "01313140",
+            departmentId        : "3",
             typeId              : "",
             assetName           : "",
             assetBelong         : "",
@@ -138,8 +138,8 @@ describe("fixedAsset", function () {
         var param = {
             newId               : "2",
             oldId               : "1",
-            userId              : "2",
-            departmentId        : "3",
+            userId              : "01110050",
+            departmentId        : "37",
             typeId              : "4",
             assetName           : "5",
             assetBelong         : "",

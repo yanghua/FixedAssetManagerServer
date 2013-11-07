@@ -79,6 +79,8 @@ exports.getFixedAssetByfaID = function (faId, callback) {
         return callback(new InvalidParamError(), null);
     }
 
+    var ep = EventProxy.create();
+
     mysqlClient.query({
         sql     : "SELECT * FROM ASSETS WHERE newId = :newId",
         params  : {
@@ -86,15 +88,103 @@ exports.getFixedAssetByfaID = function (faId, callback) {
         }
     }, function (err, rows) {
         if (err) {
-            callback(new ServerError(), null);
+            return ep.emitLater("error", new ServerError());
         }
 
         if (rows && rows.length > 0) {
-            var data = rows[0];
-            callback(null, data);
+            var faInfo = rows[0];
+            ep.emitLater("after_getFAInfo", faInfo);
         } else {
-            callback(new DataNotFoundError(), null);
+            return ep.emitLater("error", new DataNotFoundError());
         }
+    });
+
+    ep.once("after_getFAInfo", function (faInfo) {
+
+        faInfo.userId  = faInfo.userId || "";
+
+        if (faInfo.userId.length != 0) {
+            mysqlClient.query({
+                sql     : "SELECT * FROM USER WHERE userId = :userId",
+                params  : {
+                    "userId"  : faInfo.userId
+                }
+            }, function (err, rows) {
+                if (err) {
+                    return ep.emitLater("error", new ServerError());
+                }
+
+                var userInfo = {};
+                if (rows && rows.length > 0) {
+                    userInfo = rows[0];
+                }
+
+                faInfo["userInfo"] = userInfo;
+                ep.emitLater("after_getUserInfo", faInfo);
+            });
+        } else {
+            ep.emitLater("after_getUserInfo", faInfo);
+        }
+        
+    });
+
+    ep.once("after_getUserInfo", function (faInfo) {
+        faInfo.departmentId = faInfo.departmentId || "";
+
+        if (faInfo.departmentId.length != 0) {
+            mysqlClient.query({
+                sql     : "SELECT * FROM DEPARTMENT WHERE departmentId = :departmentId",
+                params  : {
+                    "departmentId"  : faInfo.departmentId
+                }
+            }, function (err, rows) {
+                if (err) {
+                    return ep.emitLater("error", new ServerError());
+                }
+
+                var deptInfo = {};
+                if (rows && rows.length > 0) {
+                    deptInfo           = rows[0];
+                    faInfo["deptInfo"] = deptInfo;   
+                }
+
+                ep.emitLater("after_getDeptInfo", faInfo);
+            });
+        } else {
+            ep.emitLater("after_getDeptInfo", faInfo);
+        }
+        
+    });
+
+    ep.once("after_getDeptInfo", function (faInfo) {
+        faInfo.typeId = faInfo.typeId || "";
+
+        if (faInfo.typeId.length != 0) {
+            mysqlClient.query({
+                sql     : "SELECT * FROM ASSETTPYE WHERE typeId = :typeId",
+                params  : {
+                    "typeId"  : faInfo.typeId
+                }
+            }, function (err, rows) {
+                if (err) {
+                    return ep.emitLater("error", new ServerError());
+                }
+
+                var typeInfo = {};
+                if (rows && rows.length > 0) {
+                    typeInfo           = rows[0];
+                    faInfo["typeInfo"] = typeInfo;   
+                }
+
+                callback(null, faInfo);
+            });
+        } else {
+            callback(null, faInfo);
+        }
+    });
+
+    ep.fail(function (err) {
+        return callback(err, null);
     });
 };
 
@@ -258,26 +348,67 @@ exports.modifyFixedAsset = function (faDetailObj, faId, callback) {
 exports.addFixedAsset = function (faDetailObj, callback) {
     console.log("######proxy/addFixedAsset");
 
-    var eq = EventProxy.create();
+    // var eq = EventProxy.create();
 
-    qrCodeUtil.getQRData(faDetailObj.newId, function (err, encodedStr) {
-        if (err) {
-            console.dir("Error :" + err);
-            return eq.emitLater("error", new ServerError());
-        }
+    // qrCodeUtil.getQRData(faDetailObj.newId, function (err, encodedStr) {
+    //     if (err) {
+    //         console.dir("Error :" + err);
+    //         return eq.emitLater("error", new ServerError());
+    //     }
 
-        if (encodedStr) {
-            eq.emitLater("after_getQRData", encodedStr);
-        }
-    });
+    //     if (encodedStr) {
+    //         eq.emitLater("after_getQRData", encodedStr);
+    //     }
+    // });
 
-    eq.once("after_getQRData", function (encodedStr) {
-        faDetailObj["qrcode"] = encodedStr;
+    // eq.once("after_getQRData", function (encodedStr) {
+    //     faDetailObj["qrcode"] = encodedStr;
 
-        console.dir(faDetailObj);
+    //     mysqlClient.query({
+    //         sql         : "INSERT INTO ASSETS VALUES(:newId,                " +
+    //                       "                             :oldId,             " +
+    //                       "                             :userId,            " +
+    //                       "                             :departmentId,      " +
+    //                       "                             :typeId,            " +
+    //                       "                             :assetName,         " +
+    //                       "                             :assetBelong,       " +
+    //                       "                             :currentStatus,     " +
+    //                       "                             :brand,             " +
+    //                       "                             :model,             " +
+    //                       "                             :specifications,    " +
+    //                       "                             :amount,            " +
+    //                       "                             :price,             " +
+    //                       "                             :purchaseDate,      " +
+    //                       "                             :possessDate,       " +
+    //                       "                             :serviceCode,       " +
+    //                       "                             :mac,               " +
+    //                       "                             :reject,            " +
+    //                       "                             :rejectDate,        " +
+    //                       "                             :remark1,           " +
+    //                       "                             :remark2,           " +
+    //                       "                             :qrcode)",
+    //         params      : faDetailObj
+    //     }, function (err, rows) {
+    //         if (err || !rows) {
+    //             console.dir(err);
+    //             return eq.emitLater("error", new ServerError());
+    //         }
 
-        mysqlClient.query({
-            sql         : "INSERT INTO ASSETS VALUES(:newId,                " +
+    //         if (rows.affectedRows === 0) {
+    //             return eq.emitLater("error", new DataNotFoundError());
+    //         }
+
+    //         return callback(null, null);
+    //     });
+    // });
+
+    // eq.fail(function (err) {
+    //     return callback(err, null);
+    // });
+
+
+    mysqlClient.query({
+        sql         : "INSERT INTO ASSETS VALUES(:newId,                    " +
                           "                             :oldId,             " +
                           "                             :userId,            " +
                           "                             :departmentId,      " +
@@ -299,23 +430,18 @@ exports.addFixedAsset = function (faDetailObj, callback) {
                           "                             :remark1,           " +
                           "                             :remark2,           " +
                           "                             :qrcode)",
-            params      : faDetailObj
+        params      : faDetailObj
         }, function (err, rows) {
             if (err || !rows) {
                 console.dir(err);
-                return eq.emitLater("error", new ServerError());
+                return callback(new ServerError(), null);
             }
 
             if (rows.affectedRows === 0) {
-                return eq.emitLater("error", new DataNotFoundError());
+                return callback(new DataNotFoundError(), null);
             }
 
             return callback(null, null);
-        });
-    });
-
-    eq.fail(function (err) {
-        return callback(err, null);
     });
 
 };

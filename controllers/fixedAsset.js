@@ -75,7 +75,9 @@ exports.inspection = function (req, res, next) {
     console.log("******controllers/fixedAsset/inspection");
     var qrCode = req.body.qrCode || "";
 
-    if (!check(qrCode).notEmpty()) {
+    try {
+        check(qrCode).notEmpty();
+    } catch (e) {
         return res.send(resUtil.generateRes(null, config.statusCode.STATUS_INVAILD_PARAMS));
     }
 
@@ -83,16 +85,12 @@ exports.inspection = function (req, res, next) {
 
     var ep = EventProxy.create();
 
-    var userDetail = null;
-    var faDetail = null;
-
     FixedAsset.checkFixedAssetByfaID(qrCode, function (err, hasFA) {
         if (err) {
             return ep.emitLater("error", err);
         }
 
         if (hasFA) {
-            console.log("emit  checkedFA");
             ep.emitLater("checkedFA");
         } else {
             return ep.emitLater("error", new DataNotFoundError());
@@ -100,47 +98,17 @@ exports.inspection = function (req, res, next) {
     });
 
     ep.once("checkedFA", function () {
-        FixedAsset.getFixedAssetByfaID(qrCode, function (err, rows) {
+        FixedAsset.getFixedAssetByfaID(qrCode, function (err, faInfo) {
             if (err) {
                 return ep.emitLater("error", err);
             }
 
-            console.log("emit  afterFAInfo");
-            faDetail = rows;
-            ep.emit("afterFAInfo", rows);
+            res.send(resUtil.generateRes(faInfo, null));
         });
-    });
-
-    ep.once("afterFAInfo", function (faInfo) {
-        if (!faInfo) {
-            return ep.emitLater("error", new ServerError());
-        }
-
-        faInfo.lastUserId = faInfo.lastUserId || "";
-        if (faInfo.lastUserId.length === 0) {
-            ep.emitLater("afterUserDetail", {});
-        } else {
-            User.getUserInfoById(faInfo.lastUserId, function (err, rows) {
-                if (err) {
-                    return ep.emitLater("error", err);
-                }
-                ep.emitLater("afterUserDetail", rows);
-            });
-        }
-        
-    });
-
-    ep.once("afterUserDetail", function (userInfo) {
-        var data = {};
-        data["userDetail"] = userInfo;
-        data["faDetail"] = faDetail;
-        console.dir(resUtil.generateRes(data, config.statusCode.SATUS_OK));
-        res.send(resUtil.generateRes(data, config.statusCode.SATUS_OK));
     });
 
     //error handler
     ep.fail(function (err) {
-        console.log("enter fail handler");
         res.send(resUtil.generateRes(null, err.statusCode));
     });
 
@@ -302,41 +270,41 @@ exports.allocation = function (req, res, next) {
 };
 
 
-/**
- * word generation
- * @param  {object}   req  the request obj
- * @param  {object}   res  the response obj
- * @param  {Function} next the next handler
- * @return {null}        
- */
-exports.wordService = function (req, res, next) {
-    console.log("******controllers/fixedAsset/wordService");
+// /**
+//  * word generation
+//  * @param  {object}   req  the request obj
+//  * @param  {object}   res  the response obj
+//  * @param  {Function} next the next handler
+//  * @return {null}        
+//  */
+// exports.wordService = function (req, res, next) {
+//     console.log("******controllers/fixedAsset/wordService");
 
-    var serviceFileName = "FixedAssetManagerService-1.0-SNAPSHOT.jar";
-    var servicePath = path.join(__dirname, "../common/services/", serviceFileName);
+//     var serviceFileName = "FixedAssetManagerService-1.0-SNAPSHOT.jar";
+//     var servicePath = path.join(__dirname, "../common/services/", serviceFileName);
 
-    var eq = EventProxy.create();
+//     var eq = EventProxy.create();
 
-    //call word generation service
-    exec("java -jar " + servicePath, function (err, stdout, stderr) {
-        if (err) {
-            return res.send(resUtil.generateRes(null, config.statusCode.STATUS_SERVER_ERROR));
-        }
+//     //call word generation service
+//     exec("java -jar " + servicePath, function (err, stdout, stderr) {
+//         if (err) {
+//             return res.send(resUtil.generateRes(null, config.statusCode.STATUS_SERVER_ERROR));
+//         }
 
-        var filePath = stdout || "";
+//         var filePath = stdout || "";
 
-        if (check(filePath).notEmpty()) {
-            eq.emitLater("after_generated", filePath);
-        } else {
-            return res.send(resUtil.generateRes(null, config.statusCode.STATUS_SERVER_ERROR));
-        }
-    });
+//         if (check(filePath).notEmpty()) {
+//             eq.emitLater("after_generated", filePath);
+//         } else {
+//             return res.send(resUtil.generateRes(null, config.statusCode.STATUS_SERVER_ERROR));
+//         }
+//     });
 
-    eq.once("after_generated", function (filePath) {
-        console.log(filePath);
-        //TODO:response file stream to client
-        fs.readFile("XXX", function (err, data) {
-            return res.send(data);
-        });
-    });
-};
+//     eq.once("after_generated", function (filePath) {
+//         console.log(filePath);
+//         //TODO:response file stream to client
+//         fs.readFile("XXX", function (err, data) {
+//             return res.send(data);
+//         });
+//     });
+// };
