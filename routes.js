@@ -32,6 +32,7 @@
 
 var user           = require("./controllers/user");
 var fixedAsset     = require("./controllers/fixedAsset");
+var faType         = require("./controllers/faType");
 var others         = require("./controllers/others");
 
 
@@ -41,8 +42,8 @@ module.exports = function (app) {
 
     app.get("/user/:userId", user.getUserById);
     app.get("/user/:userId/fixedassets", fixedAsset.getFixedAssetListByUserID);
-
     app.get("/fixedasset/:faId/info", fixedAsset.getFixedAssetByfaID);
+    app.get("/fatypes", faType.getAllFATypes);
 
     /************************************************************************/
     /*                Resful: URI Represent a Resource!!!                   */
@@ -58,8 +59,5 @@ module.exports = function (app) {
 
     app.post("/fixedasset/:faId/modification", fixedAsset.modification);
     app.post("/fixedasset/:faId/allocation", fixedAsset.allocation);
-
-
-    // app.post("/fixedasset/insertion_new", fixedAsset.insertion_new);
 
 };
