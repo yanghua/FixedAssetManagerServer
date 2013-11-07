@@ -27,7 +27,6 @@
 'use strict';
 
 var User         = require('../models/fixedAsset');
-var HostComputer = require("./hostComputer");
 var mysqlUtil    = require("../libs/mysqlUtil"),
     mysqlClient  = mysqlUtil.initMysql();
 var EventProxy   = require("eventproxy");

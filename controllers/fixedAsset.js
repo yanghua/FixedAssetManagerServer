@@ -37,7 +37,6 @@ var EventProxy  = require("eventproxy");
 var exec        = require("child_process").exec;
 var path        = require("path");
 var fs          = require("fs");
-var PDFDocument = require("pdfkit");
 
 /**
  * get fixed asset by faId
@@ -374,77 +373,6 @@ exports.wordService = function (req, res, next) {
             return res.send(data);
         });
     });
-};
-
-
-/**
- * pdf generation
- * @param  {object}   req  the request obj
- * @param  {object}   res  the response obj
- * @param  {Function} next the next handler
- * @return {null}        
- */
-exports.pdfService = function (req, res, next) {
-    
-    FixedAsset.getFixedAssetByfaID_new("2", function (err, faInfo) {
-        if (err) {
-            return resUtil.generateRes(null, err.statusCode);
-        }
-        var encodedImgStr = faInfo["qrcode"];
-
-        console.log(encodedImgStr);
-        // qrCodeUtil.decodeImgStr(encodedImgStr, function (err, imgBuffer) {
-        //     if (err) {
-        //         return resUtil.generateRes(null, err.statusCode); 
-        //     }
-            
-        // });
-
-        var tmpFileName = "test.png";
-        var tmpFilePath = path.join(__dirname, "../download/", tmpFileName);
-        var pdfFilePath = path.join(__dirname, "../download/", "output.pdf");
-
-
-        // var decodedImage = new Buffer(encodedImgStr, 'base64');
-
-
-        // Here you try to write that String object to a file. Since the argument you
-        // have given is a string and you have not given an encoding argument for the
-        // write command, then it will assume that 'utf8' is the encoding. It will try to
-        // decode your binary string into a utf8 encoded buffer, and write that buffer.
-        // This will cause it to fail because that encoding conversion is wrong.
-        // Really through, 'binary' is just wrong to use. Buffers are already binary.
-        // fs.writeFile(tmpFilePath, decodedImage, function (err) {
-
-        //     if (err) {
-        //         console.dir(err);
-        //     }
-
-        //     var doc = new PDFDocument();
-        //     doc.image("/Users/yanghua/Desktop/test.png", 100, 100);
-        //     doc.write(pdfFilePath , function() {
-
-        //     });
-        // });
-        // 
-        fs.readFile("/Users/yanghua/Desktop/test.png", function(err, original_data) {
-            var base64Image = original_data.toString('base64');
-            var decodedImage = new Buffer(base64Image, 'base64');
-            fs.writeFile(tmpFilePath, decodedImage, function(err) {
-                if (err) {
-                    console.dir(err);
-                }
-
-                var doc = new PDFDocument();
-                doc.image("/Users/yanghua/Desktop/test.png", 100, 100);
-                doc.write(pdfFilePath , function() {
-                    
-                });
-            });
-        });
-
-    });
-    
 };
 
 
