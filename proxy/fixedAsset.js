@@ -51,10 +51,10 @@ exports.getFixedAssetListByUserID = function (userId, callback) {
     }
 
     mysqlClient.query({
-        sql     : "SELECT * FROM fixedAsset.EQUIPMENT EQ " +
-                  " WHERE lastUserId =:lastUserId",
+        sql     : "SELECT * FROM fixedAsset.ASSETS " +
+                  " WHERE userId =:userId",
         params  : {
-            "lastUserId"  : userId
+            "userId"  : userId
         }
     }, function (err, rows) {
         if (err) {
@@ -65,13 +65,13 @@ exports.getFixedAssetListByUserID = function (userId, callback) {
 };
 
 /**
- * get fixed asset detail by faid
+ * get fixed asset by faid
  * @param  {string}   faId     fixed asset id
  * @param  {Function} callback callback func
  * @return {null}            
  */
 exports.getFixedAssetByfaID = function (faId, callback) {
-    console.log("######proxy/fixedAsset/getFixedAssetDetailByfaID");
+    console.log("######proxy/fixedAsset/getFixedAssetByfaID");
 
     faId = faId || "";
 
@@ -96,72 +96,6 @@ exports.getFixedAssetByfaID = function (faId, callback) {
             callback(new DataNotFoundError(), null);
         }
     });
-};
-
-/**
- * get fixed asset by faid
- * @param  {string}   faId     fixed asset id
- * @param  {Function} callback callback func
- * @return {null}            
- */
-exports.getFixedAssetDetailByfaID = function (faId, callback) {
-    console.log("######proxy/fixedAsset/getFixedAssetByfaID");
-
-    faId = faId || "";
-
-    if (faId.length === 0) {
-        return callback(new InvalidParamError(), null);
-    }
-
-    var eq = EventProxy.create();
-
-    mysqlClient.query({
-        sql     : "SELECT * FROM EQUIPMENT WHERE EQUIPMENTID = :EQUIPMENTID",
-        params  : {
-            "EQUIPMENTID"  : faId
-        }
-    }, function (err, rows) {
-        if (err) {
-            return eq.emitLater("error", new ServerError());
-        }
-        if (rows && rows.length > 0) {
-            eq.emitLater("afterFAType_proxy", rows[0]);
-        } else {
-            return eq.emitLater("error", new DataNotFoundError());
-        }
-    });
-
-    eq.once("afterFAType_proxy", function (faInfo) {
-
-        //split with equipment type
-        if (faInfo.equipmentSqlName === config.faType.ENUM_HC) {
-            require("./fixedAsset").getFixedAssetDetail(faInfo.equipmentId, config.faType.ENUM_HC, function (err, rows) {
-                if (err) {
-                    return eq.emitLater("error", new ServerError());
-                }
-
-                if (rows.length === 0) {
-                    return eq.emitLater("error", new DataNotFoundError());
-                }
-                var faAll = {};
-                faAll["faInfo"] = faInfo;
-                faAll["faDetail"] = rows[0];
-
-                eq.emitLater("afterFADetail_proxy", faAll);
-            });
-        }
-    });
-
-    eq.once("afterFADetail_proxy", function (rows) {
-        console.log("afterFADetail_proxy");
-        callback(null, rows);
-    });
-
-    //error handler
-    eq.fail(function (err) {
-        callback(err, null);
-    });
-
 };
 
 
@@ -216,9 +150,14 @@ exports.rejectFixedAsset = function (rejectionInfo, callback) {
         return callback(new InvalidParamError(), null);
     }
 
+    var rejectionObj = {};
+    rejectionObj["newId"] = rejectionInfo["faId"];
+    rejectionObj["reject"] = rejectionInfo["reject"];
+    rejectionObj["rejectDate"] = new Date().Format("yyyy-MM-dd");
+
     mysqlClient.query({
-        sql     : "UPDATE EQUIPMENT SET reject=:reject WHERE equipmentId = :equipmentId",
-        params  : rejectionInfo
+        sql     : "UPDATE ASSETS SET reject=:reject, rejectDate=:rejectDate WHERE newId = :newId",
+        params  : rejectionObj
     }, function (err, rows) {
         if (err || !rows) {
             callback(new ServerError(), null);
@@ -263,23 +202,38 @@ exports.getFixedAssetDetail = function (faId, faType, callback) {
 };
 
 /**
- * modify fixed asset detail
+ * modify fixed asset
  * @param  {object}   faDetailObj the detail object of the fixed asset
  * @param  {string}   faId        the fixed asset id
  * @param  {Function} callback    the callback func
  * @return {null}               
  */
-exports.modifyFixedAssetDetail = function (faDetailObj, faId, callback) {
-    console.log("######proxy/fixedAsset/modifyFixedAssetDetail");
-
-    var sqlPattern = SQL_PATTERN[faDetailObj.faType + "_MODIFY"] || "";
-
-    if (sqlPattern.length === 0) {
-        return callback(new InvalidParamError(), null);
-    }
+exports.modifyFixedAsset = function (faDetailObj, faId, callback) {
+    console.log("######proxy/fixedAsset/modifyFixedAsset");
 
     mysqlClient.query({
-        sql     : SQL_PATTERN[faDetailObj.faType + "_MODIFY"],
+        sql     : "UPDATE ASSETS SET    " +
+                  "                 oldId=:oldId, " +
+                  "                 userId=:userId, " +
+                  "                 departmentId=:departmentId,     " +
+                  "                 typeId=:typeId,                 " +
+                  "                 assetName=:assetName,           " +
+                  "                 assetBelong=:assetBelong,       " +
+                  "                 currentStatus=:currentStatus,   " +
+                  "                 brand=:brand,                   " +
+                  "                 model=:model,                   " +
+                  "                 specifications=:specifications, " +
+                  "                 amount=:amount,                 " +
+                  "                 price=:price,                   " +
+                  "                 purchaseDate=:purchaseDate,     " +
+                  "                 possessDate=:possessDate,       " +
+                  "                 serviceCode=:serviceCode,       " +
+                  "                 mac=:mac,                       " +
+                  "                 reject=:reject,                 " +
+                  "                 rejectDate=:rejectDate,         " +
+                  "                 remark1=:remark1,               " +
+                  "                 remark2=:remark2                " +
+                  " WHERE newId = :newId",
         params  : faDetailObj
     }, function (err, rows) {
         if (err || !rows) {
@@ -295,88 +249,69 @@ exports.modifyFixedAssetDetail = function (faDetailObj, faId, callback) {
     });
 };
 
-/**
- * add a fixed asset 
- * @param {object}   faInfo   the object of fixed asset
- * @param {Function} callback the callback func
- */
-exports.addFixedAsset = function (faInfo, callback) {
-    console.log("######proxy/addFixedAsset");
-
-    mysqlClient.query({
-        sql     : "INSERT INTO EQUIPMENT VALUES(:equipmentId, :equipmentName, " +
-                  ":equipmentSqlName, :lastUserId, :purchaseDate, :possessDate, " +
-                  ":reject, :rejectDate)",
-        params  : faInfo
-    }, function (err, rows) {
-        if (err || !rows) {
-            return callback(new ServerError(), null);
-        }
-
-        if (rows.affectedRows === 0) {
-            return callback(new ServerError(), null);
-        }
-
-        callback(null, rows);
-    });
-};
-
 
 /**
- * add a new fixed asset detail
- * @param {object}   faDetailObj the fixed asset detail object
+ * add a new fixed asset
+ * @param {object}   faDetailObj the fixed asset object
  * @param {Function} callback    the callback func
  */
-exports.addNewFixedAssetDetail = function (faDetailObj, callback) {
-    console.log("######proxy/addNewFixedAssetDetail");
-
-    var sqlPattern = SQL_PATTERN[faDetailObj.faType + "_INSERT"] || "";
-
-    if (sqlPattern.length === 0) {
-        return callback(new InvalidParamError(), null);
-    }
+exports.addFixedAsset = function (faDetailObj, callback) {
+    console.log("######proxy/addFixedAsset");
 
     var eq = EventProxy.create();
 
-    mysqlClient.query({
-        sql         : SQL_PATTERN[faDetailObj.faType + "_INSERT"],
-        params      : faDetailObj
-    }, function (err, rows) {
-        if (err || !rows) {
-            console.dir(err);
+    qrCodeUtil.getQRData(faDetailObj.newId, function (err, encodedStr) {
+        if (err) {
+            console.dir("Error :" + err);
             return eq.emitLater("error", new ServerError());
         }
 
-        if (rows.affectedRows === 0) {
-            return eq.emitLater("error", new DataNotFoundError());
+        if (encodedStr) {
+            eq.emitLater("after_getQRData", encodedStr);
         }
-
-        eq.emitLater("after_addDetail");
     });
 
-    eq.once("after_addDetail", function () {
-        var faInfo = {
-            equipmentId         : faDetailObj.newId,
-            equipmentName       : faDetailObj.faType,
-            equipmentSqlName    : faDetailObj.faType,
-            lastUserId          : "",
-            purchaseDate        : new Date().Format("yyyy-MM-dd"),
-            possessDate         : "",
-            reject              : 0,
-            rejectDate          : ""
-        };
+    eq.once("after_getQRData", function (encodedStr) {
+        faDetailObj["qrcode"] = encodedStr;
 
-        require("./fixedAsset").addFixedAsset(faInfo, function (err, rows) {
-            if (err) {
-                return eq.emitLater("error", err);
+        console.dir(faDetailObj);
+
+        mysqlClient.query({
+            sql         : "INSERT INTO ASSETS VALUES(:newId,                " +
+                          "                             :oldId,             " +
+                          "                             :userId,            " +
+                          "                             :departmentId,      " +
+                          "                             :typeId,            " +
+                          "                             :assetName,         " +
+                          "                             :assetBelong,       " +
+                          "                             :currentStatus,     " +
+                          "                             :brand,             " +
+                          "                             :model,             " +
+                          "                             :specifications,    " +
+                          "                             :amount,            " +
+                          "                             :price,             " +
+                          "                             :purchaseDate,      " +
+                          "                             :possessDate,       " +
+                          "                             :serviceCode,       " +
+                          "                             :mac,               " +
+                          "                             :reject,            " +
+                          "                             :rejectDate,        " +
+                          "                             :remark1,           " +
+                          "                             :remark2,           " +
+                          "                             :qrcode)",
+            params      : faDetailObj
+        }, function (err, rows) {
+            if (err || !rows) {
+                console.dir(err);
+                return eq.emitLater("error", new ServerError());
             }
 
-            eq.emitLater("after_addFixedAsset");
-        });
-    });
+            if (rows.affectedRows === 0) {
+                return eq.emitLater("error", new DataNotFoundError());
+            }
 
-    eq.once("after_addFixedAsset", function () {
-        callback(null, null);
+            return callback(null, null);
+        });
     });
 
     eq.fail(function (err) {
@@ -416,108 +351,4 @@ exports.allocateFixedAsset = function (faId, userId, callback) {
 
         callback(null, null);
     });
-};
-
-
-/**************************************new table***********************************/
-/**
- * get fixed asset detail by faid
- * @param  {string}   faId     fixed asset id
- * @param  {Function} callback callback func
- * @return {null}            
- */
-exports.getFixedAssetByfaID_new = function (faId, callback) {
-    console.log("######proxy/fixedAsset/getFixedAssetByfaID_new");
-
-    faId = faId || "";
-
-    if (faId.length === 0) {
-        return callback(new InvalidParamError(), null);
-    }
-
-    mysqlClient.query({
-        sql     : "SELECT * FROM TempWhole WHERE newId = :newId",
-        params  : {
-            "newId"  : faId
-        }
-    }, function (err, rows) {
-        if (err) {
-            callback(new ServerError(), null);
-        }
-
-        if (rows && rows.length > 0) {
-            var data = rows[0];
-            callback(null, data);
-        } else {
-            callback(new DataNotFoundError(), null);
-        }
-    });
-};
-
-/**
- * add a new fixed asset detail
- * @param {object}   faDetailObj the fixed asset detail object
- * @param {Function} callback    the callback func
- */
-exports.addNewFixedAssetDetail_new = function (faDetailObj, callback) {
-    console.log("######proxy/addNewFixedAssetDetail_new");
-
-    var eq = EventProxy.create();
-
-    qrCodeUtil.getQRData(faDetailObj.newId, function (err, encodedStr) {
-        if (err) {
-            console.dir("Error :" + err);
-            return eq.emitLater("error", new ServerError());
-        }
-
-        if (encodedStr) {
-            eq.emitLater("after_getQRData", encodedStr);
-        }
-    });
-
-    eq.once("after_getQRData", function (encodedStr) {
-        faDetailObj["qrcode"] = encodedStr;
-
-        console.dir(faDetailObj);
-
-        mysqlClient.query({
-            sql         : "INSERT INTO TempWhole VALUES(:department,        " +
-                          "                             :userName,          " +
-                          "                             :newId,             " +
-                          "                             :oldId,             " +
-                          "                             :typeName,          " +
-                          "                             :typeId,            " +
-                          "                             :assetbelong,       " +
-                          "                             :currentStatus,     " +
-                          "                             :brand,             " +
-                          "                             :model,             " +
-                          "                             :specifications,    " +
-                          "                             :amount,            " +
-                          "                             :price,             " +
-                          "                             :purchaseDate,      " +
-                          "                             :possessDate,       " +
-                          "                             :serviceCode,       " +
-                          "                             :mac,               " +
-                          "                             :remark1,           " +
-                          "                             :remark2,           " +
-                          "                             :qrcode)",
-            params      : faDetailObj
-        }, function (err, rows) {
-            if (err || !rows) {
-                console.dir(err);
-                return eq.emitLater("error", new ServerError());
-            }
-
-            if (rows.affectedRows === 0) {
-                return eq.emitLater("error", new DataNotFoundError());
-            }
-
-            return callback(null, null);
-        });
-    });
-
-    eq.fail(function (err) {
-        return callback(err, null);
-    });
-
 };

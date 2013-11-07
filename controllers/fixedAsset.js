@@ -45,32 +45,6 @@ var fs          = require("fs");
  * @param  {Function} next next handler
  * @return {null}
  */
-exports.getFixedAssetDetailByfaID = function (req, res, next) {
-    console.log("******controllers/fixedAsset/getFixedAssetDetailByfaId");
-    var faId = req.params.faId || "";
-
-    if (!check(faId).notEmpty()) {
-        return res.send(resUtil.generateRes(null, config.statusCode.STATUS_INVAILD_PARAMS));
-    }
-
-    faId = sanitize(sanitize(faId).trim()).xss();
-
-    FixedAsset.getFixedAssetDetailByfaID(faId, function (err, rows) {
-        if (err) {
-            res.send(resUtil.generateRes(null, err.statusCode));
-        } else {
-            res.send(resUtil.generateRes(rows, config.statusCode.SATUS_OK));
-        }
-    });
-};
-
-/**
- * get fixed asset by faId
- * @param  {object}   req  request
- * @param  {object}   res  response
- * @param  {Function} next next handler
- * @return {null}
- */
 exports.getFixedAssetByfaID = function (req, res, next) {
     console.log("******controllers/fixedAsset/getFixedAssetByfaId");
     var faId = req.params.faId || "";
@@ -182,32 +156,29 @@ exports.inspection = function (req, res, next) {
 exports.rejection = function (req, res, next) {
     console.log("******controllers/fixedAsset/rejection");
 
-    var faId   = req.body.faId || "";
-    var reject = req.body.reject || 1;
+    req.body.faId   = req.body.faId || "";
+    req.body.reject = req.body.reject || 1;
 
     try {
-        if (!check(faId).notEmpty()) {
+        if (!check(req.body.faId).notEmpty()) {
             return res.send(resUtil.generateRes(null, config.statusCode.STATUS_INVAILD_PARAMS));
         }
 
-        if (!check(reject).notEmpty) {
+        if (!check(req.body.reject).notEmpty) {
             return res.send(resUtil.generateRes(null, config.statusCode.STATUS_INVAILD_PARAMS));
         }
 
         //sanitize
-        faId = sanitize(sanitize(faId).trim()).xss();
-        if (!check(reject).isInt()) {
-            reject = sanitize(reject).toInt();
+        req.body.faId = sanitize(sanitize(req.body.faId).trim()).xss();
+        if (!check(req.body.reject).isInt()) {
+            req.body.faId = sanitize(req.body.reject).toInt();
         }
 
     } catch (e) {
         return res.send(resUtil.generateRes(null, config.statusCode.STATUS_INVAILD_PARAMS));
     }
 
-    FixedAsset.rejectFixedAsset({
-        equipmentId: faId,
-        reject: reject
-    }, function (err, rows) {
+    FixedAsset.rejectFixedAsset(req.body, function (err, rows) {
         if (err) {
             res.send(resUtil.generateRes(null, err.statusCode));
         } else {
@@ -228,16 +199,9 @@ exports.rejection = function (req, res, next) {
 exports.insertion = function (req, res, next) {
     console.log("******controllers/fixedAsset/insertion");
 
-    var faType = req.body.faType || "";
+    var faObj = req.body;
 
-    if (!check(faType).notEmpty()) {
-        return res.send(resUtil.generateRes(null, config.statusCode.STATUS_INVAILD_PARAMS));
-    }
-
-    faType = sanitize(sanitize(faType).trim()).xss();
-    var detailObj = req.body;
-
-    FixedAsset.addNewFixedAssetDetail(detailObj, function (err, rows) {
+    FixedAsset.addFixedAsset(faObj, function (err, rows) {
         if (err) {
             return res.send(resUtil.generateRes(null, err.statusCode));
         }
@@ -260,7 +224,9 @@ exports.modification = function (req, res, next) {
 
     var faId = req.params.faId || "";
 
-    if (!check(faId).notEmpty()) {
+    try {
+        check(faId).notEmpty();
+    } catch (e) {
         return res.send(resUtil.generateRes(null, config.statusCode.STATUS_INVAILD_PARAMS));
     }
 
@@ -268,7 +234,7 @@ exports.modification = function (req, res, next) {
 
     var detailObj = req.body;
 
-    FixedAsset.modifyFixedAssetDetail(detailObj, faId, function (err, rows) {
+    FixedAsset.modifyFixedAsset(detailObj, faId, function (err, rows) {
         if (err) {
             return res.send(resUtil.generateRes(null, err.statusCode));
         }
@@ -373,28 +339,4 @@ exports.wordService = function (req, res, next) {
             return res.send(data);
         });
     });
-};
-
-
-/***************************************new table*************************************/
-exports.insertion_new = function (req, res, next) {
-    console.log("******controllers/fixedAsset/insertion_new");
-
-    var newId = req.body.newId || "";
-
-    if (!check(newId).notEmpty()) {
-        return res.send(resUtil.generateRes(null, config.statusCode.STATUS_INVAILD_PARAMS));
-    }
-
-    newId = sanitize(sanitize(newId).trim()).xss();
-    var detailObj = req.body;
-
-    FixedAsset.addNewFixedAssetDetail_new(detailObj, function (err, rows) {
-        if (err) {
-            return res.send(resUtil.generateRes(null, err.statusCode));
-        }
-
-        res.send(resUtil.generateRes(null, config.statusCode.SATUS_OK));
-    });
-
 };
