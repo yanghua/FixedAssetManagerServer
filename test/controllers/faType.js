@@ -29,7 +29,7 @@
 var should = require("should");
 var app    = require("../../app");
 
-describe("fixedAsset", function () {
+describe("faType", function () {
 
     before(function (done) {
         app.listen(0, done);
