@@ -33,7 +33,8 @@ var mysqlUtil    = require("../libs/mysqlUtil"),
 var EventProxy   = require("eventproxy");
 var config       = require("../config").initConfig();
 var SQL_PATTERN  = require("./SQLS").getSqlConfig();
-require("../libs/DateUtil");
+                   require("../libs/DateUtil");
+var qrCodeUtil   = require("../libs/qrCodeUtil");
 
 /**
  * get fixed asset list by userId
@@ -80,9 +81,9 @@ exports.getFixedAssetByfaID = function (faId, callback) {
     }
 
     mysqlClient.query({
-        sql     : "SELECT * FROM EQUIPMENT WHERE EQUIPMENTID = :EQUIPMENTID",
+        sql     : "SELECT * FROM ASSETS WHERE newId = :newId",
         params  : {
-            "EQUIPMENTID"  : faId
+            "newId"  : faId
         }
     }, function (err, rows) {
         if (err) {
@@ -181,9 +182,9 @@ exports.checkFixedAssetByfaID = function (faId, callback) {
     }
 
     mysqlClient.query({
-        sql     : "SELECT COUNT(1) AS 'count' FROM EQUIPMENT WHERE EQUIPMENTID = :EQUIPMENTID",
+        sql     : "SELECT COUNT(1) AS 'count' FROM ASSETS WHERE newId = :newId",
         params  : {
-            "EQUIPMENTID"  : faId
+            "newId"  : faId
         }
     }, function (err, rows) {
         if (err) {
@@ -416,4 +417,108 @@ exports.allocateFixedAsset = function (faId, userId, callback) {
 
         callback(null, null);
     });
+};
+
+
+/**************************************new table***********************************/
+/**
+ * get fixed asset detail by faid
+ * @param  {string}   faId     fixed asset id
+ * @param  {Function} callback callback func
+ * @return {null}            
+ */
+exports.getFixedAssetByfaID_new = function (faId, callback) {
+    console.log("######proxy/fixedAsset/getFixedAssetByfaID_new");
+
+    faId = faId || "";
+
+    if (faId.length === 0) {
+        return callback(new InvalidParamError(), null);
+    }
+
+    mysqlClient.query({
+        sql     : "SELECT * FROM TempWhole WHERE newId = :newId",
+        params  : {
+            "newId"  : faId
+        }
+    }, function (err, rows) {
+        if (err) {
+            callback(new ServerError(), null);
+        }
+
+        if (rows && rows.length > 0) {
+            var data = rows[0];
+            callback(null, data);
+        } else {
+            callback(new DataNotFoundError(), null);
+        }
+    });
+};
+
+/**
+ * add a new fixed asset detail
+ * @param {object}   faDetailObj the fixed asset detail object
+ * @param {Function} callback    the callback func
+ */
+exports.addNewFixedAssetDetail_new = function (faDetailObj, callback) {
+    console.log("######proxy/addNewFixedAssetDetail_new");
+
+    var eq = EventProxy.create();
+
+    qrCodeUtil.getQRData(faDetailObj.newId, function (err, encodedStr) {
+        if (err) {
+            console.dir("Error :" + err);
+            return eq.emitLater("error", new ServerError());
+        }
+
+        if (encodedStr) {
+            eq.emitLater("after_getQRData", encodedStr);
+        }
+    });
+
+    eq.once("after_getQRData", function (encodedStr) {
+        faDetailObj["qrcode"] = encodedStr;
+
+        console.dir(faDetailObj);
+
+        mysqlClient.query({
+            sql         : "INSERT INTO TempWhole VALUES(:department,        " +
+                          "                             :userName,          " +
+                          "                             :newId,             " +
+                          "                             :oldId,             " +
+                          "                             :typeName,          " +
+                          "                             :typeId,            " +
+                          "                             :assetbelong,       " +
+                          "                             :currentStatus,     " +
+                          "                             :brand,             " +
+                          "                             :model,             " +
+                          "                             :specifications,    " +
+                          "                             :amount,            " +
+                          "                             :price,             " +
+                          "                             :purchaseDate,      " +
+                          "                             :possessDate,       " +
+                          "                             :serviceCode,       " +
+                          "                             :mac,               " +
+                          "                             :remark1,           " +
+                          "                             :remark2,           " +
+                          "                             :qrcode)",
+            params      : faDetailObj
+        }, function (err, rows) {
+            if (err || !rows) {
+                console.dir(err);
+                return eq.emitLater("error", new ServerError());
+            }
+
+            if (rows.affectedRows === 0) {
+                return eq.emitLater("error", new DataNotFoundError());
+            }
+
+            return callback(null, null);
+        });
+    });
+
+    eq.fail(function (err) {
+        return callback(err, null);
+    });
+
 };

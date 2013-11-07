@@ -60,4 +60,7 @@ module.exports = function (app) {
     app.post("/fixedasset/:faId/modification", fixedAsset.modification);
     app.post("/fixedasset/:faId/allocation", fixedAsset.allocation);
 
+
+    // app.post("/fixedasset/insertion_new", fixedAsset.insertion_new);
+
 };
