@@ -43,7 +43,7 @@ module.exports = function (app) {
     app.get("/user/:userId/fixedassets", fixedAsset.getFixedAssetListByUserID);
 
     app.get("/fixedasset/:faId/info", fixedAsset.getFixedAssetByfaID);
-    app.get("/fixedasset/:faId/detail", fixedAsset.getFixedAssetDetailByfaID);
+    // app.get("/fixedasset/:faId/detail", fixedAsset.getFixedAssetDetailByfaID);
 
     /************************************************************************/
     /*                Resful: URI Represent a Resource!!!                   */
