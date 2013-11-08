@@ -169,7 +169,7 @@ describe("fixedAsset", function () {
 
     it('is testing func: /fixedasset/:faId/allocation', function (done) {
         var param = {
-            faId        : "65143",
+            faId        : "11020131108144651",
             userId      : "123456"
         };
 

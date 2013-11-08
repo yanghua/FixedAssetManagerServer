@@ -350,65 +350,6 @@ exports.modifyFixedAsset = function (faDetailObj, faId, callback) {
 exports.addFixedAsset = function (faDetailObj, callback) {
     console.log("######proxy/addFixedAsset");
 
-    // var eq = EventProxy.create();
-
-    // qrCodeUtil.getQRData(faDetailObj.newId, function (err, encodedStr) {
-    //     if (err) {
-    //         console.dir("Error :" + err);
-    //         return eq.emitLater("error", new ServerError());
-    //     }
-
-    //     if (encodedStr) {
-    //         eq.emitLater("after_getQRData", encodedStr);
-    //     }
-    // });
-
-    // eq.once("after_getQRData", function (encodedStr) {
-    //     faDetailObj["qrcode"] = encodedStr;
-
-    //     mysqlClient.query({
-    //         sql         : "INSERT INTO ASSETS VALUES(:newId,                " +
-    //                       "                             :oldId,             " +
-    //                       "                             :userId,            " +
-    //                       "                             :departmentId,      " +
-    //                       "                             :typeId,            " +
-    //                       "                             :assetName,         " +
-    //                       "                             :assetBelong,       " +
-    //                       "                             :currentStatus,     " +
-    //                       "                             :brand,             " +
-    //                       "                             :model,             " +
-    //                       "                             :specifications,    " +
-    //                       "                             :amount,            " +
-    //                       "                             :price,             " +
-    //                       "                             :purchaseDate,      " +
-    //                       "                             :possessDate,       " +
-    //                       "                             :serviceCode,       " +
-    //                       "                             :mac,               " +
-    //                       "                             :reject,            " +
-    //                       "                             :rejectDate,        " +
-    //                       "                             :remark1,           " +
-    //                       "                             :remark2,           " +
-    //                       "                             :qrcode)",
-    //         params      : faDetailObj
-    //     }, function (err, rows) {
-    //         if (err || !rows) {
-    //             console.dir(err);
-    //             return eq.emitLater("error", new ServerError());
-    //         }
-
-    //         if (rows.affectedRows === 0) {
-    //             return eq.emitLater("error", new DataNotFoundError());
-    //         }
-
-    //         return callback(null, null);
-    //     });
-    // });
-
-    // eq.fail(function (err) {
-    //     return callback(err, null);
-    // });
-
-
     mysqlClient.query({
         sql         : "INSERT INTO ASSETS VALUES(:newId,                    " +
                           "                             :oldId,             " +
@@ -460,12 +401,12 @@ exports.allocateFixedAsset = function (faId, userId, callback) {
     console.log("######proxy/fixedAsset/allocateFixedAsset");
 
     mysqlClient.query({
-        sql         : "UPDATE EQUIPMENT SET lastUserId=:lastUserId, possessDate=:possessDate " +
-                      " WHERE equipmentId=:equipmentId",
+        sql         : "UPDATE ASSETS SET userId=:userId, possessDate=:possessDate " +
+                      " WHERE newId=:newId",
         params      : {
-            lastUserId      : userId,
+            userId          : userId,
             possessDate     : new Date().Format("yyyy-MM-dd"),
-            equipmentId     : faId
+            newId           : faId
         }
     }, function (err, rows) {
         if (err || !rows) {
