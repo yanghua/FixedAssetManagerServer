@@ -39,14 +39,17 @@ var others         = require("./controllers/others");
 
 module.exports = function (app) {
 
+    //views
     app.get("/", others.home);
-    app.get("/fixedassets/printservice", fixedAsset.printService);
+    app.get("/fixedasset/printservice", fixedAsset.printService);
 
+    //apis
     app.get("/user/:userId", user.getUserById);
     app.get("/user/:userId/fixedassets", fixedAsset.getFixedAssetListByUserID);
     app.get("/fixedasset/:faId/info", fixedAsset.getFixedAssetByfaID);
     app.get("/fatypes", faType.getAllFATypes);
     app.get("/departments", department.getAllDepartments);
+    app.get("/fixedasset/:faId/existence", fixedAsset.checkExistence);
 
     /************************************************************************/
     /*                Resful: URI Represent a Resource!!!                   */

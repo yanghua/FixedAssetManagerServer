@@ -249,18 +249,21 @@ exports.allocation = function (req, res, next) {
 
     var faId   = req.body.faId || "";
     var userId = req.body.userId || "";
+    var deptId = req.body.deptId || "";
 
     try {
         check(faId).notEmpty();
         check(userId).notEmpty();
+        check(deptId).notEmpty();
     } catch (e) {
         return res.send(resUtil.generateRes(null, config.statusCode.STATUS_INVAILD_PARAMS));
     }
 
     faId   = sanitize(sanitize(faId).trim()).xss();
     userId = sanitize(sanitize(userId).trim()).xss();
+    deptId = sanitize(sanitize(deptId).trim()).xss();
 
-    FixedAsset.allocateFixedAsset(faId, userId, function (err, rows) {
+    FixedAsset.allocateFixedAsset({ userId : userId, newId : faId, departmentId : deptId }, function (err, rows) {
         if (err) {
             return res.send(resUtil.generateRes(null, err.statusCode));
         }
@@ -268,6 +271,40 @@ exports.allocation = function (req, res, next) {
         res.send(resUtil.generateRes(rows, config.statusCode.SATUS_OK));
     });
 };
+
+/**
+ * check fixed asset existence
+ * @param  {object}   req  the instance of request
+ * @param  {object}   res  the instance of response
+ * @param  {Function} next the next handler
+ * @return {null}        
+ */
+exports.checkExistence = function (req, res, next) {
+    console.log("******controllers/fixedAsset/checkExistence");
+
+    var faId = req.params.faId || "";
+
+    try {
+        check(faId).notEmpty();
+    } catch (e) {
+        return res.send(resUtil.generateRes(null, config.statusCode.STATUS_INVAILD_PARAMS));
+    }
+
+    faId = sanitize(sanitize(faId).trim()).xss();
+
+    FixedAsset.checkFixedAssetByfaID(faId, function (err, hasFA) {
+        if (err) {
+            console.log(err);
+            return res.send(resUtil.generateRes(null, err.statusCode));
+        }
+
+        if (hasFA) {
+            return res.send(resUtil.generateRes(1, config.statusCode.SATUS_OK));
+        } else {
+            return res.send(resUtil.generateRes(0, config.statusCode.SATUS_OK));
+        }
+    });
+}
 
 /**
  * print service 

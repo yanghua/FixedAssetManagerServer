@@ -211,7 +211,7 @@ exports.checkFixedAssetByfaID = function (faId, callback) {
         }
     }, function (err, rows) {
         if (err) {
-            callback(new ServerError(), null);
+            return callback(new ServerError(), null);
         } else {
             var hasFA;
             if (rows[0] && rows[0].count > 0) {
@@ -390,22 +390,20 @@ exports.addFixedAsset = function (faDetailObj, callback) {
 
 /**
  * allocate fixed asset
- * @param  {string}   faId     fixed asset id
- * @param  {string}   userId   user id
+ * @param  {object}   allocatingObj     the object of allocating fixed asset
  * @param  {Function} callback the callback func
  * @return {null}            
  */
-exports.allocateFixedAsset = function (faId, userId, callback) {
+exports.allocateFixedAsset = function (allocatingObj, callback) {
     console.log("######proxy/fixedAsset/allocateFixedAsset");
 
+    allocatingObj["possessDate"] = new Date().Format("yyyy-MM-dd")
+
     mysqlClient.query({
-        sql         : "UPDATE ASSETS SET userId=:userId, possessDate=:possessDate " +
+        sql         : "UPDATE ASSETS SET userId=:userId, possessDate=:possessDate, " +
+                      "                  departmentId=:departmentId" +
                       " WHERE newId=:newId",
-        params      : {
-            userId          : userId,
-            possessDate     : new Date().Format("yyyy-MM-dd"),
-            newId           : faId
-        }
+        params      : allocatingObj
     }, function (err, rows) {
         if (err || !rows) {
             console.dir(err);

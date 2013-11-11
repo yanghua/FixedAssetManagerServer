@@ -170,14 +170,26 @@ describe("fixedAsset", function () {
     it('is testing func: /fixedasset/:faId/allocation', function (done) {
         var param = {
             faId        : "11020131108144651",
-            userId      : "123456"
+            userId      : "654321",
+            deptId      : "37"
         };
 
-        app.request().post("/fixedasset/65143/allocation").setBody(param).end(function (res) {
+        app.request().post("/fixedasset/11020131108144651/allocation").setBody(param).end(function (res) {
             console.dir(res.bodyJSON());
             done();
         });
 
+    });
+
+    it('is testing func: /fixedasset/:faId/existence', function (done) {
+        var param = {
+            faId        : "11020131108144651"
+        };
+
+        app.request().get("/fixedasset/" + param.faId + "/existence").end(function (res) {
+            console.dir(res.bodyJSON());
+            done();
+        });
     });
 
 });
