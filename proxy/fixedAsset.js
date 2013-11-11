@@ -427,7 +427,7 @@ exports.getAllqrCode = function (callback) {
     console.log("######proxy/fixedAsset/getAllqrCode");
 
     mysqlClient.query({
-        sql         : "SELECT newId FROM ASSETS ",
+        sql         : "SELECT newId FROM ASSETS LIMIT 50",
         params      : {}
     }, function (err, rows) {
         if (err) {
