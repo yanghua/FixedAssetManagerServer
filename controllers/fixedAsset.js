@@ -267,5 +267,23 @@ exports.allocation = function (req, res, next) {
 
         res.send(resUtil.generateRes(rows, config.statusCode.SATUS_OK));
     });
+};
 
+/**
+ * print service 
+ * @param  {object}   req  the instance of request
+ * @param  {object}   res  the instance of response
+ * @param  {Function} next the next handler
+ * @return {null}        
+ */
+exports.printService = function (req, res, next) {
+    console.log("******controllers/fixedAsset/printService");
+
+    FixedAsset.getAllqrCode(function (err, rows) {
+        if (err) {
+            return res.send(resUtil.generateRes(null, err.statusCode));
+        }
+
+        res.render('subviews/print.html', {qrCodeList : rows});
+    });
 };
