@@ -9,7 +9,8 @@
         "easymysql" : "0.2.7",
         "eventproxy": "0.2.5",
         "validator" : "1.5.1",
-        "ejs"       : "0.8.4"    
+        "ejs"       : "0.8.4",
+        "loader"    : "0.0.5"    
     },
     "devDependencies": {
         "should": "*",
