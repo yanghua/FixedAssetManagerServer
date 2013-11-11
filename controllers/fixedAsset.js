@@ -323,6 +323,10 @@ exports.printService = function (req, res, next) {
             pageIndex = 1;
         }
         pageIndex = sanitize(pageIndex).toInt();
+
+        if (pageIndex < 1) {
+            throw new InvalidParamError("the page index must be gt 1");
+        }
     } catch (e) {
         pageIndex = 1;
     }

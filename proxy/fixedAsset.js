@@ -443,8 +443,6 @@ exports.getqrCodeByPageIndex = function (pageIndex, callback) {
             return callback(new ServerError(), null);
         }
 
-        console.log(rows);
-
         callback(null, rows);
     });
 };
