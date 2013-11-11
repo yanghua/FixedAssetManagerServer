@@ -331,11 +331,34 @@ exports.printService = function (req, res, next) {
         pageIndex = 1;
     }
 
+    var ep = EventProxy.create();
+
     FixedAsset.getqrCodeByPageIndex(pageIndex, function (err, rows) {
         if (err) {
-            return res.send(resUtil.generateRes(null, err.statusCode));
+            return ep.emitLater("error", new ServerError());
         }
 
-        res.render('subviews/print.html', {qrCodeList : rows});
+        ep.emitLater("after_getqrCode", rows);
+    });
+
+    ep.once("after_getqrCode", function (qrCodeList) {
+        FixedAsset.getFixedAssetCount(function (err, totalCount) {
+            if (err) {
+                return ep.emitLater("error", new ServerError());
+            }
+
+            var renderData = {};
+            renderData["pageSize"]   = config.default_page_size;
+            renderData["pageIndex"]  = pageIndex;
+            renderData["total"]      = totalCount;
+            renderData["qrCodeList"] = qrCodeList;
+
+            res.render('subviews/print.html', {renderData : renderData});
+        });
+    });
+
+
+    ep.fail(function (err) {
+        return res.send(resUtil.generateRes(null, err.statusCode));
     });
 };

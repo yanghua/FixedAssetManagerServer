@@ -435,7 +435,7 @@ exports.getqrCodeByPageIndex = function (pageIndex, callback) {
                       "LIMIT :start,:end ",
         params      : {
             start : ((pageIndex - 1) * config.default_page_size),
-            end   : pageIndex * config.default_page_size
+            end   : config.default_page_size
         }
     }, function (err, rows) {
         if (err) {
@@ -446,3 +446,28 @@ exports.getqrCodeByPageIndex = function (pageIndex, callback) {
         callback(null, rows);
     });
 };
+
+/**
+ * get fixed asset's count
+ * @param  {Function} callback the callback func
+ * @return {null}            
+ */
+exports.getFixedAssetCount = function (callback) {
+    console.log("######proxy/fixedAsset/getFixedAssetCount");
+
+    mysqlClient.query({
+        sql         : "SELECT count(newId) AS 'count' FROM fixedAsset.ASSETS ",
+        params      : {}
+    }, function (err, rows) {
+        if (err) {
+            console.dir(err);
+            return callback(new ServerError(), null);
+        }
+
+        if (rows && rows[0]) {
+            return callback(null, rows[0].count);
+        }
+
+        return callback(new ServerError(), null);
+    });
+}
