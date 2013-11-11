@@ -419,21 +419,31 @@ exports.allocateFixedAsset = function (allocatingObj, callback) {
 };
 
 /**
- * get all qrCode
+ * get qrCode by page index
+ * @param {int} pageIndex the page index
  * @param  {Function} callback the callback func
  * @return {null}            
  */
-exports.getAllqrCode = function (callback) {
+exports.getqrCodeByPageIndex = function (pageIndex, callback) {
     console.log("######proxy/fixedAsset/getAllqrCode");
 
     mysqlClient.query({
-        sql         : "SELECT newId FROM ASSETS LIMIT 50",
-        params      : {}
+        sql         : "SELECT newId, t.typeName FROM fixedAsset.ASSETS a " +
+                      "LEFT JOIN fixedAsset.ASSETTYPE t " +
+                      "ON a.typeId = t.typeId " +
+                      "ORDER BY purchaseDate DESC " +
+                      "LIMIT :start,:end ",
+        params      : {
+            start : ((pageIndex - 1) * config.default_page_size),
+            end   : pageIndex * config.default_page_size
+        }
     }, function (err, rows) {
         if (err) {
             console.dir(err);
             return callback(new ServerError(), null);
         }
+
+        console.log(rows);
 
         callback(null, rows);
     });

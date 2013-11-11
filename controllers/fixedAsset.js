@@ -316,7 +316,18 @@ exports.checkExistence = function (req, res, next) {
 exports.printService = function (req, res, next) {
     console.log("******controllers/fixedAsset/printService");
 
-    FixedAsset.getAllqrCode(function (err, rows) {
+    var pageIndex = req.params.pageIndex || 1;
+
+    try {
+        if (pageIndex === "") {
+            pageIndex = 1;
+        }
+        pageIndex = sanitize(pageIndex).toInt();
+    } catch (e) {
+        pageIndex = 1;
+    }
+
+    FixedAsset.getqrCodeByPageIndex(pageIndex, function (err, rows) {
         if (err) {
             return res.send(resUtil.generateRes(null, err.statusCode));
         }
