@@ -49,7 +49,9 @@ exports.getFixedAssetByfaID = function (req, res, next) {
     console.log("******controllers/fixedAsset/getFixedAssetByfaId");
     var faId = req.params.faId || "";
 
-    if (!check(faId).notEmpty()) {
+    try {
+        check(faId).notEmpty();
+    } catch (e) {
         return res.send(resUtil.generateRes(null, config.statusCode.STATUS_INVAILD_PARAMS));
     }
 
@@ -128,20 +130,14 @@ exports.rejection = function (req, res, next) {
     req.body.reject = req.body.reject || 1;
 
     try {
-        if (!check(req.body.faId).notEmpty()) {
-            return res.send(resUtil.generateRes(null, config.statusCode.STATUS_INVAILD_PARAMS));
-        }
-
-        if (!check(req.body.reject).notEmpty) {
-            return res.send(resUtil.generateRes(null, config.statusCode.STATUS_INVAILD_PARAMS));
-        }
+        //check
+        check(req.body.faId).notEmpty();
+        check(req.body.reject).notEmpty();
+        check(req.body.reject).isInt();
 
         //sanitize
         req.body.faId = sanitize(sanitize(req.body.faId).trim()).xss();
-        if (!check(req.body.reject).isInt()) {
-            req.body.faId = sanitize(req.body.reject).toInt();
-        }
-
+        req.body.faId = sanitize(req.body.reject).toInt();
     } catch (e) {
         return res.send(resUtil.generateRes(null, config.statusCode.STATUS_INVAILD_PARAMS));
     }
@@ -222,7 +218,9 @@ exports.getFixedAssetListByUserID = function (req, res, next) {
     console.log("******controllers/fixedAsset/getFixedAssetListByUserID");
     var userId = req.params.userId || "";
 
-    if (!check(userId).notEmpty()) {
+    try {
+        check(userId).notEmpty();
+    } catch (e) {
         return res.send(resUtil.generateRes(null, config.statusCode.STATUS_INVAILD_PARAMS));
     }
 
@@ -271,43 +269,3 @@ exports.allocation = function (req, res, next) {
     });
 
 };
-
-
-// /**
-//  * word generation
-//  * @param  {object}   req  the request obj
-//  * @param  {object}   res  the response obj
-//  * @param  {Function} next the next handler
-//  * @return {null}        
-//  */
-// exports.wordService = function (req, res, next) {
-//     console.log("******controllers/fixedAsset/wordService");
-
-//     var serviceFileName = "FixedAssetManagerService-1.0-SNAPSHOT.jar";
-//     var servicePath = path.join(__dirname, "../common/services/", serviceFileName);
-
-//     var eq = EventProxy.create();
-
-//     //call word generation service
-//     exec("java -jar " + servicePath, function (err, stdout, stderr) {
-//         if (err) {
-//             return res.send(resUtil.generateRes(null, config.statusCode.STATUS_SERVER_ERROR));
-//         }
-
-//         var filePath = stdout || "";
-
-//         if (check(filePath).notEmpty()) {
-//             eq.emitLater("after_generated", filePath);
-//         } else {
-//             return res.send(resUtil.generateRes(null, config.statusCode.STATUS_SERVER_ERROR));
-//         }
-//     });
-
-//     eq.once("after_generated", function (filePath) {
-//         console.log(filePath);
-//         //TODO:response file stream to client
-//         fs.readFile("XXX", function (err, data) {
-//             return res.send(data);
-//         });
-//     });
-// };

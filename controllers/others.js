@@ -23,8 +23,17 @@
   Desc: others - the controller of others
  */
 
+//mode:
+'use strict';
 
+/**
+ * the home controller
+ * @param  {object}   req  the request obj
+ * @param  {object}   res  the instance of response
+ * @param  {Function} next the next handler
+ * @return {null}        
+ */
 exports.home = function (req, res, next){
     console.log("#######controllers/others->home");
     res.render('home');
-} 
+};

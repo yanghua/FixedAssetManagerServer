@@ -26,9 +26,9 @@
 //mode:
 'use strict';
 
-var FAType = require("../proxy/faType");
-var resUtil     = require("../libs/resUtil");
-var config      = require("../config").initConfig();
+var FAType  = require("../proxy/faType");
+var resUtil = require("../libs/resUtil");
+var config  = require("../config").initConfig();
 
 
 /**

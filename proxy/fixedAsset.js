@@ -31,9 +31,7 @@ var mysqlUtil    = require("../libs/mysqlUtil"),
     mysqlClient  = mysqlUtil.initMysql();
 var EventProxy   = require("eventproxy");
 var config       = require("../config").initConfig();
-var SQL_PATTERN  = require("./SQLS").getSqlConfig();
                    require("../libs/DateUtil");
-var qrCodeUtil   = require("../libs/qrCodeUtil");
 
 /**
  * get fixed asset list by userId

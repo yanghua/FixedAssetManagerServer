@@ -43,7 +43,9 @@ exports.getUserById = function (req, res, next) {
     console.log("******controllers/user/getUserById");
     var userId = req.params.userId || "";
 
-    if (!check(userId).notEmpty()) {
+    try {
+        check(userId).notEmpty();
+    } catch (e) {
         return res.send(resUtil.generateRes(null, config.statusCode.STATUS_INVAILD_PARAMS));
     }
 
