@@ -1,21 +1,21 @@
 <% layout('layout') -%>
 <script type="text/javascript">
   $(document).ready(function(){
-    alert('123');
     var options = {
-              currentPage: 3,
+              currentPage:<%= locals.renderData.pageIndex %>,
               totalPages: 10,
               pageUrl: function(type, page, current){
-                  return "http://example.com/list/page/";
+                  return "http://127.0.0.1:8088/fixedasset/printservice/"+page;
 
               }
     }
-    $('#example2').bootstrapPaginator(options);
+    $('#paginator_div').bootstrapPaginator(options);
   });
                  
 </script>
 <div class="page-header">
     <h1>打印二维码</h1>
+
 </div>
 
 
@@ -24,8 +24,9 @@
   pageIndex: <%= locals.renderData.pageIndex %>
   total: <%= locals.renderData.total %>
 </div>
+<div style="float:right">打印当前页</div>
 
-<div id='example2' class="pagination"></div>
+<div id='paginator_div' class="pagination"></div>
 
 <div class="div_items_list">
     <%
@@ -33,7 +34,6 @@
             for (var i = 0; i < locals.renderData.qrCodeList.length; i++) {
     %>
             
-
               <div class="item_qrcode">
                 <img src="
                 http://qr.liantu.com/api.php?w=180&m=10&text=<%= locals.renderData.qrCodeList[i].newId %>"/>
