@@ -1,0 +1,41 @@
+<% layout('layout') -%>
+<div class="page-header">
+    <h1>打印二维码</h1>
+</div>
+
+<div class="btn-group">
+  <button type="button" class="btn btn-default">1</button>
+  <button type="button" class="btn btn-default">2</button>
+  <button type="button" class="btn btn-default">3</button>
+  <button type="button" class="btn btn-default">4</button>
+  <button type="button" class="btn btn-default">5</button>
+
+  <div class="btn-group">
+    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+      更多
+      <span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu">
+      <li><a href="#">6</a></li>
+      <li><a href="#">7</a></li>
+    </ul>
+  </div>
+</div>
+
+<div style="width:800px;">
+    <%
+        if (locals.qrCodeList) {
+            for (var i = 0; i < locals.qrCodeList.length; i++) {
+    %>
+            
+              <div style="height:180px;width:150px;float:left">
+                <img src="http://qr.liantu.com/api.php?w=150&text=<%= locals.qrCodeList[i].newId %>"/>
+                <p><span style="text-align:center"><%= locals.qrCodeList[i].newId %></span></p>
+              </div>
+                
+    <%
+            }
+        }
+    %>
+    
+</div>
