@@ -419,3 +419,24 @@ exports.allocateFixedAsset = function (faId, userId, callback) {
         callback(null, null);
     });
 };
+
+/**
+ * get all qrCode
+ * @param  {Function} callback the callback func
+ * @return {null}            
+ */
+exports.getAllqrCode = function (callback) {
+    console.log("######proxy/fixedAsset/getAllqrCode");
+
+    mysqlClient.query({
+        sql         : "SELECT newId FROM ASSETS ",
+        params      : {}
+    }, function (err, rows) {
+        if (err) {
+            console.dir(err);
+            return callback(new ServerError(), null);
+        }
+
+        callback(null, rows);
+    });
+};
