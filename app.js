@@ -27,13 +27,15 @@
 /*jslint nomen: true*/
 "use strict";
 
-var fs      = require("fs");
-var path    = require("path");
-var express = require("express");
-var routes  = require("./routes");
-var common  = require("./common/Error");
+var fs        = require("fs");
+var path      = require("path");
+var express   = require("express");
+var routes    = require("./routes");
+var common    = require("./common/Error");
+var AppConfig = require("./appConfig").config;
+var Loader    = require("loader");
 
-var app     = express.createServer();
+var app       = express.createServer();
 
 //config for all env
 app.configure(function () {
@@ -50,6 +52,11 @@ app.configure(function () {
 var maxAge = 3600000 * 24 * 30;
 var staticDir = path.join(__dirname, 'public');
 
+//set static, dynamic helpers
+app.helpers({
+    config: AppConfig,
+    Loader: Loader
+});
 
 //config for devp env
 app.configure('development', function () {
