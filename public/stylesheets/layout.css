@@ -112,3 +112,24 @@ body {
 .dashboard {
   border: 1px solid #e3e3e3;
 }
+
+
+/*
+add to show new ui
+ */
+#nav_new{
+  background-color: rgb(71, 163, 218);
+}
+.div_items_list{
+  width:950px;
+  text-align:center;
+  margin: 0 auto 0 auto;
+}
+.item_qrcode{
+  height:200px;
+  width:180px;
+  float:left
+}
+.item_qrcode div{
+  text-align: center;
+}
