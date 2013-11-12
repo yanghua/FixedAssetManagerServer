@@ -1,9 +1,4 @@
-body, p {
-    font-size: 14px;
-    font-family: "Helvetica Neue", Helvetica, "Microsoft Yahei", "Wenquanyi Micro Hei", Arial, sans-serif;
-    word-break: break-all;
-    -webkit-font-smoothing: antialiased;
-}
+
 textarea, input[type="text"],
 input[type="password"],
 input[type="datetime"],

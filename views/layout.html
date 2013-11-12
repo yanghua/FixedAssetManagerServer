@@ -1,70 +1,65 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <!-- meta -->
-        <meta charset="utf-8" />
-        <meta name='description' content='<%= config.description %>'>
-
-        <%
-            var headers = config.site_headers || [];
-            for (var i = 0, l = headers.length; i < l; i++) {
-        %>
-        <%- headers[i] %>
-        <%  } %>
-
-        <!-- style -->
-        <%- Loader()
-                .css("/public/libs/bootstrap/css/bootstrap.css")
-                .css("/public/stylesheets/layout.css")
-                .css("/public/stylesheets/simplePagination.css")
-                .done()
-        %>
-
-        <!-- script -->
-        <%- Loader()
-                .js('/public/libs/jquery/jquery-1.10.2.min.js')
-                .js('/public/libs/jquery/jquery.simplePagination.js')
-                .js('/public/libs/bootstrap/js/bootstrap.js')
-                .js('/public/libs/js/bootstrap-paginator.js')
-                .done()
-        %>
-
-    </head>
-    <body>
-
-        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
-          <div class="container" id="">
-            <div class="navbar-header">
-            <a class="brand" href="/"><img src="/public/images/wisedu.png" title="Node.js专业中文社区"></a>
-                <div id="nav_title"><%= config.title %></div>
-            </div>
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li class="active"><a href="#">首 页</a></li>
-                    <li><a href="#member">打印服务</a></li>
-                    <li><a href="#report">资产管理</a></li>
-                    <li><a href="#game">资产明细</a></li>
-                </ul>
-                <ul class="nav navbar-nav navbar-right">
-                    <li><a href="#">YH 你好</a></li>
-                    <li><a href="#">设置</a></li>
-                    <li><a href="#">退出</a></li>
-                </ul>
-            </div><!--/.nav-collapse -->
-          </div>
-        </div>
-
-        <div class="container">
-            <div class="row">
-                <%- body %>
-            </div>
-        </div>
-        <div id="footer">
-        <div class="container">
-        <p class="muted">
-            资产管理
-        </p>
-        </div>
-    </div>
-    </body>
+<head>
+  <!-- meta -->
+  <meta charset="utf-8" />
+  <meta name='description' content='<%= config.description %>'>
+  <%
+  var headers = config.site_headers || [];
+  for (var i = 0, l = headers.length; i < l; i++) {
+   %>
+   <%- headers[i] %>
+   <%  } %>
+   <!-- style -->
+   <%- Loader()
+   .css("/public/libs/bootstrap/css/bootstrap.css")
+   .css("/public/stylesheets/layout.css")
+   .css("/public/stylesheets/simplePagination.css")
+   .done()
+   %>
+   <!-- script -->
+   <%- Loader()
+   .js('/public/libs/jquery/jquery-1.10.2.min.js')
+   .js('/public/libs/jquery/jquery.simplePagination.js')
+   .js('/public/libs/bootstrap/js/bootstrap.js')
+   .js('/public/libs/js/bootstrap-paginator.js')
+   .done()
+   %>
+</head>
+<body>
+  <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+   <div class="container" id="">
+    <div class="navbar-header">
+     <a class="brand" href="/"><img src="/public/images/wisedu.png" title="Node.js专业中文社区"></a>
+     <div id="nav_title"><%= config.name %></div>
+  </div>
+  <div class="navbar-collapse collapse">
+     <ul class="nav navbar-nav">
+      <li class="active"><a href="/">首 页</a></li>
+      <li><a href="/fixedasset/printservice/">打印服务</a></li>
+      <li><a href="#report">资产管理</a></li>
+      <li><a href="#game">资产明细</a></li>
+   </ul>
+   <ul class="nav navbar-nav navbar-right">
+      <li><a href="#">YH 你好</a></li>
+      <li><a href="#">设置</a></li>
+      <li><a href="#">退出</a></li>
+   </ul>
+</div>
+<!--/.nav-collapse -->
+</div>
+</div>
+<div class="container">
+   <div class="row">
+    <%- body %>
+ </div>
+</div>
+<div id="footer">
+   <div class="container">
+    <p class="muted">
+     资产管理
+  </p>
+</div>
+</div>
+</body>
 </html>

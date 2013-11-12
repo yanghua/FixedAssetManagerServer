@@ -35,5 +35,5 @@
  */
 exports.home = function (req, res, next){
     console.log("#######controllers/others->home");
-    res.render('home');
+    res.render('subviews/home.html');
 };
