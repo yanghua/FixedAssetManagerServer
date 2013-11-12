@@ -37,6 +37,7 @@ var EventProxy  = require("eventproxy");
 var exec        = require("child_process").exec;
 var path        = require("path");
 var fs          = require("fs");
+var config2 = require('../config').config;
 
 /**
  * get fixed asset by faId
@@ -353,7 +354,8 @@ exports.printService = function (req, res, next) {
             renderData["total"]      = totalCount;
             renderData["qrCodeList"] = qrCodeList;
 
-            res.render('subviews/print.html', {renderData : renderData});
+            res.render('subviews/print.html', 
+                {renderData : renderData,config:config2});
         });
     });
 

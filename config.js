@@ -43,6 +43,14 @@ function initConfig() {
             "database"  : "fixedAsset"
         },
 
+        //     mysqlConfig       : {
+        //     "host"      : "127.0.0.1",
+        //     "user"      : "root",
+        //     "password"  : "",
+        //     "database"  : "fixedAsset"
+        // },
+
+
         default_page_size : 50,
 
         statusCode        : {
@@ -71,3 +79,11 @@ function initConfig() {
 
 //exports
 exports.initConfig = initConfig;
+
+//exports config
+exports.config={
+  title:'金智教育资产管理系统',
+  name:'金智教育资产管理系统',
+  description:'金智教育资产管理系统',
+  version:'0.0.1'
+}

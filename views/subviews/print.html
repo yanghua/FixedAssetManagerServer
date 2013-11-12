@@ -17,21 +17,26 @@
         currentPage:<%= locals.renderData.pageIndex %>,
         cssStyle: 'light-theme',
         onPageClick: function(pageNum){
-          window.location.href="http://127.0.0.1:8088/fixedasset/printservice/"+pageNum;
+          window.location.href="/fixedasset/printservice/"+pageNum;
         }
     });
+
   });
-                 
+  function btnPrintClick(){  
+      window.print();  
+  }             
 </script>
-<div class="page-header">
+<div class="header_div">
     <h1>打印二维码</h1>
-
-</div>
-  <div>
-    <div id='paginator_div' style="margin: 0 0;" class="pagination"></div>
-    <div style="float:right">打印当前页</div>
-  </div>
-
+    <div class="pagination_print">
+      <div id='paginator_div' style="float:left;padding-top:10px" ></div>
+        <div style="float:right">
+          <button type="button" class="btn btn-default btn-lg" onclick="btnPrintClick()">
+          <span class="glyphicon glyphicon-print"></span> 打印
+          </button>
+        </div>
+      </div>
+    </div>
 
 <div class="div_items_list">
     <%
