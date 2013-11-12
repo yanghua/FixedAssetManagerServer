@@ -42,7 +42,7 @@ describe("fixedAsset", function () {
     //test: /fixedasset/inspection (success)
     it('should response data', function (done) {
         var param = {
-            'qrCode' : "2"
+            'qrCode' : "200901-02-0004"
         };
         app.request().post('/fixedasset/inspection').setBody(param).end(function (res) {
             console.dir(res.bodyJSON());

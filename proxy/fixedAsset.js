@@ -161,7 +161,7 @@ exports.getFixedAssetByfaID = function (faId, callback) {
 
         if (faInfo.faDetail.typeId.length != 0) {
             mysqlClient.query({
-                sql     : "SELECT * FROM ASSETTPYE WHERE typeId = :typeId",
+                sql     : "SELECT * FROM ASSETTYPE WHERE typeId = :typeId",
                 params  : {
                     "typeId"  : faInfo.faDetail.typeId
                 }
