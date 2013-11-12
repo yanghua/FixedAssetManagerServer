@@ -1,36 +1,35 @@
-<% layout( 'layout') -%>
+<% layout('layout') -%>
 <script type="text/javascript">
-  $(document).ready(function() {
-            // var options = {
-            //           currentPage:<%= locals.renderData.pageIndex %>,
-            //           totalPages: 10,
-            //           pageUrl: function(type, page, current){
-            //               return "http://127.0.0.1:8088/fixedasset/printservice/"+page;
+  $(document).ready(function(){
+    // var options = {
+    //           currentPage:<%= locals.renderData.pageIndex %>,
+    //           totalPages: 10,
+    //           pageUrl: function(type, page, current){
+    //               return "http://127.0.0.1:8088/fixedasset/printservice/"+page;
 
-            //           }
-            // }
-            // $('#paginator_div').bootstrapPaginator(options);
-            // 
-            $('#paginator_div').pagination({
-              items: <%= locals.renderData.total %> ,
-              itemsOnPage: <%= locals.renderData.pageSize %> ,
-              currentPage: <%= locals.renderData.pageIndex %> ,
-              cssStyle: 'light-theme',
-              onPageClick: function(pageNum) {
-                window.location.href = "/fixedasset/printservice/" + pageNum;
-              }
-            });
+    //           }
+    // }
+    // $('#paginator_div').bootstrapPaginator(options);
+    // 
+    $('#paginator_div').pagination({
+      items: <%= locals.renderData.total %>,
+      itemsOnPage: <%= locals.renderData.pageSize %>,
+      currentPage:<%= locals.renderData.pageIndex %>,
+      cssStyle: 'light-theme',
+      onPageClick: function(pageNum){
+        window.location.href="/fixedasset/printservice/"+pageNum;
+      }
+    });
 
-          });
-
-  function btnPrintClick() {
-    window.print();
-  }
+  });
+  function btnPrintClick(){  
+    window.print();  
+  }             
 </script>
 <div class="header_div">
   <h1>打印二维码</h1>
   <div class="pagination_print">
-    <div id='paginator_div' style="float:left;padding-top:10px"></div>
+    <div id='paginator_div' style="float:left;padding-top:10px" ></div>
     <div style="float:right">
       <button type="button" class="btn btn-default btn-lg" onclick="btnPrintClick()">
         <span class="glyphicon glyphicon-print"></span> 打印
@@ -40,17 +39,20 @@
 </div>
 
 <div class="div_items_list">
-  <% if (locals.renderData.qrCodeList) { for (var i=0 ; i < locals.renderData.qrCodeList.length; i++) { %>
-
-  <div class="item_qrcode">
-    <img src="
-    http://qr.liantu.com/api.php?w=180&m=10&text=<%= locals.renderData.qrCodeList[i].newId %>" />
-    <div>
-      <%=l ocals.renderData.qrCodeList[i].typeName %>:
-      <%=l ocals.renderData.qrCodeList[i].newId %>
-    </div>
-  </div>
-
-  <% } } %>
-
+  <%
+  if (locals.renderData.qrCodeList) {
+    for (var i = 0; i < locals.renderData.qrCodeList.length; i++) {
+      %>
+      
+      <div class="item_qrcode">
+        <img src="
+        http://qr.liantu.com/api.php?w=180&m=10&text=<%= locals.renderData.qrCodeList[i].newId %>"/>
+        <div><%= locals.renderData.qrCodeList[i].typeName %>:<%= locals.renderData.qrCodeList[i].newId %></div>
+      </div>
+      
+      <%
+    }
+  }
+  %>
+  
 </div>

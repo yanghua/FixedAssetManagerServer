@@ -42,7 +42,7 @@ module.exports = function (app) {
     //views
     app.get("/", others.home);
     app.get("/fixedasset/printservice/:pageIndex?", fixedAsset.printService);
-
+    
     //apis
     app.get("/user/:userId", user.getUserById);
     app.get("/user/:userId/fixedassets", fixedAsset.getFixedAssetListByUserID);
