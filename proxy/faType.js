@@ -36,7 +36,7 @@ var mysqlUtil    = require("../libs/mysqlUtil"),
  */
 exports.getAllFATypes = function (callback) {
     mysqlClient.query({
-        sql     : "SELECT * FROM ASSETTPYE",
+        sql     : "SELECT * FROM ASSETTYPE",
         params  : {}
     }, function (err, rows) {
         if (err || !rows) {
