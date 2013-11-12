@@ -1,15 +1,25 @@
 <% layout('layout') -%>
 <script type="text/javascript">
   $(document).ready(function(){
-    var options = {
-              currentPage:<%= locals.renderData.pageIndex %>,
-              totalPages: 10,
-              pageUrl: function(type, page, current){
-                  return "http://127.0.0.1:8088/fixedasset/printservice/"+page;
+    // var options = {
+    //           currentPage:<%= locals.renderData.pageIndex %>,
+    //           totalPages: 10,
+    //           pageUrl: function(type, page, current){
+    //               return "http://127.0.0.1:8088/fixedasset/printservice/"+page;
 
-              }
-    }
-    $('#paginator_div').bootstrapPaginator(options);
+    //           }
+    // }
+    // $('#paginator_div').bootstrapPaginator(options);
+    // 
+    $('#paginator_div').pagination({
+        items: <%= locals.renderData.total %>,
+        itemsOnPage: <%= locals.renderData.pageSize %>,
+        currentPage:<%= locals.renderData.pageIndex %>,
+        cssStyle: 'light-theme',
+        onPageClick: function(pageNum){
+          window.location.href="http://127.0.0.1:8088/fixedasset/printservice/"+pageNum;
+        }
+    });
   });
                  
 </script>
@@ -17,16 +27,11 @@
     <h1>打印二维码</h1>
 
 </div>
+  <div>
+    <div id='paginator_div' style="margin: 0 0;" class="pagination"></div>
+    <div style="float:right">打印当前页</div>
+  </div>
 
-
-<div>
-  pageSize: <%= locals.renderData.pageSize %>
-  pageIndex: <%= locals.renderData.pageIndex %>
-  total: <%= locals.renderData.total %>
-</div>
-<div style="float:right">打印当前页</div>
-
-<div id='paginator_div' class="pagination"></div>
 
 <div class="div_items_list">
     <%
