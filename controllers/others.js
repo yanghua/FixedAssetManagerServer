@@ -37,3 +37,8 @@ exports.home = function (req, res, next){
     console.log("#######controllers/others->home");
     res.render('subviews/home.html');
 };
+
+exports.fourofour=function (req, res, next){
+    console.log("#######controllers/others->404");
+    res.render('404.html');
+};

@@ -154,3 +154,11 @@ add to show new ui
   padding-right: 10px;
 }
 
+#main_div{
+  width: 1000px;
+  _height:700px;
+  min-height: 700px;
+  background-color: #fff;
+  margin: 0 auto;
+}
+

@@ -363,3 +363,11 @@ exports.printService = function (req, res, next) {
         return res.send(resUtil.generateRes(null, err.statusCode));
     });
 };
+/**
+ * manager
+ */
+
+exports.manage = function (req, res, next){
+    console.log("#######controllers/fixedasset->manager");
+    res.render('subviews/manage.html');
+} 
