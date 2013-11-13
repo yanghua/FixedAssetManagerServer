@@ -61,8 +61,8 @@ describe("fixedAsset", function () {
         });
     });
 
-    //test: fixedasset/:faId/info
-    it('should response data', function (done) {
+    //test: /fixedasset/:faId/info
+    it('is testing func: /fixedasset/:faId/info', function (done) {
         var param = {
             faId : "2"
         };
@@ -103,7 +103,7 @@ describe("fixedAsset", function () {
     //test: /fixedasset/insertion
     it('is testing func: /fixedasset/insertion', function (done) {
         var param = {
-            newId               : "2",
+            newId               : "21011111",
             oldId               : "",
             userId              : "01313140",
             departmentId        : "3",
@@ -136,9 +136,9 @@ describe("fixedAsset", function () {
     //test: /fixedasset/:faId/modification
     it('is testing func: /fixedasset/:faId/modification', function (done) {
         var param = {
-            newId               : "2",
+            newId               : "2002",
             oldId               : "1",
-            userId              : "01110050",
+            userId              : "",
             departmentId        : "37",
             typeId              : "4",
             assetName           : "5",
@@ -169,7 +169,7 @@ describe("fixedAsset", function () {
 
     it('is testing func: /fixedasset/:faId/allocation', function (done) {
         var param = {
-            faId        : "11020131108144651",
+            faId        : "2002",
             userId      : "654321",
             deptId      : "37"
         };
