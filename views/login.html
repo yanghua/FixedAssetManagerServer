@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <!-- meta -->
+        <meta charset="utf-8" />
+        <meta name='description' content='<%= config.description %>'>
+        <%
+            var headers = config.site_headers || [];
+            for (var i = 0, l = headers.length; i < l; i++) {
+        %>
+        <%- headers[i] %>
+        <%  } %>
+
+        <!-- style -->
+        <%- Loader()
+                .css("/public/libs/bootstrap/css/bootstrap.css")
+                .css("/public/stylesheets/login.css")
+                .done()
+        %>
+
+        <!-- script -->
+        <%- Loader()
+                .js("/public/libs/jquery/jquery-1.10.2.min.js")
+                .js('/public/libs/bootstrap/js/bootstrap.js')
+                .done()
+
+        %>
+    </head>
+    <body>
+        <div class="container">
+            <form class="form-signin" action="signIn" method="post">
+                <h2 class="form-signin-heading">金智教育资产管理系统</h2>
+                <input type="text" class="form-control" placeholder="用户名" required autofocus>
+                <input type="password" class="form-control" placeholder="密 码" required>
+                <label class="checkbox">
+                    <input type="checkbox" value="remember-me"> 记住密码
+                </label>
+                <button class="btn btn-lg btn-primary btn-block" type="submit">登 录</button>
+            </form>
+        </div> <!-- /container -->
+    </body>
+</html>

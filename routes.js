@@ -35,12 +35,13 @@ var fixedAsset     = require("./controllers/fixedAsset");
 var faType         = require("./controllers/faType");
 var department     = require("./controllers/department");
 var others         = require("./controllers/others");
-
+var login          = require("./controllers/login");
 
 module.exports = function (app) {
 
     //views
-    app.get("/", others.home);
+    app.get("/apis", others.home);
+    app.get("/", login.showLogin);
     app.get("/fixedasset/printservice/:pageIndex?", fixedAsset.printService);
     app.get("/fixedasset/manage",fixedAsset.manage);
     app.get("/404",others.fourofour);
