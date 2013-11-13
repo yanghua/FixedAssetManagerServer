@@ -79,11 +79,3 @@ function initConfig() {
 
 //exports
 exports.initConfig = initConfig;
-
-//exports config
-exports.config={
-  title:'金智教育资产管理系统',
-  name:'金智教育资产管理系统',
-  description:'金智教育资产管理系统',
-  version:'0.0.1'
-}
