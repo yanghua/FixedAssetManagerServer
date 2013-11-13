@@ -27,14 +27,13 @@
 'use strict';
 
 var FixedAsset  = require("../proxy/fixedAsset");
+var FAHistory   = require("../proxy/fixedAssetHistory");
 var User        = require("../proxy/user");
 var resUtil     = require("../libs/resUtil");
-var qrCodeUtil  = require("../libs/qrCodeUtil");
 var config      = require("../config").initConfig();
 var check       = require("validator").check;
 var sanitize    = require("validator").sanitize;
 var EventProxy  = require("eventproxy");
-var exec        = require("child_process").exec;
 var path        = require("path");
 var fs          = require("fs");
 
@@ -133,22 +132,59 @@ exports.rejection = function (req, res, next) {
         //check
         check(req.body.faId).notEmpty();
         check(req.body.reject).notEmpty();
-        check(req.body.reject).isInt();
 
         //sanitize
         req.body.faId = sanitize(sanitize(req.body.faId).trim()).xss();
-        req.body.faId = sanitize(req.body.reject).toInt();
+        req.body.reject = sanitize(req.body.reject).toInt();
     } catch (e) {
         return res.send(resUtil.generateRes(null, config.statusCode.STATUS_INVAILD_PARAMS));
     }
 
+    var ep = EventProxy.create();
+
     FixedAsset.rejectFixedAsset(req.body, function (err, rows) {
         if (err) {
-            res.send(resUtil.generateRes(null, err.statusCode));
+            ep.emitLater("error", err);
         } else {
-            console.dir(rows);
-            res.send(resUtil.generateRes(null, config.statusCode.SATUS_OK));
+            ep.emitLater("after_rejected");
         }
+    });
+
+    ep.once("after_rejected", function() {
+        FixedAsset.getFixedAssetByfaID(req.body.faId, function(err, faInfo) {
+            if (err) {
+                return ep.emitLater("error", err);
+            }
+
+            ep.emitLater("after_getFAInfo", faInfo);
+        });
+    });
+
+    ep.once("after_getFAInfo", function(faInfo) {
+
+        var historyRecord       = {};
+        historyRecord["atId"]   = faInfo["faDetail"]["newId"];
+        historyRecord["aetpId"] = 2;                //reject
+        historyRecord["userId"] = faInfo["faDetail"]["userId"];
+        historyRecord["aeDesc"] = "";
+        historyRecord["aeTime"] = new Date().Format("yyyy-MM-dd");
+
+        FAHistory.insertHistoryRecord(historyRecord, function (err, data) {
+            if (err) {
+                return ep.emitLater("error", err);
+            }
+
+            ep.emitLater("completed");
+        });
+    });
+
+    ep.once("completed", function() {
+        res.send(resUtil.generateRes(null, config.statusCode.SATUS_OK));
+    });
+
+
+    ep.fail(function (err) {
+        res.send(resUtil.generateRes(null, err.statusCode));
     });
 };
 
@@ -165,12 +201,50 @@ exports.insertion = function (req, res, next) {
 
     var faObj = req.body;
 
+    var ep = EventProxy.create();
+
     FixedAsset.addFixedAsset(faObj, function (err, rows) {
         if (err) {
-            return res.send(resUtil.generateRes(null, err.statusCode));
+            return ep.emitLater("error", err);
         }
 
+        ep.emitLater("after_insertion");
+    });
+
+    ep.once("after_insertion", function () {
+        FixedAsset.getFixedAssetByfaID(faObj.newId, function(err, faInfo) {
+            if (err) {
+                return ep.emitLater("error", err);
+            }
+
+            ep.emitLater("after_getFAInfo", faInfo);
+        });
+    });
+
+    ep.once("after_getFAInfo", function(faInfo) {
+
+        var historyRecord       = {};
+        historyRecord["atId"]   = faInfo["faDetail"]["newId"];
+        historyRecord["aetpId"] = 1;                //insert
+        historyRecord["userId"] = faInfo["userId"];
+        historyRecord["aeDesc"] = "";
+        historyRecord["aeTime"] = new Date().Format("yyyy-MM-dd");
+
+        FAHistory.insertHistoryRecord(historyRecord, function (err, data) {
+            if (err) {
+                return ep.emitLater("error", err);
+            }
+
+            ep.emitLater("completed");
+        });
+    });
+
+    ep.once("completed", function() {
         res.send(resUtil.generateRes(null, config.statusCode.SATUS_OK));
+    });
+
+    ep.fail(function (err) {
+        res.send(resUtil.generateRes(null, err.statusCode));
     });
 
 };
@@ -198,12 +272,47 @@ exports.modification = function (req, res, next) {
 
     var detailObj = req.body;
 
+    var ep = EventProxy.create();
+
     FixedAsset.modifyFixedAsset(detailObj, faId, function (err, rows) {
         if (err) {
-            return res.send(resUtil.generateRes(null, err.statusCode));
+            return ep.emitLater("error", err);
         }
 
+        var userId = detailObj["userId"] || "";
+
+        if (userId.length != 0) {
+            ep.emitLater("completed");
+        } else {
+            //if userId is null ,it means retake this fixed asset
+            ep.emitLater("after_retake");
+        }
+        
+    });
+
+    ep.once("after_retake", function () {
+        var historyRecord       = {};
+        historyRecord["atId"]   = faId;
+        historyRecord["aetpId"] = 4;                //retake
+        historyRecord["userId"] = "";
+        historyRecord["aeDesc"] = "";
+        historyRecord["aeTime"] = new Date().Format("yyyy-MM-dd");
+
+        FAHistory.insertHistoryRecord(historyRecord, function (err, data) {
+            if (err) {
+                return ep.emitLater("error", err);
+            }
+
+            ep.emitLater("completed");
+        });
+    });
+
+    ep.once("completed", function() {
         res.send(resUtil.generateRes(null, config.statusCode.SATUS_OK));
+    });
+
+    ep.fail(function (err) {
+        res.send(resUtil.generateRes(null, err.statusCode));
     });
 };
 
@@ -247,7 +356,7 @@ exports.getFixedAssetListByUserID = function (req, res, next) {
 exports.allocation = function (req, res, next) {
     console.log("******controllers/fixedAsset/allocation");
 
-    var faId   = req.body.faId || "";
+    var faId   = req.body.faId   || "";
     var userId = req.body.userId || "";
     var deptId = req.body.deptId || "";
 
@@ -263,12 +372,39 @@ exports.allocation = function (req, res, next) {
     userId = sanitize(sanitize(userId).trim()).xss();
     deptId = sanitize(sanitize(deptId).trim()).xss();
 
+    var ep = EventProxy.create();
+
     FixedAsset.allocateFixedAsset({ userId : userId, newId : faId, departmentId : deptId }, function (err, rows) {
         if (err) {
-            return res.send(resUtil.generateRes(null, err.statusCode));
+            return ep.emitLater("error", err);
         }
 
-        res.send(resUtil.generateRes(rows, config.statusCode.SATUS_OK));
+        ep.emitLater("after_allocation");
+    });
+
+    ep.once("after_allocation", function() {
+        var historyRecord       = {};
+        historyRecord["atId"]   = faId;
+        historyRecord["aetpId"] = 3;                //allocation
+        historyRecord["userId"] = userId;
+        historyRecord["aeDesc"] = "";
+        historyRecord["aeTime"] = new Date().Format("yyyy-MM-dd");
+
+        FAHistory.insertHistoryRecord(historyRecord, function (err, data) {
+            if (err) {
+                return ep.emitLater("error", err);
+            }
+
+            ep.emitLater("completed");
+        });
+    });
+
+    ep.once("completed", function () {
+        res.send(resUtil.generateRes(null, config.statusCode.SATUS_OK));
+    })
+
+    ep.fail(function(err) {
+        res.send(resUtil.generateRes(null, err.statusCode));
     });
 };
 
@@ -363,11 +499,15 @@ exports.printService = function (req, res, next) {
         return res.send(resUtil.generateRes(null, err.statusCode));
     });
 };
-/**
- * manager
- */
 
+/**
+ * render fixed asset manager page
+ * @param  {object}   req  the instance of request
+ * @param  {object}   res  the instance of response
+ * @param  {Function} next the next handler
+ * @return {null}        
+ */
 exports.manage = function (req, res, next){
     console.log("#######controllers/fixedasset->manager");
     res.render('subviews/manage.html');
-} 
+};
