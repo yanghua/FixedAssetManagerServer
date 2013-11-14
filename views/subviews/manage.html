@@ -10,10 +10,11 @@
 			$.ajax({ 
 				type: 'POST', 
 				url: '/fixedasset/inspection', 
-				data: { 'qrCode': '200901-02-0004' }, 
+				data: { 'qrCode': '201307-03-0035' }, 
 				success: function (data) { 
 					if(data.statusCode==0){
 						$("#assetDetails").show();
+						$("#assetDetails ul").html("");
 						var temp ='<li class="list-group-item">';
 						if (data.data.faDetail.newId) {
 							$("#assetDetails ul").append(temp+'设备编号:'+data.data.faDetail.newId+'</li>');
@@ -24,7 +25,12 @@
 							$("#assetDetails ul").append(temp+'旧编号:'+data.data.faDetail.oldId+'</li>');
 						}
 						if(data.data.faDetail.userId){
-							$("#assetDetails ul").append(temp+'旧编号:'+data.data.faDetail.oldId+'</li>');
+							$("#assetDetails ul").append(temp+'领用人:'+data.data.userInfo.userName+'</li>');
+							loadUnderName(data.data.faDetail.userId);
+
+						}
+						if(data.data.faDetail.userId){
+
 						}
 						
 						
@@ -34,6 +40,26 @@
 		}else{
 			alert("898");
 		}
+	}
+
+	function loadUnderName(userId){
+		$.ajax({ 
+			type: 'GET', 
+			url: '/user/'+userId+'/fixedassets', 
+			success: function (data) { 
+				if(data.statusCode==0){
+					$("#underName").show();
+					$("#addtr").html("");
+						//if (data.data) {};
+						for (var i = 0; i < data.data.length; ++i) {
+							$("#addtr").append("<tr><td>"+i+"</td><td>"+data.data[i].newId
+								+"</td><td>"+data.data[i].assetName
+								+"</td><td>@mdo</td></tr>");
+						};
+						
+						}
+					}
+				});
 	}
 
 
@@ -70,29 +96,12 @@
 					<th>操作</th>
 				</tr>
 			</thead>
-			<tbody>
-				<tr>
-					<td>1</td>
-					<td>Mark</td>
-					<td>Otto</td>
-					<td>@mdo</td>
-				</tr>
-				<tr>
-					<td>2</td>
-					<td>Jacob</td>
-					<td>Thornton</td>
-					<td>@fat</td>
-				</tr>
-				<tr>
-					<td>3</td>
-					<td>Larry</td>
-					<td>the Bird</td>
-					<td>@twitter</td>
-				</tr>
+			<tbody id='addtr'>
+
 			</tbody>
 		</table>
-		</div>
-		<div class="panel panel-default" id="assetEvent">
+	</div>
+	<div class="panel panel-default" id="assetEvent">
 		<div class="panel-heading" >设备变动记录</div>
 		<ul class="list-group" >
 			<li class="list-group-item">Cras justo odio</li>
@@ -101,8 +110,8 @@
 			<li class="list-group-item">Porta ac consectetur ac</li>
 			<li class="list-group-item">Vestibulum at eros</li>
 		</ul>
-		</div>
 	</div>
+</div>
 
 
 
