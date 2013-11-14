@@ -134,10 +134,7 @@ add to show new ui
 .item_qrcode div{
   text-align: center;
 }
-.header_div{
-  padding-right: 15px;
-  padding-left: 15px;
-}
+
 #footer{
   background-color: #f5f5f5;
   height: 60px;
@@ -160,5 +157,9 @@ add to show new ui
   min-height: 700px;
   background-color: #fff;
   margin: 0 auto;
+}
+.row{
+    padding-right: 15px;
+    padding-left: 15px;
 }
 

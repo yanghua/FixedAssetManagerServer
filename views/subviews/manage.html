@@ -1,27 +1,110 @@
 <% layout('layout') -%>
-<div id="main_div">
-<div>管理界面</div>
-<form role="form">
-  <div class="form-group">
-    <label for="exampleInputEmail1">Email address</label>
-    <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Enter email">
-  </div>
-  <div class="form-group">
-    <label for="exampleInputPassword1">Password</label>
-    <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
-  </div>
-  <div class="form-group">
-    <label for="exampleInputFile">File input</label>
-    <input type="file" id="exampleInputFile">
-    <p class="help-block">Example block-level help text here.</p>
-  </div>
-  <div class="checkbox">
-    <label>
-      <input type="checkbox"> Check me out
-    </label>
-  </div>
-  <button type="submit" class="btn btn-default">Submit</button>
-</form>
+<script type="text/javascript">
+	$(document).ready(function(){
+		$("#assetDetails").hide();
+		$("#assetEvent").hide();
+		$("#underName").hide();
+	});
+	function btnPrintClick(){  
+		if ($("#baseType").val()==0) {
+			$.ajax({ 
+				type: 'POST', 
+				url: '/fixedasset/inspection', 
+				data: { 'qrCode': '200901-02-0004' }, 
+				success: function (data) { 
+					if(data.statusCode==0){
+						$("#assetDetails").show();
+						var temp ='<li class="list-group-item">';
+						if (data.data.faDetail.newId) {
+							$("#assetDetails ul").append(temp+'设备编号:'+data.data.faDetail.newId+'</li>');
+						}else{
+							alert("设备不存在!");
+						}
+						if(data.data.faDetail.oldId){
+							$("#assetDetails ul").append(temp+'旧编号:'+data.data.faDetail.oldId+'</li>');
+						}
+						if(data.data.faDetail.userId){
+							$("#assetDetails ul").append(temp+'旧编号:'+data.data.faDetail.oldId+'</li>');
+						}
+						
+						
+					}
+				}
+			});
+		}else{
+			alert("898");
+		}
+	}
+
+
+</script>
+<div id="main_div" >
+	<h1> 资产管理</h1>
+	<hr>
+	<div>
+		<div class="form-group">
+			<p>选择输入类型:</p>
+			<select id="baseType"  Style="Font-size:14pt">
+				<option value="0">设备编号</option>
+				<option value="1">人员工号</option>
+			</select>
+			<input type="text" id="baseInput">
+			<button type="submit" onclick="btnPrintClick()">搜索</button>
+		</div>
+	</div>
+	<div class="panel panel-default" id="assetDetails">
+		<!-- Default panel contents -->
+		<div class="panel-heading">资产详情</div>
+		<ul class="list-group">
+			
+		</ul>
+	</div>
+	<div class="panel panel-default" id="underName">
+		<div class="panel-heading" >用户名下</div>
+		<table class="table">
+			<thead>
+				<tr>
+					<th>#</th>
+					<th>设备编号</th>
+					<th>设备名</th>
+					<th>操作</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>1</td>
+					<td>Mark</td>
+					<td>Otto</td>
+					<td>@mdo</td>
+				</tr>
+				<tr>
+					<td>2</td>
+					<td>Jacob</td>
+					<td>Thornton</td>
+					<td>@fat</td>
+				</tr>
+				<tr>
+					<td>3</td>
+					<td>Larry</td>
+					<td>the Bird</td>
+					<td>@twitter</td>
+				</tr>
+			</tbody>
+		</table>
+		</div>
+		<div class="panel panel-default" id="assetEvent">
+		<div class="panel-heading" >设备变动记录</div>
+		<ul class="list-group" >
+			<li class="list-group-item">Cras justo odio</li>
+			<li class="list-group-item">Dapibus ac facilisis in</li>
+			<li class="list-group-item">Morbi leo risus</li>
+			<li class="list-group-item">Porta ac consectetur ac</li>
+			<li class="list-group-item">Vestibulum at eros</li>
+		</ul>
+		</div>
+	</div>
+
+
 
 
 </div>
