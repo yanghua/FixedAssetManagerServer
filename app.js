@@ -45,8 +45,18 @@ app.configure(function () {
     app.register('.html', require('ejs'));
 
     //middleware
+    app.use(express.favicon());
     app.use(express.logger());
+    app.use(express.query());
     app.use(express.bodyParser());
+
+    app.use(express.cookieParser());
+    app.use(express.session({
+        secret : AppConfig.session_secret,
+        cookie : {
+            maxAge  : 20 * 60 * 1000      //ms
+        }
+    }));
 });
 
 var maxAge = 3600000 * 24 * 30;
@@ -68,9 +78,11 @@ app.configure('development', function () {
 
 
 //config for production env
-// app.configure("production", function () {
-//     "use strict";
-// });
+app.configure("production", function () {
+    app.use('/public', express.static(staticDir, { maxAge: maxAge }));
+    app.use(express.errorHandler());
+    app.set('view cache', true);
+});
 
 
 routes(app);
