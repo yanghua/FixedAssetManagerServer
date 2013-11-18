@@ -30,18 +30,21 @@
 //mode
 'use strict';
 
-var user           = require("./controllers/user");
-var fixedAsset     = require("./controllers/fixedAsset");
-var faType         = require("./controllers/faType");
-var department     = require("./controllers/department");
-var others         = require("./controllers/others");
-var login          = require("./controllers/login");
+var user       = require("./controllers/user");
+var fixedAsset = require("./controllers/fixedAsset");
+var faType     = require("./controllers/faType");
+var department = require("./controllers/department");
+var others     = require("./controllers/others");
+var login      = require("./controllers/login");
+var logout     = require("./controllers/logout");
 
 module.exports = function (app) {
 
     //views
     app.get("/apis", others.home);
     app.get("/", login.showLogin);
+    app.post("/signin", login.signIn);
+    app.get("/signout", logout.signOut);
     app.get("/fixedasset/printservice/:pageIndex?", fixedAsset.printService);
     app.get("/fixedasset/manage",fixedAsset.manage);
     app.get("/404",others.fourofour);
@@ -52,6 +55,8 @@ module.exports = function (app) {
     app.get("/fatypes", faType.getAllFATypes);
     app.get("/departments", department.getAllDepartments);
     app.get("/fixedasset/:faId/existence", fixedAsset.checkExistence);
+
+    app.get("/captchaImg", login.captchaImg);
 
     /************************************************************************/
     /*                Resful: URI Represent a Resource!!!                   */
