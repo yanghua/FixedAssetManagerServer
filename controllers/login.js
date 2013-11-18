@@ -26,6 +26,10 @@
 //mode:
 'use strict';
 
+var captchagen = require('captchagen');
+var check      = require("validator").check;
+var sanitize   = require("validator").sanitize;
+
 /**
  * show login page
  * @param  {object}   req  the request object
@@ -35,4 +39,56 @@
  */
 exports.showLogin = function (req, res, next) {
     res.render("login");
+};
+
+/**
+ * handler sign in
+ * @param  {object}   req  the request object
+ * @param  {object}   res  the response object
+ * @param  {Function} next the next handler
+ * @return {null}        
+ */
+exports.signIn = function (req, res, next) {
+    var captchaCode = req.body.auth.captchaCode || "";
+
+    try {
+        check(captchaCode).notEmpty();
+        captchaCode = sanitize(sanitize(captchaCode).trim()).xss();
+    } catch (e) {
+        return res.redirect("/");
+    }
+
+    if (!req.session || !req.session.captchaCode
+          || captchaCode.length === 0  || 
+       captchaCode != req.session.captchaCode) {
+        return res.redirect("/");
+    }
+
+    //simulate user login 
+    var user         = {};
+    user["userId"]   = "ygl_001";
+    req.session.user = user;
+
+    res.redirect("/fixedasset/printservice");
+};
+
+/**
+ * generate captcha image
+ * @param  {object}   req  the instance of request
+ * @param  {object}   res  the instance of response
+ * @param  {Function} next the next handler
+ * @return {null}        
+ */
+exports.captchaImg = function (req, res, next) {
+    var captcha     = captchagen.create();
+    var captchaCode = captcha.text();
+        
+    if (captchaCode) {
+        req.session.captchaCode = captchaCode;
+    }
+
+    //generate
+    captcha.generate();
+
+    res.send(captcha.buffer());
 };
