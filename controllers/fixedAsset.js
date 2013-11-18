@@ -452,6 +452,10 @@ exports.checkExistence = function (req, res, next) {
 exports.printService = function (req, res, next) {
     console.log("******controllers/fixedAsset/printService");
 
+    if (!req.session || !req.session.user) {
+        res.redirect("/");
+    }
+
     var pageIndex = req.params.pageIndex || 1;
 
     try {
@@ -509,5 +513,10 @@ exports.printService = function (req, res, next) {
  */
 exports.manage = function (req, res, next){
     console.log("#######controllers/fixedasset->manager");
+
+    if (!req.session || !req.session.user) {
+        res.redirect("/");
+    }
+    
     res.render('subviews/manage.html');
 };
