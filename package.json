@@ -10,7 +10,9 @@
         "eventproxy": "0.2.5",
         "validator" : "1.5.1",
         "ejs"       : "0.8.4",
-        "loader"    : "0.0.5"    
+        "loader"    : "0.0.5",
+        "canvas"    : "1.1.2",
+        "captchagen": "1.1.0"
     },
     "devDependencies": {
         "should": "*",
