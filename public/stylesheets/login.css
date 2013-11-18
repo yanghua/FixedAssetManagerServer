@@ -38,3 +38,16 @@ body {
   border-top-left-radius: 0;
   border-top-right-radius: 0;
 }
+#captcha_div {
+  margin-top: 10px;
+}
+.form-signin .captcha{
+  width: 275px;
+  height: 60px;
+  cursor: pointer;
+}
+.glyphicons_right {
+  float: right;
+  margin-top: 20px;
+  cursor: pointer;
+}
