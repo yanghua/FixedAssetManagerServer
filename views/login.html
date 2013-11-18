@@ -1,42 +1,46 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
-    <head>
-        <!-- meta -->
-        <meta charset="utf-8" />
-        <meta name='description' content='<%= config.description %>'>
-        <%
-            var headers = config.site_headers || [];
-            for (var i = 0, l = headers.length; i < l; i++) {
-        %>
-        <%- headers[i] %>
-        <%  } %>
-
-        <!-- style -->
-        <%- Loader()
-                .css("/public/libs/bootstrap/css/bootstrap.css")
-                .css("/public/stylesheets/login.css")
-                .done()
-        %>
-
-        <!-- script -->
-        <%- Loader()
-                .js("/public/libs/jquery/jquery-1.10.2.min.js")
-                .js('/public/libs/bootstrap/js/bootstrap.js')
-                .done()
-
-        %>
-    </head>
-    <body>
-        <div class="container">
-            <form class="form-signin" action="signIn" method="post">
-                <h2 class="form-signin-heading">金智教育资产管理系统</h2>
-                <input type="text" class="form-control" placeholder="用户名" required autofocus>
-                <input type="password" class="form-control" placeholder="密 码" required>
-                <label class="checkbox">
-                    <input type="checkbox" value="remember-me"> 记住密码
-                </label>
-                <button class="btn btn-lg btn-primary btn-block" type="submit">登 录</button>
-            </form>
-        </div> <!-- /container -->
-    </body>
+  <head>
+    <!-- meta -->
+    <meta charset="utf-8" />
+    <meta name='description' content='<%= config.description %>'>
+    <%
+      var headers = config.site_headers || [];
+      for (var i = 0, l = headers.length; i < l; i++) {
+      %>
+    <%- headers[i] %>
+    <%  } %>
+    <!-- style -->
+    <%- Loader()
+      .css("/public/libs/bootstrap/css/bootstrap.css")
+      .css("/public/stylesheets/login.css")
+      .done()
+      %>
+    <!-- script -->
+    <%- Loader()
+      .js("/public/libs/jquery/jquery-1.10.2.min.js")
+      .js('/public/libs/bootstrap/js/bootstrap.js')
+      .js("/public/libs/js/login.js")
+      .done()
+      
+      %>
+  </head>
+  <body>
+    <div class="container">
+      <form class="form-signin" action="signin" method="post">
+        <h2 class="form-signin-heading">金智教育资产管理系统</h2>
+        <input name="auth[userId]" type="text" class="form-control" placeholder="用户名" required autofocus>
+        <input name="auth[passwd]" type="password" class="form-control" placeholder="密 码" required>
+        <input name="auth[captchaCode]" type="text" class="form-control" placeholder="验证码" required>
+        <div id="captcha_div">
+          <span class="glyphicon glyphicon-refresh glyphicons_right" id="refreshBtn"></span>
+        </div>
+        <label class="checkbox">
+        <input type="checkbox" value="remember-me"> 记住密码
+        </label>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">登 录</button>
+      </form>
+    </div>
+    <!-- /container -->
+  </body>
 </html>
