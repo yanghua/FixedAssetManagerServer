@@ -42,7 +42,7 @@ body {
   margin-top: 10px;
 }
 .form-signin .captcha{
-  width: 275px;
+  width: 300px;
   height: 60px;
   cursor: pointer;
 }
