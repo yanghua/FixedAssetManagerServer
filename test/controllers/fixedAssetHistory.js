@@ -60,4 +60,12 @@ describe("fixedAsset", function () {
         done();
     });
 
+    //test: /fixedasset/:faId/history
+    it('is testing func: /fixedasset/:faId/history', function (done) {
+        app.request().get("/fixedasset/201307-03-0035/history").end(function (res) {
+            console.dir(res.bodyJSON());
+            done();
+        });
+    });
+
 });
