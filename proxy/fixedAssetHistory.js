@@ -41,6 +41,7 @@ var util         = require("../libs/util");
  * @return {null}              
  */
 exports.insertHistoryRecord = function (recordItem, callback) {
+    console.log("######/proxy/fixedAssetHistory/insertHistoryRecord");
 
     recordItem["aetId"] = util.GUID();
     
@@ -49,11 +50,42 @@ exports.insertHistoryRecord = function (recordItem, callback) {
         params  : recordItem
     }, function (err, rows) {
         if (err) {
-            console.dir("error"+err);
+            console.dir("error" + err);
             return callback(new ServerError(), null);
         }
 
         callback(null, null);
     })
+};
+
+/**
+ * get history list by faId
+ * @param  {string}   faId     fixed asset id
+ * @param  {Function} callback the callback func
+ * @return {null}            
+ */
+exports.getHistoryListByFAId = function (faId, callback) {
+    console.log("######/proxy/fixedAssetHistory/getHistoryListByFAId");
+
+    console.log(faId);
+
+    mysqlClient.query({
+        sql     : "SELECT ae.*,u.userName,aet.aetName FROM ASSETEVENT ae " +
+                  "  LEFT JOIN ASSETEVENTYPE aet " +
+                  "    ON ae.aetpId = aet.aetId " +
+                  "  LEFT JOIN USER u " +
+                  "    ON ae.userId = u.userId " +
+                  " WHERE atId = :atId ",
+        params  : {
+            atId    : faId
+        }
+    }, function(err, rows) {
+        if (err) {
+            console.dir("error:" + err);
+            return callback(new ServerError(), null);
+        }
+
+        callback(null, rows);
+    });
 
 };
