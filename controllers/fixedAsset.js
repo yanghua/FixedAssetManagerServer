@@ -511,7 +511,7 @@ exports.printService = function (req, res, next) {
  * @param  {Function} next the next handler
  * @return {null}        
  */
-exports.manage = function (req, res, next){
+exports.manage = function (req, res, next) {
     console.log("#######controllers/fixedasset->manager");
 
     if (!req.session || !req.session.user) {
