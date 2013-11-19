@@ -14,4 +14,5 @@ echo "Installing dependencies...."
 sudo apt-get update
 sudo apt-get install libcairo2-dev libjpeg8-dev libpango1.0-dev libgif-dev build-essential g++
 echo "Installing node-canvas...."
+export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/opt/X11/lib/pkgconfig
 sudo npm install canvas
