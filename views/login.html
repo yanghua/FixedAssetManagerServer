@@ -20,6 +20,7 @@
     <%- Loader()
       .js("/public/libs/jquery/jquery-1.10.2.min.js")
       .js('/public/libs/bootstrap/js/bootstrap.js')
+      .js("/public/libs/CryptoJS_v3.1.2/rollups/sha256.js")
       .js("/public/libs/js/login.js")
       .done()
       
@@ -27,7 +28,7 @@
   </head>
   <body>
     <div class="container">
-      <form class="form-signin" action="signin" method="post">
+      <form name="signinForm" class="form-signin" action="signin" method="post">
         <h2 class="form-signin-heading">金智教育资产管理系统</h2>
         <input name="auth[userId]" type="text" class="form-control" placeholder="用户名" required autofocus>
         <input name="auth[passwd]" type="password" class="form-control" placeholder="密 码" required>
@@ -37,7 +38,7 @@
         <label class="checkbox">
         <input type="checkbox" value="remember-me"> 记住密码
         </label>
-        <button class="btn btn-lg btn-primary btn-block" type="submit">登 录</button>
+        <button class="btn btn-lg btn-primary btn-block" type="button" onsubmit="return false;" onclick="postAuthUserForm();" >登 录</button>
       </form>
     </div>
     <!-- /container -->

@@ -26,9 +26,11 @@
 //mode:
 'use strict';
 
+var Login      = require("../proxy/login");
 var captchagen = require('captchagen');
 var check      = require("validator").check;
 var sanitize   = require("validator").sanitize;
+var SHA256     = require("crypto-js/sha256");
 
 /**
  * show login page
@@ -51,6 +53,9 @@ exports.showLogin = function (req, res, next) {
 exports.signIn = function (req, res, next) {
     var captchaCode = req.body.auth.captchaCode || "";
 
+    console.log("--------------------------------------------------");
+    console.log(req.body.auth.passwd);
+
     try {
         check(captchaCode).notEmpty();
         captchaCode = sanitize(sanitize(captchaCode).trim()).xss();
@@ -64,12 +69,42 @@ exports.signIn = function (req, res, next) {
         return res.redirect("/");
     }
 
-    //simulate user login 
-    var user         = {};
-    user["userId"]   = "ygl_001";
-    req.session.user = user;
+    var userId = req.body.auth.userId || "";
+    var passwd = req.body.auth.passwd || "";
 
-    res.redirect("/fixedasset/printservice");
+    try {
+        check(userId).notEmpty();
+        check(passwd).notEmpty();
+        userId = sanitize(sanitize(userId).trim()).xss();
+        passwd = sanitize(sanitize(passwd).trim()).xss();
+    } catch (e) {
+        return res.redirect("/");
+    }
+
+    Login.getUserAuthInfoByUserId(userId, function (err, userAuthInfo) {
+        console.log(userAuthInfo);
+        console.log(userId);
+        console.log(passwd);
+        if (err) {
+            return res.redirect("/");
+        }
+
+        if (!userAuthInfo) {
+            return res.redirect("/");
+        }
+
+        //check
+        if (userId === userAuthInfo["uid"] && passwd === userAuthInfo["pwd"]) {
+            var user         = {};
+            user["userId"]   = userId;
+            req.session.user = user;
+
+            return res.redirect("/fixedasset/printservice");
+        } else {
+            return res.redirect("/");
+        }
+    });
+
 };
 
 /**
