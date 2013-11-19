@@ -56,7 +56,7 @@ exports.getFixedAssetListByUserID = function (userId, callback) {
         }
     }, function (err, rows) {
         if (err) {
-            callback(new ServerError(), null);
+            return callback(new ServerError(), null);
         }
         callback(null, rows);
     });
