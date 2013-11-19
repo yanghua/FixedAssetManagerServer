@@ -12,7 +12,8 @@
         "ejs"       : "0.8.4",
         "loader"    : "0.0.5",
         "canvas"    : "1.1.2",
-        "captchagen": "1.1.0"
+        "captchagen": "1.1.0",
+        "crypto-js" : "3.1.2-1"
     },
     "devDependencies": {
         "should": "*",
