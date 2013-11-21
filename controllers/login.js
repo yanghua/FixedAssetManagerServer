@@ -120,11 +120,13 @@ exports.commonProcess = function (req, res, next) {
 
     if (isAPI === 1) {                //is mobile api
         return next();
+    } else if (req.path == "/login") {
+        return next();
     } else {
         if (req.session && req.session.user) {
             res.local("current_user", req.session.user);
         }
-        
+
         next();
     }
 };
