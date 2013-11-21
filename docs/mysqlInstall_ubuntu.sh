@@ -5,8 +5,10 @@
 #Date       : 16/10/2013
 #Desc       : a script to install mysql from source code for ubuntu
 
+cd ~
+
 echo "downloading mysql 5.6.14...."
-sudo wget https://dev.mysql.com/get/Downloads/MYSQL-5.6/mysql-5.6.14-linux-glibc2.5-x86_64.tar.gz
+# sudo wget https://dev.mysql.com/get/Downloads/MYSQL-5.6/mysql-5.6.14-linux-glibc2.5-x86_64.tar.gz
 
 echo "install libaio1..."
 sudo apt-get install libaio1
@@ -25,7 +27,7 @@ cd /usr/local
 sudo mkdir $dir_mysql_file
 sudo ln -s $dir_mysql_file mysql
 
-tar zxvf ~/mysql-5.6.14.tar.gz
+tar zxvf ~/mysql-5.6.14-linux-glibc2.5-x86_64.tar.gz
 sudo mv mysql-5.6.14-linux-glibc2.5-x86_64/* $dir_mysql_file
 rm -r mysql-5.6.14-linux-glibc2.5-x86_64
 
