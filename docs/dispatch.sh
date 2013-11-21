@@ -5,13 +5,13 @@
 #Date       : 16/10/2013
 #Desc       : a script to install FixedAssetManager_Server
 
-npm install -g pm2
-
 rm -R FixedAssetManager_Server
 
 git clone git://github.com/yanghua/FixedAssetManager_Server.git
 
 cd FixedAssetManager_Server
+
+cp docs/dispatch.sh ~/dispatch.sh
 
 npm install
 

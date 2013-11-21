@@ -11,3 +11,6 @@ sudo apt-get install software-properties-common
 sudo add-apt-repository ppa:chris-lea/node.js
 sudo apt-get update
 sudo apt-get install nodejs
+
+echo "installing... pm2"
+npm install -g pm2
