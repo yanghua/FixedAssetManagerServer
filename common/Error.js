@@ -65,8 +65,17 @@ function InvalidParamError(message) {
 InvalidParamError.prototype = new BaseError();
 InvalidParamError.prototype.constructor = InvalidParamError;
 
+function PageNotFoundError (message) {
+    this.name       = "PageNotFoundError";
+    this.message    = message || "InvalidParam Error";
+}
+
+PageNotFoundError.prototype = new BaseError();
+PageNotFoundError.prototype.constructor = PageNotFoundError;
+
 
 global.BaseError         = BaseError;
 global.ServerError       = ServerError;
 global.InvalidParamError = InvalidParamError;
 global.DataNotFoundError = DataNotFoundError;
+global.PageNotFoundError = PageNotFoundError;
