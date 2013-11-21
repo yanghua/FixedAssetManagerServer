@@ -136,7 +136,7 @@ describe("fixedAsset", function () {
     //test: /fixedasset/:faId/modification
     it('is testing func: /fixedasset/:faId/modification', function (done) {
         var param = {
-            newId               : "2002",
+            newId               : "2",
             oldId               : "1",
             userId              : "",
             departmentId        : "37",
