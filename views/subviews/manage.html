@@ -5,40 +5,94 @@
 		$("#assetEvent").hide();
 		$("#underName").hide();
 	});
-	function btnPrintClick(){  
+	function btnPrintClick(qrCode){  
+		alert(qrCode);
 		if ($("#baseType").val()==0) {
 			$.ajax({ 
 				type: 'POST', 
 				url: '/fixedasset/inspection', 
-				data: { 'qrCode': '201307-03-0035' }, 
+				//data: { 'qrCode': '201307-03-0035' }, 
+				data:{'qrCode':qrCode},
 				success: function (data) { 
-					if(data.statusCode==0){
-						$("#assetDetails").show();
-						$("#assetDetails ul").html("");
-						var temp ='<li class="list-group-item">';
-						if (data.data.faDetail.newId) {
-							$("#assetDetails ul").append(temp+'设备编号:'+data.data.faDetail.newId+'</li>');
-						}else{
-							alert("设备不存在!");
-						}
-						if(data.data.faDetail.oldId){
-							$("#assetDetails ul").append(temp+'旧编号:'+data.data.faDetail.oldId+'</li>');
-						}
-						if(data.data.faDetail.userId){
-							$("#assetDetails ul").append(temp+'领用人:'+data.data.userInfo.userName+'</li>');
-							loadUnderName(data.data.faDetail.userId);
-
-						}
-						if(data.data.faDetail.userId){
-
-						}
-						
-						
-					}
+					$("#assetDetails").hide();
+					$("#assetEvent").hide();
+					$("#underName").hide();
+					loadAssetDetails(data);
 				}
 			});
 		}else{
-			alert("898");
+			$("#assetDetails").hide();
+			$("#assetEvent").hide();
+			$("#underName").hide();
+			loadUnderName('01312114');
+		}
+	}
+	function loadAssetDetails(data){
+		if(data.statusCode==0){
+			$("#assetDetails").show();
+			$("#assetDetails ul").html("");
+			var temp ='<li class="list-group-item">';
+			if (data.data.faDetail.newId) {
+				$("#assetDetails ul").append(temp+'设备编号:'+data.data.faDetail.newId+'</li>');
+			}else{
+				alert("设备不存在!");
+			}
+			if (data.data.faDetail.typeId) {
+				if (data.data.typeInfo.typeName==data.data.faDetail.assetName) {
+					$("#assetDetails ul").append(temp+'设备名称:'+data.data.typeInfo.typeName+'</li>');
+				}else{
+					$("#assetDetails ul").append(temp+'设备名称:'+data.data.typeInfo.typeName + '-> '+ data.data.faDetail.assetName +'</li>');
+				}
+			};
+			if(data.data.faDetail.oldId){
+				$("#assetDetails ul").append(temp+'旧编号:'+data.data.faDetail.oldId+'</li>');
+			}
+			if(data.data.faDetail.userId){
+				$("#assetDetails ul").append(temp+'领用人:'+data.data.userInfo.userName+'</li>');
+				loadUnderName(data.data.faDetail.userId);
+			}
+			if(data.data.faDetail.departmentId){
+				$("#assetDetails ul").append(temp+'部门:'+data.data.deptInfo.departmentName+'</li>');
+			}
+			if(data.data.faDetail.assetBelong){
+				$("#assetDetails ul").append(temp+'资产归属:'+data.data.faDetail.assetBelong+'</li>');
+			}
+			if(data.data.faDetail.currentStatus){
+				$("#assetDetails ul").append(temp+'当前状态:'+data.data.faDetail.currentStatus+'</li>');
+			}
+			if(data.data.faDetail.brand){
+				$("#assetDetails ul").append(temp+'品牌:'+data.data.faDetail.brand+'</li>');
+			}
+			if(data.data.faDetail.model){
+				$("#assetDetails ul").append(temp+'型号:'+data.data.faDetail.model+'</li>');
+			}
+			if(data.data.faDetail.specifications){
+				$("#assetDetails ul").append(temp+'规格:'+data.data.faDetail.specifications+'</li>');
+			}
+			if(data.data.faDetail.price>0){
+				$("#assetDetails ul").append(temp+'价格:'+data.data.faDetail.price+'</li>');
+			}
+			if(data.data.faDetail.purchaseDate&&data.data.faDetail.purchaseDate!='0000-00-00'){
+				$("#assetDetails ul").append(temp+'采购日期:'+data.data.faDetail.purchaseDate+'</li>');
+			}
+			if(data.data.faDetail.possessDate&&data.data.faDetail.possessDate!='0000-00-00'){
+				$("#assetDetails ul").append(temp+'领用日期:'+data.data.faDetail.possessDate+'</li>');
+			}
+			if(data.data.faDetail.serviceCode){
+				$("#assetDetails ul").append(temp+'快速服务代码:'+data.data.faDetail.serviceCode+'</li>');
+			}
+			if(data.data.faDetail.mac){
+				$("#assetDetails ul").append(temp+'MAC地址:'+data.data.faDetail.mac+'</li>');
+			}
+			if(data.data.faDetail.reject>0){
+				$("#assetDetails ul").append(temp+'已报废'+'</li>');
+				if (data.data.faDetail.rejectDate&&data.data.faDetail.rejectDate!='0000-00-00') {
+					$("#assetDetails ul").append(temp+'报废时间:'+data.data.faDetail.rejectDate+'</li>');
+				};
+			}else{
+				$("#assetDetails ul").append(temp+'未报废'+'</li>');
+			}
+
 		}
 	}
 
@@ -50,16 +104,60 @@
 				if(data.statusCode==0){
 					$("#underName").show();
 					$("#addtr").html("");
-						//if (data.data) {};
-						for (var i = 0; i < data.data.length; ++i) {
-							$("#addtr").append("<tr><td>"+i+"</td><td>"+data.data[i].newId
-								+"</td><td>"+data.data[i].assetName
-								+"</td><td>@mdo</td></tr>");
-						};
-						
+					function createCellContainer(item){
+						return $("<td></td>").html(item);
+					}
+
+					function createRowContainer(){
+						return $("<tr></tr>");
+					}
+
+					function itemClick(value){
+						return function(){
+							btnPrintClick(value);
 						}
 					}
-				});
+
+						//if (data.data) {};
+						for (var i = 0; i < data.data.length; ++i) {
+							var cellData = data.data[i];
+							var row = createRowContainer();
+							var cellNum = createCellContainer(i);
+							var cellId = createCellContainer(cellData.newId);
+							var cellName = createCellContainer(cellData.assetName);
+							var link = $("<a href='javascript:void(0);'>查看详情</a>");
+							link.click(itemClick(cellData.newId));
+							var cellDetail = createCellContainer(link);
+
+							row.append(cellNum);
+							row.append(cellId);
+							row.append(cellName);
+							row.append(cellDetail);
+							
+							$("#addtr").append(row);
+
+						//if (data.data) {};
+						//var value = "200901-03-0007";
+
+						// function itemClick(value){
+						// 	return function(){
+						// 		btnPrintClick(value);
+						// 	}
+						// }
+
+						// for (var i = 0; i < data.data.length; i++) {
+						// 	var id = data.data[i].newId;
+						// 	$("#addtr").append("<tr><td>"+i+"</td><td>"+data.data[i].newId
+						// 		+"</td><td>"+data.data[i].assetName
+						// 		+"</td><td>"
+						// 		+"<a href='javascript:void(0);'>"
+						// 		+"查看详情</a></td><tr>").find('a').click(itemClick(data.data[i].newId));
+
+						// 	};
+
+						// }
+					}
+				}}});
 	}
 
 
@@ -75,7 +173,7 @@
 				<option value="1">人员工号</option>
 			</select>
 			<input type="text" id="baseInput">
-			<button type="submit" onclick="btnPrintClick()">搜索</button>
+			<button type="submit" onclick="btnPrintClick('201307-03-0035')">搜索</button>
 		</div>
 	</div>
 	<div class="panel panel-default" id="assetDetails">
