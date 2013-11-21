@@ -537,3 +537,37 @@ exports.manage = function (req, res, next) {
     
     res.render('subviews/manage.html');
 };
+
+/**
+ * edit controller
+ * @param  {object}   req  the instance of request
+ * @param  {object}   res  the instance of response
+ * @param  {Function} next the next handler
+ * @return {null}        
+ */
+exports.edit = function (req, res, next) {
+    console.log("#######controllers/fixedasset->edit");
+
+    if (!req.session || !req.session.user) {
+        return res.redirect("/login");
+    }
+    
+    res.render('subviews/edit');
+};
+
+/**
+ * create controller
+ * @param  {object}   req  the instance of request
+ * @param  {object}   res  the instance of response
+ * @param  {Function} next the next handler
+ * @return {null}        
+ */
+exports.create = function (req, res, next) {
+    console.log("#######controllers/fixedasset->create");
+
+    if (!req.session || !req.session.user) {
+        return res.redirect("/login");
+    }
+    
+    res.render('subviews/create');
+}
