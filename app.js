@@ -59,6 +59,9 @@ app.configure(function () {
     }));
 });
 
+//custom middleware
+app.use(require("./controllers/login").commonProcess);
+
 var maxAge = 3600000 * 24 * 30;
 var staticDir = path.join(__dirname, 'public');
 
@@ -76,7 +79,6 @@ app.configure('development', function () {
     ));
 });
 
-
 //config for production env
 app.configure("production", function () {
     app.use('/public', express.static(staticDir, { maxAge: maxAge }));
@@ -84,6 +86,14 @@ app.configure("production", function () {
     app.set('view cache', true);
 });
 
+//error hanlder
+app.error(function(err, req, res, next) {
+    if (err instanceof PageNotFoundError) {
+        res.render("errors/404");
+    } else if (err instanceof ServerError) {
+        res.render("errors/500");
+    }
+});
 
 routes(app);
 
