@@ -7,8 +7,8 @@
 
 cd ~
 
-echo "downloading mysql 5.6.14...."
-# sudo wget https://dev.mysql.com/get/Downloads/MYSQL-5.6/mysql-5.6.14-linux-glibc2.5-x86_64.tar.gz
+echo "downloading mysql 5.6.14..."
+sudo wget https://dev.mysql.com/get/Downloads/MYSQL-5.6/mysql-5.6.14-linux-glibc2.5-x86_64.tar.gz
 
 echo "install libaio1..."
 sudo apt-get install libaio1
@@ -40,28 +40,35 @@ if [ $root_dir = /usr/local/mysql ]; then
         sudo chgrp -R mysql .
 fi        
 
-echo "initializing the db"
+echo "initializing the db..."
 sudo scripts/mysql_install_db --user=mysql 
 
 echo "change the owner of the folder..."
 if [ $root_dir = /usr/local/mysql ];then
- echo "setting owner of the folder"
+ echo "setting owner of the folder..."
  sudo chown -R root .
  sudo chown -R mysql data
 fi
 
 echo "cp mysql's config file..."
-sudo cp support-files/my-medium.cnf /etc/my.cnf
+sudo cp support-files/my-default.cnf /etc/my.cnf
 
 echo "cp mysql.server script..."
 sudo cp support-files/mysql.server /etc/init.d/mysql.server
 
-echo "starting mysql...."
+echo "starting mysql..."
 sudo bin/mysqld_safe --user=mysql &
 
 echo "setting account...."
 sudo bin/mysqladmin -u root password '123456'
 
+echo "add mysql server to launchAgent..."
+sudo update-rc.d -f mysql.server defaults
+
+echo "link mysql command..."
+sudo ln -s /usr/local/mysql/bin/mysql /usr/local/bin/mysql
+
+echo "========================tips======================="
 echo "check mysql status:"
 echo "sudo /etc/init.d/mysql.server status"
 
@@ -70,3 +77,7 @@ echo "sudo /etc/init.d/mysql.server start"
 
 echo "stop mysql:"
 echo "sudo /etc/init.d/mysql.server stop"
+
+echo "login mysql client:"
+echo "mysql -u root -p"
+echo "==================================================="
