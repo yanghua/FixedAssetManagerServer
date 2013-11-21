@@ -51,6 +51,9 @@ module.exports = function (app) {
     app.get("/fixedasset/manage",fixedAsset.manage);
     app.get("/404",others.fourofour);
     app.get("/captchaImg", login.captchaImg);
+    app.get("/fixedasset/:faId/edit", fixedAsset.edit);
+    app.get("/fixedasset/create", fixedAsset.create);
+
     //apis
     app.get("/user/:userId", user.getUserById);
     app.get("/user/:userId/fixedassets", fixedAsset.getFixedAssetListByUserID);
