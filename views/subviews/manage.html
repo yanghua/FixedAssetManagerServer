@@ -24,6 +24,7 @@
 			$("#assetDetails").hide();
 			$("#assetEvent").hide();
 			$("#underName").hide();
+
 			loadUnderName('01312114');
 		}
 	}
@@ -31,67 +32,71 @@
 		if(data.statusCode==0){
 			$("#assetDetails").show();
 			$("#assetDetails ul").html("");
+			var det=data.data.faDetail;
 			var temp ='<li class="list-group-item">';
-			if (data.data.faDetail.newId) {
-				$("#assetDetails ul").append(temp+'设备编号:'+data.data.faDetail.newId+'</li>');
+			if (det.newId) {
+				$("#assetDetails ul").append(temp+'设备编号:'+det.newId+'</li>');
 			}else{
 				alert("设备不存在!");
 			}
-			if (data.data.faDetail.typeId) {
-				if (data.data.typeInfo.typeName==data.data.faDetail.assetName) {
+			if (det.typeId) {
+				if (data.data.typeInfo.typeName==det.assetName) {
 					$("#assetDetails ul").append(temp+'设备名称:'+data.data.typeInfo.typeName+'</li>');
 				}else{
-					$("#assetDetails ul").append(temp+'设备名称:'+data.data.typeInfo.typeName + '-> '+ data.data.faDetail.assetName +'</li>');
+					$("#assetDetails ul").append(temp+'设备名称:'+data.data.typeInfo.typeName + '-> '+ det.assetName +'</li>');
 				}
 			};
-			if(data.data.faDetail.oldId){
-				$("#assetDetails ul").append(temp+'旧编号:'+data.data.faDetail.oldId+'</li>');
+			if(det.oldId){
+				$("#assetDetails ul").append(temp+'旧编号:'+det.oldId+'</li>');
 			}
-			if(data.data.faDetail.userId){
+			if(det.userId){
 				$("#assetDetails ul").append(temp+'领用人:'+data.data.userInfo.userName+'</li>');
-				loadUnderName(data.data.faDetail.userId);
+				loadUnderName(det.userId);
 			}
-			if(data.data.faDetail.departmentId){
+			if(det.departmentId){
 				$("#assetDetails ul").append(temp+'部门:'+data.data.deptInfo.departmentName+'</li>');
 			}
-			if(data.data.faDetail.assetBelong){
-				$("#assetDetails ul").append(temp+'资产归属:'+data.data.faDetail.assetBelong+'</li>');
+			if(det.assetBelong){
+				$("#assetDetails ul").append(temp+'资产归属:'+det.assetBelong+'</li>');
 			}
-			if(data.data.faDetail.currentStatus){
-				$("#assetDetails ul").append(temp+'当前状态:'+data.data.faDetail.currentStatus+'</li>');
+			if(det.currentStatus){
+				$("#assetDetails ul").append(temp+'当前状态:'+det.currentStatus+'</li>');
 			}
-			if(data.data.faDetail.brand){
-				$("#assetDetails ul").append(temp+'品牌:'+data.data.faDetail.brand+'</li>');
+			if(det.brand){
+				$("#assetDetails ul").append(temp+'品牌:'+det.brand+'</li>');
 			}
-			if(data.data.faDetail.model){
-				$("#assetDetails ul").append(temp+'型号:'+data.data.faDetail.model+'</li>');
+			if(det.model){
+				$("#assetDetails ul").append(temp+'型号:'+det.model+'</li>');
 			}
-			if(data.data.faDetail.specifications){
-				$("#assetDetails ul").append(temp+'规格:'+data.data.faDetail.specifications+'</li>');
+			if(det.specifications){
+				$("#assetDetails ul").append(temp+'规格:'+det.specifications+'</li>');
 			}
-			if(data.data.faDetail.price>0){
-				$("#assetDetails ul").append(temp+'价格:'+data.data.faDetail.price+'</li>');
+			if(det.price>0){
+				$("#assetDetails ul").append(temp+'价格:'+det.price+'</li>');
 			}
-			if(data.data.faDetail.purchaseDate&&data.data.faDetail.purchaseDate!='0000-00-00'){
-				$("#assetDetails ul").append(temp+'采购日期:'+data.data.faDetail.purchaseDate+'</li>');
+			if(det.purchaseDate&&det.purchaseDate!='0000-00-00'){
+				$("#assetDetails ul").append(temp+'采购日期:'+det.purchaseDate+'</li>');
 			}
-			if(data.data.faDetail.possessDate&&data.data.faDetail.possessDate!='0000-00-00'){
-				$("#assetDetails ul").append(temp+'领用日期:'+data.data.faDetail.possessDate+'</li>');
+			if(det.possessDate&&det.possessDate!='0000-00-00'){
+				$("#assetDetails ul").append(temp+'领用日期:'+det.possessDate+'</li>');
 			}
-			if(data.data.faDetail.serviceCode){
-				$("#assetDetails ul").append(temp+'快速服务代码:'+data.data.faDetail.serviceCode+'</li>');
+			if(det.serviceCode){
+				$("#assetDetails ul").append(temp+'快速服务代码:'+det.serviceCode+'</li>');
 			}
-			if(data.data.faDetail.mac){
-				$("#assetDetails ul").append(temp+'MAC地址:'+data.data.faDetail.mac+'</li>');
+			if(det.mac){
+				$("#assetDetails ul").append(temp+'MAC地址:'+det.mac+'</li>');
 			}
-			if(data.data.faDetail.reject>0){
+			if(det.reject>0){
 				$("#assetDetails ul").append(temp+'已报废'+'</li>');
-				if (data.data.faDetail.rejectDate&&data.data.faDetail.rejectDate!='0000-00-00') {
-					$("#assetDetails ul").append(temp+'报废时间:'+data.data.faDetail.rejectDate+'</li>');
+				if (det.rejectDate&&det.rejectDate!='0000-00-00') {
+					$("#assetDetails ul").append(temp+'报废时间:'+det.rejectDate+'</li>');
 				};
 			}else{
 				$("#assetDetails ul").append(temp+'未报废'+'</li>');
 			}
+			//add history 
+			//loadAssetEvevt(det.newId);
+			loadAssetEvevt(2);
 
 		}
 	}
@@ -117,47 +122,64 @@
 							btnPrintClick(value);
 						}
 					}
-
-						//if (data.data) {};
-						for (var i = 0; i < data.data.length; ++i) {
-							var cellData = data.data[i];
-							var row = createRowContainer();
-							var cellNum = createCellContainer(i);
-							var cellId = createCellContainer(cellData.newId);
-							var cellName = createCellContainer(cellData.assetName);
-							var link = $("<a href='javascript:void(0);'>查看详情</a>");
-							link.click(itemClick(cellData.newId));
-							var cellDetail = createCellContainer(link);
-
-							row.append(cellNum);
-							row.append(cellId);
-							row.append(cellName);
-							row.append(cellDetail);
-							
-							$("#addtr").append(row);
-
-						//if (data.data) {};
-						//var value = "200901-03-0007";
-
-						// function itemClick(value){
-						// 	return function(){
-						// 		btnPrintClick(value);
-						// 	}
-						// }
-
-						// for (var i = 0; i < data.data.length; i++) {
-						// 	var id = data.data[i].newId;
-						// 	$("#addtr").append("<tr><td>"+i+"</td><td>"+data.data[i].newId
-						// 		+"</td><td>"+data.data[i].assetName
-						// 		+"</td><td>"
-						// 		+"<a href='javascript:void(0);'>"
-						// 		+"查看详情</a></td><tr>").find('a').click(itemClick(data.data[i].newId));
-
-						// 	};
-
-						// }
+					for (var i = 0; i < data.data.length; ++i) {
+						var cellData = data.data[i];
+						var row = createRowContainer();
+						var cellNum = createCellContainer(i);
+						var cellId = createCellContainer(cellData.newId);
+						var cellName = createCellContainer(cellData.assetName);
+						var link = $("<a href='javascript:void(0);'>查看详情</a>");
+						link.click(itemClick(cellData.newId));
+						var cellDetail = createCellContainer(link);
+						row.append(cellNum);
+						row.append(cellId);
+						row.append(cellName);
+						row.append(cellDetail);
+						$("#addtr").append(row);
 					}
-				}}});
+				}else{
+					$("#underName").hide();
+					$("#addtr").html("");
+				}
+			}
+		});
+	}
+	function loadAssetEvevt (aetid) {
+		$.ajax({ 
+			type: 'GET', 
+			url: '/fixedasset/'+aetid+'/history', 
+			success: function (data) { 
+				if(data.statusCode==0){
+					if (data.data.length>0) {
+						$("#assetEvent").show();
+						$("#historyul").html("");
+						
+						for (var i = 0; i < data.data.length; ++i) {
+							$("#historyul").append();
+							var eve=data.data[i];
+							var temp = "<li class='list-group-item'>";
+							var eTime=eve.aeTime.substring(0,10);
+							switch(eve.aetpId)
+							{
+						  	case 3:
+						  		$("#historyul").append(temp+" 设备 : "+eve.atId+" 于 "+eTime+eve.aetName+" 至 "+eve.userName+"("+eve.userId+")"+"</li>");
+						  		break;
+							case 4:
+								$("#historyul").append(temp+" 设备 : "+eve.atId+" 于 "+eTime+" 从 "+eve.userName+"("+eve.userId+")名下 "+eve.aetName+"</li>");
+								break;
+							default:
+								$("#historyul").append(temp+" 设备 : "+eve.atId+" 于 "+eTime+eve.aetName+"</li>");
+								break;
+							}
+						}
+					}else{
+						$("#assetEvent").hide();
+						$("#historyul").html("");
+					}
+				}
+				
+			}
+		});
 	}
 
 
@@ -201,12 +223,9 @@
 	</div>
 	<div class="panel panel-default" id="assetEvent">
 		<div class="panel-heading" >设备变动记录</div>
-		<ul class="list-group" >
-			<li class="list-group-item">Cras justo odio</li>
-			<li class="list-group-item">Dapibus ac facilisis in</li>
-			<li class="list-group-item">Morbi leo risus</li>
-			<li class="list-group-item">Porta ac consectetur ac</li>
-			<li class="list-group-item">Vestibulum at eros</li>
+		<ul class="list-group" id="historyul" >
+			<li class="list-group-item">waiting</li>
+			
 		</ul>
 	</div>
 </div>
