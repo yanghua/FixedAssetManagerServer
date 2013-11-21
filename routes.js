@@ -42,8 +42,9 @@ var logout            = require("./controllers/logout");
 module.exports = function (app) {
 
     //views
+    app.get("/", others.index);
     app.get("/apis", others.home);
-    app.get("/", login.showLogin);
+    app.get("/login", login.showLogin);
     app.post("/signin", login.signIn);
     app.get("/signout", logout.signOut);
     app.get("/fixedasset/printservice/:pageIndex?", fixedAsset.printService);

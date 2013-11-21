@@ -60,13 +60,13 @@ exports.signIn = function (req, res, next) {
         check(captchaCode).notEmpty();
         captchaCode = sanitize(sanitize(captchaCode).trim()).xss();
     } catch (e) {
-        return res.redirect("/");
+        return res.redirect("/login");
     }
 
     if (!req.session || !req.session.captchaCode
           || captchaCode.length === 0  || 
        captchaCode != req.session.captchaCode) {
-        return res.redirect("/");
+        return res.redirect("/login");
     }
 
     var userId = req.body.auth.userId || "";
@@ -78,7 +78,7 @@ exports.signIn = function (req, res, next) {
         userId = sanitize(sanitize(userId).trim()).xss();
         passwd = sanitize(sanitize(passwd).trim()).xss();
     } catch (e) {
-        return res.redirect("/");
+        return res.redirect("/login");
     }
 
     Login.getUserAuthInfoByUserId(userId, function (err, userAuthInfo) {
@@ -86,11 +86,11 @@ exports.signIn = function (req, res, next) {
         console.log(userId);
         console.log(passwd);
         if (err) {
-            return res.redirect("/");
+            return res.redirect("/login");
         }
 
         if (!userAuthInfo) {
-            return res.redirect("/");
+            return res.redirect("/login");
         }
 
         //check
@@ -101,7 +101,7 @@ exports.signIn = function (req, res, next) {
 
             return res.redirect("/fixedasset/printservice");
         } else {
-            return res.redirect("/");
+            return res.redirect("/login");
         }
     });
 

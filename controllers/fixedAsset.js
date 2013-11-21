@@ -470,7 +470,7 @@ exports.printService = function (req, res, next) {
     console.log("******controllers/fixedAsset/printService");
 
     if (!req.session || !req.session.user) {
-        return res.redirect("/");
+        return res.redirect("/login");
     }
 
     var pageIndex = req.params.pageIndex || 1;
@@ -532,7 +532,7 @@ exports.manage = function (req, res, next) {
     console.log("#######controllers/fixedasset->manager");
 
     if (!req.session || !req.session.user) {
-        return res.redirect("/");
+        return res.redirect("/login");
     }
     
     res.render('subviews/manage.html');
