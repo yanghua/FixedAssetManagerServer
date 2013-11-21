@@ -59,6 +59,9 @@ module.exports = function (app) {
     app.get("/departments", department.getAllDepartments);
     app.get("/fixedasset/:faId/existence", fixedAsset.checkExistence);
     app.get("/fixedasset/:faId/history", fixedAssetHistory.faHistory);
+
+    //can't mapping router
+    app.get("*", others.fourofour);
     
 
     /************************************************************************/
