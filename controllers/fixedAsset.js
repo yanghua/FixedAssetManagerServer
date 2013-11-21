@@ -226,7 +226,7 @@ exports.insertion = function (req, res, next) {
         var historyRecord       = {};
         historyRecord["atId"]   = faInfo["faDetail"]["newId"];
         historyRecord["aetpId"] = 1;                //insert
-        historyRecord["userId"] = faInfo["userId"];
+        historyRecord["userId"] = faInfo["faDetail"]["userId"];
         historyRecord["aeDesc"] = "";
         historyRecord["aeTime"] = new Date().Format("yyyy-MM-dd");
 
@@ -274,27 +274,44 @@ exports.modification = function (req, res, next) {
 
     var ep = EventProxy.create();
 
-    FixedAsset.modifyFixedAsset(detailObj, faId, function (err, rows) {
+    var userId = detailObj["userId"] || "";
+    var retake = false;
+
+    //if userId is null ,it means retake this fixed asset
+    if (userId.length === 0) {
+        retake = true;
+    }
+
+    //before retake , get the userId first!
+    FixedAsset.getFixedAssetByfaID(faId, function(err, faInfo) {
         if (err) {
             return ep.emitLater("error", err);
         }
 
-        var userId = detailObj["userId"] || "";
+        //get the userId it's retaking from 
+        userId = faInfo["faDetail"]["userId"] || "";
+        ep.emitLater("after_getFAInfo");
+    });
 
-        if (userId.length != 0) {
-            ep.emitLater("completed");
-        } else {
-            //if userId is null ,it means retake this fixed asset
-            ep.emitLater("after_retake");
-        }
-        
+    ep.once("after_getFAInfo", function() {
+        FixedAsset.modifyFixedAsset(detailObj, faId, function (err, rows) {
+            if (err) {
+                return ep.emitLater("error", err);
+            }
+
+            if (retake) {
+                ep.emitLater("after_retake");
+            } else {
+                ep.emitLater("completed");
+            }
+        });
     });
 
     ep.once("after_retake", function () {
         var historyRecord       = {};
         historyRecord["atId"]   = faId;
         historyRecord["aetpId"] = 4;                //retake
-        historyRecord["userId"] = "";
+        historyRecord["userId"] = userId;
         historyRecord["aeDesc"] = "";
         historyRecord["aeTime"] = new Date().Format("yyyy-MM-dd");
 
