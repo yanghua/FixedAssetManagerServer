@@ -46,8 +46,6 @@ body {
   height: 60px;
   cursor: pointer;
 }
-.glyphicons_right {
-  float: right;
+.margin-topForLoginBtn {
   margin-top: 20px;
-  cursor: pointer;
 }
