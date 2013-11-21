@@ -78,6 +78,13 @@ echo "sudo /etc/init.d/mysql.server start"
 echo "stop mysql:"
 echo "sudo /etc/init.d/mysql.server stop"
 
+echo "setting mysql password:"
+echo "step 1):mysql -u root"
+echo "step 2):SET PASSWORD FOR 'root'@'localhost' = PASSWORD('YOURPASSWORD');"
+
+echo "open all host from anywhere access premission:"
+echo "mysql> GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY 'youpassword' WITH GRANT OPTION;"
+
 echo "login mysql client:"
 echo "mysql -u root -p"
 echo "==================================================="
