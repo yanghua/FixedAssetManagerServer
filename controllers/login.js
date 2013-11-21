@@ -108,6 +108,28 @@ exports.signIn = function (req, res, next) {
 };
 
 /**
+ * common process
+ * @param  {object}   req  the instance of request
+ * @param  {object}   res  the instance of response
+ * @param  {Function} next the next handler
+ * @return {null}        
+ */
+exports.commonProcess = function (req, res, next) {
+    var param = req.query.api || 0;
+    var isAPI = parseInt(param);
+
+    if (isAPI === 1) {                //is mobile api
+        return next();
+    } else {
+        if (req.session && req.session.user) {
+            res.local("current_user", req.session.user);
+        }
+        
+        next();
+    }
+};
+
+/**
  * generate captcha image
  * @param  {object}   req  the instance of request
  * @param  {object}   res  the instance of response
