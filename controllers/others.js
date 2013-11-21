@@ -53,7 +53,7 @@ exports.index = function (req, res, next){
 exports.apis = function (req, res, next) {
     console.log("#######controllers/others->apis");
     res.render('api');
-}
+};
 
 /**
  * 404 error controller
