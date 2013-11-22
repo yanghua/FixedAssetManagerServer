@@ -18,8 +18,8 @@ body {
  * grid system, and navbar.
  */
 
-/* Reset the container */
-.container {
+ /* Reset the container */
+ .container {
   max-width: none !important;
   width: 970px;
 }
@@ -90,7 +90,7 @@ body {
   border-width: 0 1px 1px;
   border-radius: 0 0 4px 4px;
   -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
-          box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
 }
 .navbar .open .dropdown-menu > li > a {
   color: #333;
@@ -117,7 +117,7 @@ body {
 
 /*
 add to show new ui
- */
+*/
 #nav_new{
   background-color: rgb(71, 163, 218);
 }
@@ -159,7 +159,17 @@ add to show new ui
   margin: 0 auto;
 }
 .row{
-    padding-right: 15px;
-    padding-left: 15px;
+  padding-right: 15px;
+  padding-left: 15px;
+}
+/*
+  create page css
+  */
+#formdiv{
+  width: 500px;
+  margin-top: 10px;
+  margin-left: auto;
+  margin-right: auto;
+  border:1px solid #00F
 }
 
