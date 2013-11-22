@@ -33,7 +33,8 @@ var config = require("../config").initConfig();
 exports.initMysql = function  () {
     var mysql  = null;
     mysql = Client.create({
-        'maxconnections' : config.default_max_conns
+        'maxconnections' : config.default_max_conns,
+        "sockettimeout"  : "2000"
     });
 
     mysql.addserver(config.mysqlConfig);

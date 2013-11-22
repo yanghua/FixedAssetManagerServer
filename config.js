@@ -34,7 +34,7 @@ function initConfig() {
     var configInfo = {
 
         //mysql max connections
-        default_max_conns : 150,
+        default_max_conns : 50,
 
         // mysqlConfig       : {
         //     "host"      : "172.16.206.16",
