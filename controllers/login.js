@@ -52,45 +52,32 @@ exports.showLogin = function (req, res, next) {
  */
 exports.signIn = function (req, res, next) {
     var captchaCode = req.body.auth.captchaCode || "";
-
-    console.log("--------------------------------------------------");
-    console.log(req.body.auth.passwd);
+    var userId      = req.body.auth.userId || "";
+    var passwd      = req.body.auth.passwd || "";
 
     try {
         check(captchaCode).notEmpty();
-        captchaCode = sanitize(sanitize(captchaCode).trim()).xss();
-    } catch (e) {
-        return res.redirect("/login");
-    }
-
-    if (!req.session || !req.session.captchaCode
-          || captchaCode.length === 0  || 
-       captchaCode != req.session.captchaCode) {
-        return res.redirect("/login");
-    }
-
-    var userId = req.body.auth.userId || "";
-    var passwd = req.body.auth.passwd || "";
-
-    try {
         check(userId).notEmpty();
         check(passwd).notEmpty();
-        userId = sanitize(sanitize(userId).trim()).xss();
-        passwd = sanitize(sanitize(passwd).trim()).xss();
+        captchaCode = sanitize(sanitize(captchaCode).trim()).xss();
+        userId      = sanitize(sanitize(userId).trim()).xss();
+        passwd      = sanitize(sanitize(passwd).trim()).xss();
     } catch (e) {
-        return res.redirect("/login");
+        return res.send("5");
+    }
+
+    if (!req.session || !req.session.captchaCode || 
+       captchaCode != req.session.captchaCode) {
+        return res.send("4");
     }
 
     Login.getUserAuthInfoByUserId(userId, function (err, userAuthInfo) {
-        console.log(userAuthInfo);
-        console.log(userId);
-        console.log(passwd);
         if (err) {
-            return res.redirect("/login");
+            return res.send("3");
         }
 
         if (!userAuthInfo) {
-            return res.redirect("/login");
+            return res.send("2");
         }
 
         //check
@@ -99,9 +86,9 @@ exports.signIn = function (req, res, next) {
             user["userId"]   = userId;
             req.session.user = user;
 
-            return res.redirect("/fixedasset/printservice");
+            return res.send("1");
         } else {
-            return res.redirect("/login");
+            return res.send("0");
         }
     });
 

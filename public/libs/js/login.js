@@ -15,6 +15,8 @@ $(function () {
         jqObj.prop("src",randomImgSrc(jqObj));
     });
 
+    $("#div_tip").hide();
+
 });
 
 /**
@@ -40,12 +42,62 @@ function randomImgSrc (jqObj) {
  * @return {null} 
  */
 function postAuthUserForm () {
-    var pwd = $(".container .form-signin input").filter("[type*='password']").val();
+    $("#submitBtn").popover("show");
+
+    var pwd = $("#input_pwd").val();
     if (pwd.length === 0) {
-        return;
+        return false;
     }
 
-    var crypedPwd = CryptoJS.SHA256(pwd);
-    $(".container .form-signin input").filter("[type*='password']").val(crypedPwd);
-    document.forms["signinForm"].submit();
+    var crypedPwd = CryptoJS.SHA256(pwd)+"";
+
+    $.ajax({
+        url     : "/signin",
+        type    : "POST",
+        async   : false,
+        cache   : false,
+        data    : {
+            "auth[userId]"      : $("#input_userId").val(),
+            "auth[passwd]"      : crypedPwd,
+            "auth[captchaCode]" : $("#input_captchaCode").val()
+        },
+        success : function (statusCode) {
+            if (statusCode) {
+                if (statusCode === "1") {               //validated
+                    window.location="/fixedasset/printservice";
+                } else {
+                    showTip(statusCode);
+                }
+            }
+
+            return false;
+        },
+        error   : function () {
+            showTip("3");
+        }
+    });
+
+    return false;
+}
+
+/**
+ * shwo login error tips
+ * @param  {string} statusCode status code
+ * @return {null}            
+ */
+function showTip (statusCode) {
+    if (statusCode === "0") {
+        $("#span_tipMsg").text("登陆失败");
+    } else if (statusCode === "2") {
+        $("#span_tipMsg").text("用户不存在");
+    } else if (statusCode === "3") {
+        $("#span_tipMsg").text("服务器错误");
+    } else if (statusCode === "4") {
+        $("#span_tipMsg").text("验证码错误");
+    } else if (statusCode === "5") {
+        $("#span_tipMsg").text("认证信息为空或存在非法字符");
+    }
+
+    $("#div_tip").fadeIn(1000);
+    $("#div_tip").fadeOut(1000);
 }

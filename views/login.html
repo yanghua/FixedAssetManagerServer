@@ -12,31 +12,34 @@
     <%  } %>
     <!-- style -->
     <%- Loader()
-      .css("/public/libs/bootstrap/css/bootstrap.css")
+      .css("/public/libs/bootstrap/css/bootstrap.min.css")
       .css("/public/stylesheets/login.css")
       .done()
       %>
     <!-- script -->
     <%- Loader()
       .js("/public/libs/jquery/jquery-1.10.2.min.js")
-      .js('/public/libs/bootstrap/js/bootstrap.js')
+      .js('/public/libs/bootstrap/js/bootstrap.min.js')
       .js("/public/libs/CryptoJS_v3.1.2/rollups/sha256.js")
       .js("/public/libs/js/login.js")
       .done()
       
       %>
+
   </head>
   <body>
     <div class="container">
-      <form name="signinForm" class="form-signin" action="signin" method="post">
+      <form id="signinForm" class="form-signin" onsubmit="return postAuthUserForm();">
         <h2 class="form-signin-heading">金智教育资产管理系统</h2>
-        <input name="auth[userId]" type="text" class="form-control" placeholder="用户名" required autofocus>
-        <input name="auth[passwd]" type="password" class="form-control" placeholder="密 码" required>
-        <input name="auth[captchaCode]" type="text" class="form-control" placeholder="验证码" required>
+        <input id="input_userId" type="text" class="form-control" placeholder="用户名" required autofocus>
+        <input id="input_pwd" type="password" class="form-control" placeholder="密 码" required>
+        <input id="input_captchaCode" type="text" class="form-control" placeholder="验证码" required>
         <div id="captcha_div">
         </div>
-        <button class="btn btn-lg btn-primary btn-block margin-topForLoginBtn" type="button" onsubmit="return false;" 
-                onclick="postAuthUserForm();" >登 录</button>
+        <button id="submitBtn" class="btn btn-lg btn-primary btn-block margin-topForLoginBtn" type="submit" >登 录</button>
+        <div id="div_tip" class="alert alert-danger fade in margin-topForTipDiv">
+          <span id="span_tipMsg"></span>
+        </div>
       </form>
     </div>
     <!-- /container -->
