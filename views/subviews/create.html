@@ -3,68 +3,123 @@
 	<!-- script -->
 	<%- Loader()
 	.js("/public/libs/js/create.js")
+	.js("/public/libs/js/bootstrap-select.js")
+	.done()
+	%>
+	<!-- style -->
+	<%- Loader()
+	.css("/public/stylesheets/bootstrap-select.css")
 	.done()
 	%>
 </head>
+
 <script type="text/javascript">
 	$(document).ready(function(){
+		;
 		$("li[class='active']").removeAttr("class");
 		$("#add").addClass("active");
+		$.ajax({
+			type:"GET",
+			url:"/fatypes",
+			success:function(data) {
+				if (data.statusCode==0) {
+					for (var i =0 ; i<data.data.length;i++) {
+						var temp = "<option value='"+data.data[i].typeId+"'>"
+						+data.data[i].typeName
+						+"</option>";
+						$("#fatypeSelect").append(temp);
+					};
+				};
+				$('.selectpicker').selectpicker()
+			},
+			error:function() {
+				// body...
+			}
+		});
+		
+		
 	});
+	$(function() {
+		$("button#submit").click(function(){
+			$.ajax({
+				type: "POST",
+				url: "/fixedasset/insertion",
+				data: $('form.contact').serialize(),
+				success: function(msg){
+					if (msg.statusCode==0) {
+						$('#submit').popover('show');
+						setInterval(function(){
+							$('#submit').popover('hide');
+						},700);
+					};
+				},
+				error: function(){
+					alert("failure");
+				}
+			});
+		});
+	});
+
+
 </script>
 <div id="main_div" >
+	
 	<div id="formdiv">
-		<form role="form">
-			<div class="form-group">
-				<label for="exampleInputEmail1">she</label>
-				<input type="email" class="form-control" id="exampleInputEmail1" placeholder="Enter email">
+		<div id="form-content"  aria-hidden="false">
+			<div class="modal-header">
+				<h3>Contact us</h3>
 			</div>
-			<div class="form-group">
-				<label for="exampleInputPassword1">Password</label>
-				<input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
-			</div>
-			<div class="form-group">
-				<label for="exampleInputEmail1">Email address</label>
-				<input type="email" class="form-control" id="exampleInputEmail1" placeholder="Enter email">
-			</div>
-			<div class="form-group">
-				<label for="exampleInputPassword1">Password</label>
-				<input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
-			</div>
-			<div class="form-group">
-				<label for="exampleInputEmail1">Email address</label>
-				<input type="email" class="form-control" id="exampleInputEmail1" placeholder="Enter email">
-			</div>
-			<div class="form-group">
-				<label for="exampleInputPassword1">Password</label>
-				<input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
-			</div><div class="form-group">
-				<label for="exampleInputEmail1">Email address</label>
-				<input type="email" class="form-control" id="exampleInputEmail1" placeholder="Enter email">
-			</div>
-			<div class="form-group">
-				<label for="exampleInputPassword1">Password</label>
-				<input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
-			</div><div class="form-group">
-				<label for="exampleInputEmail1">Email address</label>
-				<input type="email" class="form-control" id="exampleInputEmail1" placeholder="Enter email">
-			</div>
-			<div class="form-group">
-				<label for="exampleInputPassword1">Password</label>
-				<input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
-			</div>
-			<div class="form-group">
-				<label for="exampleInputEmail1">Email address</label>
-				<input type="email" class="form-control" id="exampleInputEmail1" placeholder="Enter email">
-			</div>
-			<div class="form-group">
-				<label for="exampleInputPassword1">Password</label>
-				<input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
-			</div>
+			<div>
+				<form class="contact">
+					<fieldset>
+						<div class="modal-body">
+							<ul class="nav nav-list">
+								<label for="">资产编号</label>
+								<li> <input  class="form-control"  value="201307-03-0035" type="text" name="newId"> </li>
+								<label for="">资产类型</label>
+								<li> 
+									<select name="typeId" id="fatypeSelect" class="selectpicker show-tick">
+									</select>
+								</li>
+								<label for="">资产名称</label>
+								<li> <input  class="form-control" type="text" name="assetName"> </li>
+								<label for="">资产归属</label>
+								<li> <input  class="form-control" type="text" name="assetBelong"> </li>
+								<label for="">品牌</label>
+								<li> <input  class="form-control" type="text" name="brand"> </li>
+								<label for="">型号</label>
+								<li> <input  class="form-control" type="text" name="model"> </li>
+								<label for="">规格</label>
+								<li> <input  class="form-control" type="text" name="specifications"> </li>
+								<label for="">价格</label>
+								<li> <div class="input-group">
+									<span class="input-group-addon">$</span>
+									<input type="text" class="form-control" name="price">
+									<span class="input-group-addon">.00</span>
+								</div></li>
+								<label for="">快速服务代码</label>
+								<li> <input  class="form-control" type="text" name="serviceCode"> </li>
+								<label for="">Mac地址</label>
+								<li> <input  class="form-control" type="text" name="mac"> </li>
+								<label for="">备注1</label>
+								<li> <input  class="form-control" type="text" name="remark1"> </li>
+								<label for="">备注2</label>
+								<li> <input  class="form-control" type="text" name="remark2"> </li>
+							</ul> 
 
-			
-			<button type="submit" class="btn btn-default">Submit</button>
-		</form>
+						</div>
+					</fieldset>
+				</form>
+			</div>
+			<div class="modal-footer">
+				
+				<button type="button" id="submit" class="btn btn-success" data-container="body" data-toggle="popover" data-placement="bottom" data-content="设备信息插入成功" data-original-title="" title="">
+					确认入库
+				</button>
+				<a href="/fixedasset/manage" class="btn" data-dismiss="modal">返回查询页面</a>
+			</div>
+		</div>
 	</div>
+
 
 </div>
