@@ -1,16 +1,8 @@
 <% layout('layout') -%>
 <script type="text/javascript">
   $(document).ready(function(){
-    // var options = {
-    //           currentPage:<%= locals.renderData.pageIndex %>,
-    //           totalPages: 10,
-    //           pageUrl: function(type, page, current){
-    //               return "http://127.0.0.1:8088/fixedasset/printservice/"+page;
-
-    //           }
-    // }
-    // $('#paginator_div').bootstrapPaginator(options);
-    // 
+    $("li[class='active']").removeAttr("class");
+        $("#print").addClass("active");
     $('#paginator_div').pagination({
       items: <%= locals.renderData.total %>,
       itemsOnPage: <%= locals.renderData.pageSize %>,

@@ -1,4 +1,10 @@
 <% layout('layout') -%>
+<script type="text/javascript">
+    $(document).ready(function(){
+        $("li[class='active']").removeAttr("class");
+        $("#home").addClass("active");
+    });
+</script>
  <div id="main_div" class="panel panel-default">
              <div class="panel-heading">service list</div>
             <p>

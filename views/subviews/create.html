@@ -1,1 +1,18 @@
 <% layout('layout') -%>
+<head>
+	 <!-- script -->
+    <%- Loader()
+      .js("/public/libs/js/create.js")
+      .done()
+      %>
+</head>
+<script type="text/javascript">
+    $(document).ready(function(){
+        $("li[class='active']").removeAttr("class");
+        $("#add").addClass("active");
+    });
+</script>
+<div id="main_div" >
+
+
+</div>
