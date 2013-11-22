@@ -64,5 +64,5 @@ exports.apis = function (req, res, next) {
  */
 exports.fourofour=function (req, res, next){
     console.log("#######controllers/others->404");
-    res.render('404.html');
+    res.render('errors/404');
 };
