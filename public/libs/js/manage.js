@@ -1,11 +1,16 @@
-function btnPrintClick(qrCode){  
+function btnPrintClick(){  
 	$("#assetDetails").hide();
 	$("#assetEvent").hide();
 	$("#underName").hide();
 	if ($("#baseType").val()==0) {
-		loadAssetDetails(qrCode);
-		$("#assetDetails").after($("#underName").clone());
-		$("#underName").remove()();
+		var qrCode=$("#baseInput").val();
+		if (qrCode) {
+			loadAssetDetails(qrCode);
+			$("#assetDetails").after($("#underName").clone());
+			$("#underName").remove()();
+		}else{
+			alert("请输入编号后查询");
+		}
 			// $.ajax({ 
 			// 	type: 'POST', 
 			// 	url: '/fixedasset/inspection', 
@@ -22,13 +27,18 @@ function btnPrintClick(qrCode){
 	$("#assetDetails").hide();
 	$("#assetEvent").hide();
 	$("#underName").hide();
-	loadUnderName('01312114');
+	if ($("#baseInput").val()) {
+		loadUnderName($("#baseInput").val());
+	}else{
+		alert("请输入人员编号后查询");
+	}
+	
 	$("#underName").after($("#assetDetails").clone());
 	$("#assetDetails").remove()();
 
 }
 }
-function loadAssetDetails(qrCode,flag){
+function loadAssetDetails(qrCode){
 	$.ajax({ 
 		type: 'POST', 
 		url: '/fixedasset/inspection', 
@@ -121,8 +131,7 @@ function loadUnderName(userId){
 		success: function (data) { 
 			if(data.statusCode==0){
 				
-				$("#underName").show();
-				$("#addtr").html("");
+				
 				function createCellContainer(item){
 					return $("<td></td>").html(item);
 				}
@@ -136,21 +145,29 @@ function loadUnderName(userId){
 						loadAssetDetails(value);
 					}
 				}
-				for (var i = 0; i < data.data.length; ++i) {
-					var cellData = data.data[i];
-					var row = createRowContainer();
-					var cellNum = createCellContainer(i);
-					var cellId = createCellContainer(cellData.newId);
-					var cellName = createCellContainer(cellData.assetName);
-					var link = $("<a href='javascript:void(0);'>查看详情</a>");
-					link.click(itemClick(cellData.newId));
-					var cellDetail = createCellContainer(link);
-					row.append(cellNum);
-					row.append(cellId);
-					row.append(cellName);
-					row.append(cellDetail);
-					$("#addtr").append(row);
+				if(data.data.length){
+					$("#underName").show();
+					$("#addtr").html("");
+					for (var i = 0; i < data.data.length; ++i) {
+						var cellData = data.data[i];
+						var row = createRowContainer();
+						var cellNum = createCellContainer(i);
+						var cellId = createCellContainer(cellData.newId);
+						var cellName = createCellContainer(cellData.assetName);
+						var link = $("<a href='javascript:void(0);'>查看详情</a>");
+						link.click(itemClick(cellData.newId));
+						var cellDetail = createCellContainer(link);
+						row.append(cellNum);
+						row.append(cellId);
+						row.append(cellName);
+						row.append(cellDetail);
+						$("#addtr").append(row);
+					}
+				}else{
+
 				}
+
+
 			}
 		}
 	});
