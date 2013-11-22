@@ -29,8 +29,9 @@
 						+"</option>";
 						$("#fatypeSelect").append(temp);
 					};
+					$('.selectpicker').selectpicker()
 				};
-				$('.selectpicker').selectpicker()
+				
 			},
 			error:function() {
 				// body...
@@ -41,22 +42,35 @@
 	});
 	$(function() {
 		$("button#submit").click(function(){
+			//existence 
 			$.ajax({
-				type: "POST",
-				url: "/fixedasset/insertion",
-				data: $('form.contact').serialize(),
-				success: function(msg){
-					if (msg.statusCode==0) {
-						$('#submit').popover('show');
-						setInterval(function(){
-							$('#submit').popover('hide');
-						},700);
-					};
-				},
-				error: function(){
-					alert("failure");
+				type:"GET",
+				url:"/fixedasset/"+$("#newId").val()+"/existence",
+				success:function(data) {
+					if(data.data==0){
+						$.ajax({
+							type: "POST",
+							url: "/fixedasset/insertion",
+							data: $('form.contact').serialize(),
+							success: function(msg){
+								if (msg.statusCode==0) {
+									$('#submit').popover('show');
+									setInterval(function(){
+										$('#submit').popover('destroy');
+									},700);
+									
+								};
+							},
+							error: function(){
+								alert("failure");
+							}
+						});
+					}else{
+						alert("此编号已存在，请更换");
+					}
 				}
-			});
+			})
+			
 		});
 	});
 
@@ -67,7 +81,7 @@
 	<div id="formdiv">
 		<div id="form-content"  aria-hidden="false">
 			<div class="modal-header">
-				<h3>资产入库</h3>
+				<h1>资产入库</h1>
 			</div>
 			<div>
 				<form class="contact">
@@ -75,7 +89,7 @@
 						<div class="modal-body">
 							<ul class="nav nav-list">
 								<label for="">资产编号</label>
-								<li> <input  class="form-control"  value="201307-03-0035" type="text" name="newId"> </li>
+								<li> <input id="newId"  class="form-control"  value="201307-03-0035" type="text" name="newId"> </li>
 								<label for="">资产类型</label>
 								<li> 
 									<select name="typeId" id="fatypeSelect" class="selectpicker show-tick">
