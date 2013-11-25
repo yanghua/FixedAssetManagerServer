@@ -43,7 +43,7 @@ module.exports = function (app) {
 
     //views
     app.get("/", others.index);
-    app.get("/apis", others.home);
+    app.get("/apis", others.apis);
     app.get("/login", login.showLogin);
     app.post("/signin", login.signIn);
     app.get("/signout", logout.signOut);

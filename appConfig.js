@@ -40,6 +40,20 @@ exports.config = {
 
     site_static_host    : "",
 
-    session_secret      : "Fixed_Asset_0987654321"
+    session_secret      : "Fixed_Asset_0987654321",
+
+    mail_opts           : {
+        host  : "smtp.163.com",
+        port  : 25,
+        auth  : {
+            user  : "wisasset@163.com",
+            pass  : "adminn"
+        }
+    },
+
+    mailDefault_TO      : [
+        "huayang@wisedu.com",
+        "zcliu@wisedu.com"
+    ]
 
 };

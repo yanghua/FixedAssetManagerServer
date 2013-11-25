@@ -42,7 +42,6 @@ function randomImgSrc (jqObj) {
  * @return {null} 
  */
 function postAuthUserForm () {
-    $("#submitBtn").popover("show");
 
     var pwd = $("#input_pwd").val();
     if (pwd.length === 0) {
