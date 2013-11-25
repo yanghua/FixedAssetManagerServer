@@ -50,14 +50,14 @@ function initConfig() {
             "database"  : "fixedAsset"
         },
 
-
         default_page_size : 50,
 
         statusCode        : {
             SATUS_OK                  : 0,
             STATUS_NOTFOUND           : 1,        //means data not found not url request
             STATUS_SERVER_ERROR       : 2,
-            STATUS_INVAILD_PARAMS     : 3
+            STATUS_INVAILD_PARAMS     : 3,
+            STATUS_DBERROR            : 4
             //....
         },
 

@@ -73,9 +73,19 @@ function PageNotFoundError (message) {
 PageNotFoundError.prototype = new BaseError();
 PageNotFoundError.prototype.constructor = PageNotFoundError;
 
+function DBError (message) {
+    this.name       = "DBError";
+    this.message    = message || "DBError";
+    this.statusCode = config.statusCode.STATUS_DBERROR;
+}
+
+DBError.prototype = new DBError();
+DBError.prototype.constructor = DBError;
+
 
 global.BaseError         = BaseError;
 global.ServerError       = ServerError;
 global.InvalidParamError = InvalidParamError;
 global.DataNotFoundError = DataNotFoundError;
 global.PageNotFoundError = PageNotFoundError;
+global.DBError           = DBError;
