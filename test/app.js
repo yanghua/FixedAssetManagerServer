@@ -39,7 +39,7 @@ describe("app.js", function () {
 
     it("should / status 200", function (done) {
         app.request().get("/").end(function (res) {
-            res.should.status(200);
+            res.should.status(302);
             done();
         });
     });

@@ -82,6 +82,7 @@ app.configure('development', function () {
 
 //config for production env
 app.configure("production", function () {
+    console.log("production");
     app.use('/public', express.static(staticDir, { maxAge: maxAge }));
     app.use(express.errorHandler());
     app.set('view cache', true);
@@ -93,8 +94,8 @@ errorHandler.appErrorProcess(app);
 routes(app);
 
 //launch it!
-app.listen(8088);
-console.log("the app server run at port :8088");
+app.listen(AppConfig.port);
+console.log("the app server run at port :%d in %s mode. ", AppConfig.port, app.settings.env);
 
 module.exports = app;
 
