@@ -162,6 +162,10 @@ add to show new ui
   padding-right: 15px;
   padding-left: 15px;
 }
+
+.evenClass{
+  background: #f9f9f9;
+}
 /*
   create page css
   */
@@ -170,4 +174,7 @@ add to show new ui
   margin-left: auto;
   margin-right: auto;
 }
+
+
+
 

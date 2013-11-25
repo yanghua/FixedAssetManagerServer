@@ -199,6 +199,7 @@ function loadAssetEvevt (aetid) {
 							break;
 						}
 					}
+					$("#historyul li:odd").addClass("evenClass");
 				}else{
 					$("#assetEvent").hide();
 					$("#historyul").html("");
