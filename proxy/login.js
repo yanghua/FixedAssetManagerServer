@@ -26,10 +26,10 @@
 //mode:
 'use strict';
 
-var mysqlUtil    = require("../libs/mysqlUtil"),
-    mysqlClient  = mysqlUtil.initMysql();
-var EventProxy   = require("eventproxy");
-var config       = require("../config").initConfig();
+var mysqlClient = require("../libs/mysqlUtil");
+
+var EventProxy  = require("eventproxy");
+var config      = require("../config").initConfig();
                    require("../libs/DateUtil");
 
 /**

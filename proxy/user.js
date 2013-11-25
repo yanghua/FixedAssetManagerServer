@@ -27,8 +27,7 @@
 'use strict';
 
 var User        = require("../models/user");
-var mysqlUtil   = require("../libs/mysqlUtil"),
-    mysqlClient = mysqlUtil.initMysql();
+var mysqlClient = require("../libs/mysqlUtil");
 
 /**
  * get user info by user id

@@ -6,14 +6,15 @@
     "author"      : "",
     "dependencies": {
         "express"   : "2.5.11",
-        "easymysql" : "0.2.7",
+        "mysql"     : "2.0.0-alpha9",
         "eventproxy": "0.2.5",
         "validator" : "1.5.1",
         "ejs"       : "0.8.4",
         "loader"    : "0.0.5",
         "canvas"    : "1.1.2",
         "captchagen": "1.1.0",
-        "crypto-js" : "3.1.2-1"
+        "crypto-js" : "3.1.2-1",
+        "nodemailer": "0.5.8"
     },
     "devDependencies": {
         "should": "*",

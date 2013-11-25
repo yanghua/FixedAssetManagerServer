@@ -27,15 +27,16 @@
 /*jslint nomen: true*/
 "use strict";
 
-var fs        = require("fs");
-var path      = require("path");
-var express   = require("express");
-var routes    = require("./routes");
-var common    = require("./common/Error");
-var AppConfig = require("./appConfig").config;
-var Loader    = require("loader");
+var fs           = require("fs");
+var path         = require("path");
+var express      = require("express");
+var routes       = require("./routes");
+var common       = require("./common/Error");
+var AppConfig    = require("./appConfig").config;
+var Loader       = require("loader");
+var errorHandler = require("./common/errorHandler");
 
-var app       = express.createServer();
+var app          = express.createServer();
 
 //config for all env
 app.configure(function () {
@@ -54,7 +55,7 @@ app.configure(function () {
     app.use(express.session({
         secret : AppConfig.session_secret,
         cookie : {
-            maxAge  : 20 * 60 * 1000      //ms
+            maxAge  : 30 * 60 * 1000      //ms
         }
     }));
 });
@@ -81,25 +82,20 @@ app.configure('development', function () {
 
 //config for production env
 app.configure("production", function () {
+    console.log("production");
     app.use('/public', express.static(staticDir, { maxAge: maxAge }));
     app.use(express.errorHandler());
     app.set('view cache', true);
 });
 
 //error hanlder
-app.error(function(err, req, res, next) {
-    if (err instanceof PageNotFoundError) {
-        res.render("errors/404");
-    } else if (err instanceof ServerError) {
-        res.render("errors/500");
-    }
-});
+errorHandler.appErrorProcess(app);
 
 routes(app);
 
 //launch it!
-app.listen(8088);
-console.log("the app server run at port :8088");
+app.listen(AppConfig.port);
+console.log("the app server run at port :%d in %s mode. ", AppConfig.port, app.settings.env);
 
 module.exports = app;
 

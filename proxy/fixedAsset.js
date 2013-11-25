@@ -26,11 +26,10 @@
 //mode
 'use strict';
 
-var User         = require('../models/fixedAsset');
-var mysqlUtil    = require("../libs/mysqlUtil"),
-    mysqlClient  = mysqlUtil.initMysql();
-var EventProxy   = require("eventproxy");
-var config       = require("../config").initConfig();
+var User        = require('../models/fixedAsset');
+var mysqlClient = require("../libs/mysqlUtil");
+var EventProxy  = require("eventproxy");
+var config      = require("../config").initConfig();
                    require("../libs/DateUtil");
 
 /**

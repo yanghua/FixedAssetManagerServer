@@ -34,12 +34,28 @@ exports.config = {
     description         : "Fixed Asset Manager",
     version             : "0.0.1",
 
+    port                : 8080,
+
     site_headers        : [
         '<meta name="author" content="freedom" />',
     ],
 
     site_static_host    : "",
 
-    session_secret      : "Fixed_Asset_0987654321"
+    session_secret      : "Fixed_Asset_0987654321",
+
+    mail_opts           : {
+        host  : "smtp.163.com",
+        port  : 25,
+        auth  : {
+            user  : "wisasset@163.com",
+            pass  : "adminn"
+        }
+    },
+
+    mailDefault_TO      : [
+        "huayang@wisedu.com",
+        "zcliu@wisedu.com"
+    ]
 
 };

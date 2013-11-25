@@ -23,34 +23,58 @@
   Desc: mysqlUtil - the helper of mysql
  */
 
-var Client = require("easymysql");
-var config = require("../config").initConfig();
+var mysql     = require("mysql");
+var mysqlPool = null;
+var config    = require("../config").initConfig();
 
 /**
- * init mysql
+ * init mysql pool
  * @return {null} 
  */
-exports.initMysql = function  () {
-    var mysql  = null;
-    mysql = Client.create({
-        'maxconnections' : config.default_max_conns,
-        "sockettimeout"  : "2000"
-    });
-
-    mysql.addserver(config.mysqlConfig);
-
-    mysql.on('busy', function(queuesize, maxconnections, which){
-        console.log('mysql is busy');
-    });
-
-    mysql.query('USE fixedAsset', function(err, results){
-        if (err) {
-            console.log("USE fixedAsset Error:"+err.message);
-            inited = false;
-        }else{
-            inited = true;
-        }
-    });
-
-    return mysql;
+function initMysqlPool () {
+    mysqlPool = mysql.createPool(config.mysqlConfig);
 }
+
+/**
+ * do mysql query
+ * @param  {object}   sqlReq   the sql request obj
+ * @param  {Function} callback the callback func
+ * @return {null}            
+ */
+exports.query = function (sqlReq, callback) {
+    //sql, params
+    if (!mysqlPool) {
+        initMysqlPool();
+    }
+
+    if (!sqlReq) {
+        throw new DBError("the sqlReq is null");
+    }
+
+    var sql_pattern = sqlReq.sql || "";
+    if (sql_pattern.length === 0) {
+        throw new DBError("the sql is empty");
+    }
+
+    mysqlPool.getConnection(function (err, connection) {
+
+        if (err) {
+            throw err;
+        }
+
+        connection.config.queryFormat = function (query, values) {
+            if (!values) return query;
+            return query.replace(/\:(\w+)/g, function (txt, key) {
+              if (values.hasOwnProperty(key)) {
+                return this.escape(values[key]);
+              }
+              return txt;
+            }.bind(this));
+        };
+
+        connection.query(sql_pattern, sqlReq.params, function (err, rows) {
+            connection.release();
+            return callback(err, rows);
+        });
+    });
+};

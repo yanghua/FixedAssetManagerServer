@@ -26,8 +26,7 @@
 //mode:
 'use strict';
 
-var mysqlUtil    = require("../libs/mysqlUtil"),
-    mysqlClient  = mysqlUtil.initMysql();
+var mysqlClient = require("../libs/mysqlUtil");
 
 /**
  * get all fixed asset types
