@@ -29,7 +29,7 @@
 						+"</option>";
 						$("#fatypeSelect").append(temp);
 					};
-					$('.selectpicker').selectpicker()
+					$('.selectpicker').selectpicker();
 				};
 				
 			},
@@ -106,11 +106,13 @@
 								<label for="">规格</label>
 								<li> <input  class="form-control" type="text" name="specifications"> </li>
 								<label for="">价格</label>
-								<li> <div class="input-group">
+								<li> 
+								<div class="input-group">
 									<span class="input-group-addon">$</span>
 									<input type="text" class="form-control" name="price">
 									<span class="input-group-addon">.00</span>
-								</div></li>
+								</div>
+								</li>
 								<label for="">快速服务代码</label>
 								<li> <input  class="form-control" type="text" name="serviceCode"> </li>
 								<label for="">Mac地址</label>
