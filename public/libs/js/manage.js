@@ -11,32 +11,20 @@ function btnPrintClick(){
 		}else{
 			alert("请输入编号后查询");
 		}
-			// $.ajax({ 
-			// 	type: 'POST', 
-			// 	url: '/fixedasset/inspection', 
-			// 	//data: { 'qrCode': '201307-03-0035' }, 
-			// 	data:{'qrCode':qrCode},
-			// 	success: function (data) { 
-			// 		$("#assetDetails").hide();
-			// 		$("#assetEvent").hide();
-			// 		$("#underName").hide();
-			// 		loadAssetDetails(qrCode);
-			// 	}
-			// });
-}else{
-	$("#assetDetails").hide();
-	$("#assetEvent").hide();
-	$("#underName").hide();
-	if ($("#baseInput").val()) {
-		loadUnderName($("#baseInput").val());
 	}else{
-		alert("请输入人员编号后查询");
-	}
-	
-	$("#underName").after($("#assetDetails").clone());
-	$("#assetDetails").remove()();
+		$("#assetDetails").hide();
+		$("#assetEvent").hide();
+		$("#underName").hide();
+		if ($("#baseInput").val()) {
+			loadUnderName($("#baseInput").val());
+		}else{
+			alert("请输入人员编号后查询");
+		}
+		
+		$("#underName").after($("#assetDetails").clone());
+		$("#assetDetails").remove()();
 
-}
+	}
 }
 function loadAssetDetails(qrCode){
 	$.ajax({ 
@@ -119,6 +107,13 @@ function loadAssetDetails(qrCode){
 					//loadAssetEvevt(2);
 
 				}
+				if(data.statusCode==1){
+					$('#twoSearch').popover('show');
+					setInterval(function(){
+						$('#twoSearch').popover('destroy');
+					},1000);	
+				}
+
 			}
 		});
 
@@ -164,6 +159,10 @@ function loadUnderName(userId){
 						$("#addtr").append(row);
 					}
 				}else{
+					$('#twoSearch').popover('show');
+					setInterval(function(){
+						$('#twoSearch').popover('destroy');
+					},1000);
 
 				}
 
