@@ -167,7 +167,7 @@ exports.rejection = function (req, res, next) {
         historyRecord["aetpId"] = 2;                //reject
         historyRecord["userId"] = faInfo["faDetail"]["userId"];
         historyRecord["aeDesc"] = "";
-        historyRecord["aeTime"] = new Date().Format("yyyy-MM-dd");
+        historyRecord["aeTime"] = new Date().Format("yyyy-MM-dd hh:mm:ss");
 
         FAHistory.insertHistoryRecord(historyRecord, function (err, data) {
             if (err) {
@@ -447,7 +447,6 @@ exports.checkExistence = function (req, res, next) {
 
     FixedAsset.checkFixedAssetByfaID(faId, function (err, hasFA) {
         if (err) {
-            console.log(err);
             return res.send(resUtil.generateRes(null, err.statusCode));
         }
 
@@ -492,7 +491,7 @@ exports.printService = function (req, res, next) {
 
     FixedAsset.getqrCodeByPageIndex(pageIndex, function (err, rows) {
         if (err) {
-            return ep.emitLater("error", new ServerError());
+            return ep.emitLater("error", err);
         }
 
         ep.emitLater("after_getqrCode", rows);
@@ -501,7 +500,7 @@ exports.printService = function (req, res, next) {
     ep.once("after_getqrCode", function (qrCodeList) {
         FixedAsset.getFixedAssetCount(function (err, totalCount) {
             if (err) {
-                return ep.emitLater("error", new ServerError());
+                return ep.emitLater("error", err);
             }
 
             var renderData = {};
@@ -529,7 +528,7 @@ exports.printService = function (req, res, next) {
  * @return {null}        
  */
 exports.manage = function (req, res, next) {
-    console.log("#######controllers/fixedasset->manager");
+    console.log("******controllers/fixedasset->manager");
 
     if (!req.session || !req.session.user) {
         return res.redirect("/login");
@@ -546,7 +545,7 @@ exports.manage = function (req, res, next) {
  * @return {null}        
  */
 exports.edit = function (req, res, next) {
-    console.log("#######controllers/fixedasset->edit");
+    console.log("******controllers/fixedasset->edit");
 
     if (!req.session || !req.session.user) {
         return res.redirect("/login");
@@ -563,11 +562,83 @@ exports.edit = function (req, res, next) {
  * @return {null}        
  */
 exports.create = function (req, res, next) {
-    console.log("#######controllers/fixedasset->create");
+    console.log("******controllers/fixedasset->create");
 
     if (!req.session || !req.session.user) {
         return res.redirect("/login");
     }
     
     res.render('subviews/create');
-}
+};
+
+/**
+ * get idle fixed asset list
+ * @param  {object}   req  the instance of request
+ * @param  {object}   res  the instance of response
+ * @param  {Function} next the next handler
+ * @return {null}        
+ */
+exports.idleFixedAsset = function (req, res, next) {
+    console.log("######controllers/idleFixedAsset");
+
+    var deptId    = req.params.deptId || "";
+    var pageIndex = req.params.pageIndex || 1;
+
+    try {
+        if (pageIndex === "") {
+            pageIndex = 1;
+        }
+        pageIndex = sanitize(pageIndex).toInt();
+
+        if (pageIndex < 1) {
+            throw new InvalidParamError("the page index must be gt 1");
+        }
+
+    } catch (e) {
+        pageIndex = 1;
+    }
+
+    try {
+        check(deptId).notEmpty();
+        sanitize(sanitize(deptId).trim()).xss();
+    } catch (e) {
+        return res.send(resUtil.generateRes(null, config.statusCode.STATUS_INVAILD_PARAMS));
+    }
+
+    var ep = EventProxy.create();
+
+    FixedAsset.getIdelFixedAssetsByDeptId(deptId, pageIndex, function (err, rows) {
+        if (err) {
+                return ep.emitLater("error", err);
+        }
+
+        ep.emitLater("after_getIdelFixedAssetsByDeptId", rows);
+    });
+
+    ep.once("after_getIdelFixedAssetsByDeptId", function (idelFAList) {
+        var tmp = idelFAList;
+
+        FixedAsset.getIdelFixedAssetCountByDeptId(deptId, function (err, count) {
+            if (err) {
+                return ep.emitLater("error", err);
+            }
+
+            ep.emitLater("completed", tmp, count);
+        });
+    });
+
+    ep.once("completed", function (idelFAList, idelFACount) {
+        var data = {};
+        data["pageSize"]   = config.default_page_size;
+        data["pageIndex"]  = pageIndex;
+        data["total"]      = idelFACount;
+        data["qrCodeList"] = idelFAList;
+
+        return res.send(resUtil.generateRes(data, config.statusCode.SATUS_OK));
+    });
+
+
+    ep.fail(function (err) {
+        return res.send(resUtil.generateRes(null, err.statusCode));
+    });
+};

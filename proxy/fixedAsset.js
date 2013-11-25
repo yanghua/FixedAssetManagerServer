@@ -405,7 +405,6 @@ exports.allocateFixedAsset = function (allocatingObj, callback) {
         params      : allocatingObj
     }, function (err, rows) {
         if (err || !rows) {
-            console.dir(err);
             return callback(new ServerError(), null);
         }
 
@@ -469,4 +468,58 @@ exports.getFixedAssetCount = function (callback) {
 
         return callback(new ServerError(), null);
     });
-}
+};
+
+/**
+ * get idel fixed asset list with dept id
+ * @param  {string}   deptId    dept id
+ * @param  {int}   pageIndex the showing page index
+ * @param  {Function} callback  the callback func
+ * @return {null}             
+ */
+exports.getIdelFixedAssetsByDeptId = function (deptId, pageIndex, callback) {
+    console.log("######proxy/fixedAsset/getIdelFixedAssetsByDeptId");
+
+    mysqlClient.query({
+        sql       : "SELECT * FROM fixedAsset.ASSETS " +
+                    " WHERE departmentId = :departmentId AND userId is null " +
+                    " LIMIT :start,:end ",
+        params    : {
+            departmentId  : deptId,
+            start         : ((pageIndex - 1) * config.default_page_size),
+            end           : config.default_page_size
+        }
+    },  function (err, rows) {
+        if (err) {
+            return callback(new ServerError(), null);
+        }
+
+        callback(null, rows);
+    });
+};
+
+/**
+ * get idel fixed asset count
+ * @param  {[type]}   deptId   [description]
+ * @param  {Function} callback [description]
+ * @return {[type]}            [description]
+ */
+exports.getIdelFixedAssetCountByDeptId = function (deptId, callback) {
+    mysqlClient.query({
+        sql     : "SELECT count(newId) AS 'count' FROM fixedAsset.ASSETS " +
+                    " WHERE departmentId = :departmentId AND userId IS null",
+        params  : {
+            departmentId  : deptId
+        }
+    },  function (err, rows) {
+        if (err) {
+            return callback(new ServerError(), null);
+        }
+
+        if (rows && rows[0]) {
+            return callback(null, rows[0].count);
+        }
+
+        return callback(new ServerError(), null);
+    });
+};
