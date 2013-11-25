@@ -1,10 +1,17 @@
 <% layout('layout') -%>
 <head>
-	 <!-- script -->
-    <%- Loader()
-      .js("/public/libs/js/manage.js")
-      .done()
-      %>
+	<!-- script -->
+	<%- Loader()
+	.js("/public/libs/js/manage.js")
+	.js("/public/libs/js/bootstrap-select.js")
+	.js("/public/libs/js/bootbox.min.js")
+	.done()
+	%>
+	<!-- style -->
+	<%- Loader()
+	.css("/public/stylesheets/bootstrap-select.css")
+	.done()
+	%>
 </head>
 <script type="text/javascript">
 	$(document).ready(function(){
@@ -13,58 +20,134 @@
 		$("#assetDetails").hide();
 		$("#assetEvent").hide();
 		$("#underName").hide();
+		$('#baseType').selectpicker();
+		$.ajax({
+			type: 'GET', 
+			url: '/departments', 
+			success: function (data) { 
+				if(data.statusCode==0){
+					for (var i =0 ; i<data.data.length;i++) {
+						var temp = "<option value='"+data.data[i].departmentId+"'>"
+						+data.data[i].departmentName
+						+"</option>";
+						$("#assetDep").append(temp);
+					};
+					$('#assetDep').selectpicker();
+				}
+			}
+		})
 	});
+	$(document).keyup(function(event){
+ 	if(event.keyCode ==13){
+ 		//$("#twoSearch").focus();
+    	$("#twoSearch").click();
+  	}
+
+});
+	
+
 </script>
 
 <div id="main_div" >
 	<h1>资产管理</h1>
 	<hr>
-	<div>
-		<div class="form-group">
-			<p>选择输入类型:</p>
-			<select id="baseType"  Style="Font-size:14pt">
-				<option value="0">设备编号</option>
-				<option value="1">人员工号</option>
-			</select>
-			<input type="text" id="baseInput">
-			<button type="submit" onclick="btnPrintClick()" id="twoSearch" class="btn btn-default" data-container="body" data-toggle="popover" data-placement="right" data-content="此编号无数据" data-original-title="" title="">
-          搜索
-        </button>
+	<div class="container-fluid">
+		<div class="row-fluid">
+			<div class="span12">
+				<div class="tabbable" id="tabs-410411">
+					<ul class="nav nav-tabs">
+						<li class="active">
+							<a href="#panel-1" data-toggle="tab">资产查询</a>
+						</li>
+						<li>
+							<a href="#panel-2" data-toggle="tab">资产派发</a>
+						</li>
+						<li>
+							<a href="#panel-3" data-toggle="tab">第3部分</a>
+						</li>
+						<li>
+							<a href="#panel-4" data-toggle="tab">第4部分</a>
+						</li>
+					</ul>
+					<div class="tab-content">
+						<div class="tab-pane active fade in" id="panel-1">
+							<div>
+								<div class="form-group">
+									<legend>选择输入类型:</legend>
+									<div class="input-group" >
+
+										<select  id="baseType"  class="selectpicker show-tick">
+											<option value="0">设备编号</option>
+											<option value="1">人员工号</option>
+										</select>
+										<input  class="form-control" style="width:220px;margin-bottom:10px;margin-left:20px;margin-right:20px;" type="text" id="baseInput">
+										<button type="submit" onclick="btnPrintClick()"  style="margin-bottom:10px;"id="twoSearch" class="btn btn-default" data-container="body" data-toggle="popover" data-placement="right" data-content="此编号无数据" data-original-title="" title="">
+											搜索
+										</button>
+									</div>
+								</div>
+							</div>
+							<div class="panel panel-default" id="assetDetails">
+								<!-- Default panel contents -->
+								<div class="panel-heading">资产详情</div>
+								<input id = "the_new_id" style="display: none;">
+								<ul class="list-group">
+
+								</ul>
+							</div>
+							<div class="panel panel-default" id="underName">
+								<div class="panel-heading" >用户名下</div>
+								<table class="table">
+									<thead>
+										<tr>
+											<th>#</th>
+											<th>设备编号</th>
+											<th>设备名</th>
+											<th>操作</th>
+										</tr>
+									</thead>
+									<tbody id='addtr'>
+
+									</tbody>
+								</table>
+							</div>
+							<div class="panel panel-default" id="assetEvent">
+								<div class="panel-heading" >设备变动记录</div>
+								<ul class="list-group" id="historyul" >
+									<li class="list-group-item">waiting</li>
+								</ul>
+							</div>
+						</div>
+						<div class="tab-pane fade" id="panel-2">
+							<legend>资产派发：</legend> 
+							<div class="input-group" >
+								<span class="help-block">提示：根据下拉框选择空闲资产所在部门，可以将该设备分给当前部门的人员。</span>
+								<select  id="assetDep"  class="selectpicker show-tick">
+
+								</select>
+								
+								<button type="submit" onclick="serachNo()"  style="margin-bottom:10px;margin-left:20px;margin-right:20px; "id="twoSearch" class="btn btn-default" data-container="body" >
+									Search
+								</button>
+							</div>
+						
+						</div>
+						<div class="tab-pane" id="panel-3">
+						<p>
+							第3部分内容.
+						</p>
+						</div>
+						<div class="tab-pane" id="panel-4">
+						<p>
+							第4部分内容.
+						</p>
+						</div>
+
+					</div>
+					
+				</div>
+
+			</div>
 		</div>
 	</div>
-	<div class="panel panel-default" id="assetDetails">
-		<!-- Default panel contents -->
-		<div class="panel-heading">资产详情</div>
-		<ul class="list-group">
-			
-		</ul>
-	</div>
-	<div class="panel panel-default" id="underName">
-		<div class="panel-heading" >用户名下</div>
-		<table class="table">
-			<thead>
-				<tr>
-					<th>#</th>
-					<th>设备编号</th>
-					<th>设备名</th>
-					<th>操作</th>
-				</tr>
-			</thead>
-			<tbody id='addtr'>
-
-			</tbody>
-		</table>
-	</div>
-	<div class="panel panel-default" id="assetEvent">
-		<div class="panel-heading" >设备变动记录</div>
-		<ul class="list-group" id="historyul" >
-			<li class="list-group-item">waiting</li>
-			
-		</ul>
-	</div>
-</div>
-
-
-
-
 </div>

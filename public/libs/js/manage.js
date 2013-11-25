@@ -7,7 +7,7 @@ function btnPrintClick(){
 		if (qrCode) {
 			loadAssetDetails(qrCode);
 			$("#assetDetails").after($("#underName").clone());
-			$("#underName").remove()();
+			$("#underName").remove();
 		}else{
 			alert("请输入编号后查询");
 		}
@@ -22,21 +22,20 @@ function btnPrintClick(){
 		}
 		
 		$("#underName").after($("#assetDetails").clone());
-		$("#assetDetails").remove()();
+		$("#assetDetails").remove();
 
 	}
 }
+
 function loadAssetDetails(qrCode){
 	$.ajax({ 
 		type: 'POST', 
 		url: '/fixedasset/inspection', 
-			//data: { 'qrCode': '201307-03-0035' }, 
 			data:{'qrCode':qrCode},
 			success: function (data) { 
 				$("#assetDetails").hide();
 				$("#assetEvent").hide();
 				$("#underName").hide();
-				//loadAssetDetails(data);
 				if(data.statusCode==0){
 					$("#assetDetails").show();
 					$("#assetDetails ul").html("");
@@ -44,6 +43,7 @@ function loadAssetDetails(qrCode){
 					var temp ='<li class="list-group-item">';
 					if (det.newId) {
 						$("#assetDetails ul").append(temp+'设备编号:'+det.newId+'</li>');
+						$("#the_new_id").val(det.newId);
 					}else{
 						alert("设备不存在!");
 					}
@@ -95,16 +95,15 @@ function loadAssetDetails(qrCode){
 						$("#assetDetails ul").append(temp+'MAC地址:'+det.mac+'</li>');
 					}
 					if(det.reject>0){
-						$("#assetDetails ul").append(temp+'已报废'+'</li>');
+						$("#assetDetails ul").append(temp+'已报废 <button type="button" onclick="onMakeSureClick(1)" class="btn btn-warning">取消报废</button>'+'</li>');
 						if (det.rejectDate&&det.rejectDate!='0000-00-00') {
 							$("#assetDetails ul").append(temp+'报废时间:'+det.rejectDate+'</li>');
 						};
 					}else{
-						$("#assetDetails ul").append(temp+'未报废'+'</li>');
+						$("#assetDetails ul").append(temp+'未报废</li>');
 					}
 					//add history 
 					loadAssetEvevt(det.newId);
-					//loadAssetEvevt(2);
 
 				}
 				if(data.statusCode==1){
@@ -118,6 +117,7 @@ function loadAssetDetails(qrCode){
 		});
 
 }
+
 
 function loadUnderName(userId){
 	$.ajax({ 
@@ -208,3 +208,22 @@ function loadAssetEvevt (aetid) {
 		}
 	});
 }
+function onMakeSureClick (is) {
+	if (is==0) {
+		bootbox.confirm("确定报废该设备?", function(result) {
+			if (result) {
+				$.ajax({ 
+				type: 'POST', 
+				url: '/fixedasset/rejection', 
+				data:{'faId':$("#the_new_id").val(),'reject':1},
+				success: function (data) { 
+					if (data.statusCode==0) {
+						loadAssetDetails($("#the_new_id").val());
+					};
+				}
+				})
+			};
+			
+		})
+	}
+};
