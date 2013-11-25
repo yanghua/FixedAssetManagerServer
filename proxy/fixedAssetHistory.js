@@ -74,7 +74,8 @@ exports.getHistoryListByFAId = function (faId, callback) {
                   "    ON ae.aetpId = aet.aetId " +
                   "  LEFT JOIN USER u " +
                   "    ON ae.userId = u.userId " +
-                  " WHERE atId = :atId ",
+                  " WHERE atId = :atId " + 
+                  " ORDER BY aeTime DESC LIMIT 10",
         params  : {
             atId    : faId
         }
