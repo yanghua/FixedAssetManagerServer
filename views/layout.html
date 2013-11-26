@@ -12,14 +12,14 @@
    <%- headers[i] %>
    <%  } %>
    <!-- style -->
-   <%- Loader()
+   <%- Loader("/public/stylesheets/layout.min.css")
    .css("/public/libs/bootstrap/css/bootstrap.css")
    .css("/public/stylesheets/layout.css")
    .css("/public/stylesheets/simplePagination.css")
    .done()
    %>
    <!-- script -->
-   <%- Loader()
+   <%- Loader("/public/libs/js/layout.min.js")
    .js('/public/libs/jquery/jquery-1.10.2.min.js')
    .js('/public/libs/jquery/jquery.simplePagination.js')
    .js('/public/libs/bootstrap/js/bootstrap.js')

@@ -1,3 +1,7 @@
+/**
+ * search order by userId or assetId
+ * @return {null}
+ */
 function btnPrintClick(){  
 	$("#assetDetails").hide();
 	$("#assetEvent").hide();
@@ -26,7 +30,11 @@ function btnPrintClick(){
 
 	}
 }
-
+/**
+ * load assetDetails
+ * @param  {string} qrCode
+ * @return {null}
+ */
 function loadAssetDetails(qrCode){
 	$.ajax({ 
 		type: 'POST', 
@@ -53,7 +61,7 @@ function loadAssetDetails(qrCode){
 						}else{
 							$("#assetDetails ul").append(temp+'设备名称:'+data.data.typeInfo.typeName + '-> '+ det.assetName +'</li>');
 						}
-					};
+					}
 					if(det.oldId){
 						$("#assetDetails ul").append(temp+'旧编号:'+det.oldId+'</li>');
 					}
@@ -83,7 +91,7 @@ function loadAssetDetails(qrCode){
 						$("#assetDetails ul").append(temp+'价格:'+det.price+'</li>');
 					}
 					if(det.purchaseDate&&det.purchaseDate!='0000-00-00'){
-						$("#assetDetails ul").append(temp+'采购日期:'+det.purchaseDate+'</li>');
+						$("#assetDetails ul").append(temp+'采购日期:'+det.purchaseDate.substring(0,10)+'</li>');
 					}
 					if(det.possessDate&&det.possessDate!='0000-00-00'){
 						$("#assetDetails ul").append(temp+'领用日期:'+det.possessDate+'</li>');
@@ -95,7 +103,7 @@ function loadAssetDetails(qrCode){
 						$("#assetDetails ul").append(temp+'MAC地址:'+det.mac+'</li>');
 					}
 					if(det.reject>0){
-						$("#assetDetails ul").append(temp+'已报废 <button type="button" onclick="onMakeSureClick(1)" class="btn btn-warning">取消报废</button>'+'</li>');
+						$("#assetDetails ul").append(temp+'已报废 <button type="button" onclick="onMakeSureClick()" class="btn btn-warning">取消报废</button>'+'</li>');
 						if (det.rejectDate&&det.rejectDate!='0000-00-00') {
 							$("#assetDetails ul").append(temp+'报废时间:'+det.rejectDate+'</li>');
 						};
@@ -118,15 +126,17 @@ function loadAssetDetails(qrCode){
 
 }
 
-
+/**
+ * load asset bref info under user name
+ * @param  {string} userId
+ * @return {null}
+ */	
 function loadUnderName(userId){
 	$.ajax({ 
 		type: 'GET', 
 		url: '/user/'+userId+'/fixedassets', 
 		success: function (data) { 
 			if(data.statusCode==0){
-				
-				
 				function createCellContainer(item){
 					return $("<td></td>").html(item);
 				}
@@ -171,6 +181,11 @@ function loadUnderName(userId){
 		}
 	});
 }
+/**
+ * load asset change event 
+ * @param  {string} aetid
+ * @return {null}
+ */
 function loadAssetEvevt (aetid) {
 	$.ajax({ 
 		type: 'GET', 
@@ -209,22 +224,83 @@ function loadAssetEvevt (aetid) {
 		}
 	});
 }
-function onMakeSureClick (is) {
-	if (is==0) {
-		bootbox.confirm("确定报废该设备?", function(result) {
-			if (result) {
-				$.ajax({ 
-				type: 'POST', 
-				url: '/fixedasset/rejection', 
-				data:{'faId':$("#the_new_id").val(),'reject':1},
-				success: function (data) { 
-					if (data.statusCode==0) {
-						loadAssetDetails($("#the_new_id").val());
-					};
-				}
-				})
-			};
-			
-		})
-	}
+/**
+ * the make sure reject an asset 
+ * @return {[type]}
+ */
+function onMakeSureClick () {
+	bootbox.confirm("确定报废该设备?", function(result) {
+		if (result) {
+			$.ajax({ 
+			type: 'POST', 
+			url: '/fixedasset/rejection', 
+			data:{'faId':$("#the_new_id").val(),'reject':1},
+			success: function (data) { 
+				if (data.statusCode==0) {
+					loadAssetDetails($("#the_new_id").val());
+				};
+			}
+			})
+		};
+		
+	})
+	
 };
+/**
+ * search asset without user about 
+ * @param  {string} depId     部门id
+ * @param  {string} typeId    资产类型id
+ * @param  {string} pageIndex 分页
+ * @return {null} 
+ */
+function searchNoUser (pageIndex) {
+	$.ajax({ 
+		type: 'GET', 
+		url: '/department/'+$("#assetDep").val()+'/idelfixedasset/type/'+$("#assetTypes").val()+'/page/'+pageIndex,
+		success: function (data) { 
+			if (data.statusCode==0) {
+				function createCellContainer(item){
+					return $("<td></td>").html(item);
+				}
+
+				function createRowContainer(){
+					return $("<tr></tr>");
+				}
+
+				function itemClick(value){
+					return function(){
+						loadAllocToUser(value);
+					}
+				}
+				if(data.data.total){
+					$("#noUserAsset").show();
+					$("#addtrAs").html("");
+					if(data.data.total){
+						for (var i = 0; i < data.data.idelFAList.length; ++i) {
+							var cellData = data.data.idelFAList[i];
+							var row = createRowContainer();
+							var cellNum = createCellContainer(i);
+							var cellId = createCellContainer(cellData.newId);
+							var cellName = createCellContainer(cellData.assetName);
+							var link = $("<a href='javascript:void(0);'>派发</a>");
+							link.click(itemClick(cellData.newId));
+							var cellDetail = createCellContainer(link);
+							row.append(cellNum);
+							row.append(cellId);
+							row.append(cellName);
+							row.append(cellDetail);
+							$("#addtrAs").append(row);
+						}
+					}else{
+						//$("#addtrAs").html("");
+						$("#addtrAs").html("暂无相关资产信息");
+					}
+				}
+			};
+		}
+	})
+}
+
+function loadAllocToUser (assetId) {
+	alert("..."+assetId);
+}

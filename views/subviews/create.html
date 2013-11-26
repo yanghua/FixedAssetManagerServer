@@ -1,13 +1,13 @@
 <% layout('layout') -%>
 <head>
 	<!-- script -->
-	<%- Loader()
+	<%- Loader("/public/libs/js/create.min.js")
 	.js("/public/libs/js/create.js")
 	.js("/public/libs/js/bootstrap-select.js")
 	.done()
 	%>
 	<!-- style -->
-	<%- Loader()
+	<%- Loader("/public/stylesheets/create.min.js")
 	.css("/public/stylesheets/bootstrap-select.css")
 	.done()
 	%>
@@ -15,7 +15,6 @@
 
 <script type="text/javascript">
 	$(document).ready(function(){
-		;
 		$("li[class='active']").removeAttr("class");
 		$("#add").addClass("active");
 		$.ajax({
@@ -121,8 +120,19 @@
 								<li> <input  class="form-control" type="text" name="remark1"> </li>
 								<label for="">备注2</label>
 								<li> <input  class="form-control" type="text" name="remark2"> </li>
+								<div style="display:none">
+								<input  class="form-control" type="text" name="userId">
+								<input  class="form-control" type="text" name="oldId">
+								<input  class="form-control" type="text" name="departmentId">
+								<input  class="form-control" type="text" name="currentStatus">
+								<input  class="form-control" type="text" name="amount">
+								<input  class="form-control" type="text" name="purchaseDate">
+								<input  class="form-control" type="text" name="possessDate">
+								<input  class="form-control" type="text" name="reject">
+								<input  class="form-control" type="text" name="rejectDate">
+								<input  class="form-control" type="text" name="qrcode">
+								</div>
 							</ul> 
-
 						</div>
 					</fieldset>
 				</form>

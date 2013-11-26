@@ -1,14 +1,14 @@
 <% layout('layout') -%>
 <head>
 	<!-- script -->
-	<%- Loader()
+	<%- Loader("/public/libs/js/manage.min.js")
 	.js("/public/libs/js/manage.js")
 	.js("/public/libs/js/bootstrap-select.js")
 	.js("/public/libs/js/bootbox.min.js")
 	.done()
 	%>
 	<!-- style -->
-	<%- Loader()
+	<%- Loader("/public/stylesheets/manage.min.css")
 	.css("/public/stylesheets/bootstrap-select.css")
 	.done()
 	%>
@@ -20,6 +20,7 @@
 		$("#assetDetails").hide();
 		$("#assetEvent").hide();
 		$("#underName").hide();
+		$("#noUserAsset").hide();
 		$('#baseType').selectpicker();
 		$.ajax({
 			type: 'GET', 
@@ -33,6 +34,21 @@
 						$("#assetDep").append(temp);
 					};
 					$('#assetDep').selectpicker();
+				}
+			}
+		})
+		$.ajax({
+			type: 'GET', 
+			url: '/fatypes', 
+			success: function (data) { 
+				if(data.statusCode==0){
+					for (var i =0 ; i<data.data.length;i++) {
+						var temp = "<option value='"+data.data[i].typeId+"'>"
+						+data.data[i].typeName
+						+"</option>";
+						$("#assetTypes").append(temp);
+					};
+					$('#assetTypes').selectpicker();
 				}
 			}
 		})
@@ -120,15 +136,35 @@
 						</div>
 						<div class="tab-pane fade" id="panel-2">
 							<legend>资产派发：</legend> 
-							<div class="input-group" >
+							<div class="controls controls-row" >
 								<span class="help-block">提示：根据下拉框选择空闲资产所在部门，可以将该设备分给当前部门的人员。</span>
-								<select  id="assetDep"  class="selectpicker show-tick">
+								<select  id="assetDep"  class="selectpicker show-tick ">
+
+								</select>
+
+								<select  id="assetTypes" class="selectpicker show-tick " >
 
 								</select>
 								
-								<button type="submit" onclick="serachNo()"  style="margin-bottom:10px;margin-left:20px;margin-right:20px; "id="twoSearch" class="btn btn-default" data-container="body" >
+								<button type="submit" onclick="searchNoUser(1)"  style="margin-bottom:10px;margin-left:20px;margin-right:20px; "id="twoSearch" class="btn btn-default span4" data-container="body" >
 									Search
 								</button>
+							</div>
+							<div class="panel panel-default" id="noUserAsset">
+								<div class="panel-heading" >当前部门闲置资产列表</div>
+								<table class="table table-striped">
+									<thead>
+										<tr>
+											<th>#</th>
+											<th>设备编号</th>
+											<th>设备名</th>
+											<th>操作</th>
+										</tr>
+									</thead>
+									<tbody id='addtrAs'>
+
+									</tbody>
+								</table>
 							</div>
 						
 						</div>
