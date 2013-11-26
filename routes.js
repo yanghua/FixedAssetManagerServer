@@ -62,7 +62,7 @@ module.exports = function (app) {
     app.get("/departments", department.getAllDepartments);
     app.get("/fixedasset/:faId/existence", fixedAsset.checkExistence);
     app.get("/fixedasset/:faId/history", fixedAssetHistory.faHistory);
-    app.get("/department/:deptId/idelfixedasset/:pageIndex?", fixedAsset.idleFixedAsset);
+    app.get("/department/:deptId/idelfixedasset/type/:typeId/page/:pageIndex?", fixedAsset.idleFixedAsset);
 
     //can't mapping router
     app.get("*", others.fourofour);

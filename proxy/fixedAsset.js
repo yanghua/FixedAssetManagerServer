@@ -471,24 +471,44 @@ exports.getFixedAssetCount = function (callback) {
 };
 
 /**
- * get idel fixed asset list with dept id
+ * get idel fixed asset list with dept id and typeId
  * @param  {string}   deptId    dept id
+ * @param {int} typeId the fixed asset type id
  * @param  {int}   pageIndex the showing page index
  * @param  {Function} callback  the callback func
  * @return {null}             
  */
-exports.getIdelFixedAssetsByDeptId = function (deptId, pageIndex, callback) {
+exports.getIdelFAListByDeptIdAndTypeId = function (deptId, typeId, pageIndex, callback) {
     console.log("######proxy/fixedAsset/getIdelFixedAssetsByDeptId");
 
+    var baseParams = {
+        departmentId  : deptId,
+        start         : ((pageIndex - 1) * config.default_page_size),
+        end           : config.default_page_size
+    };
+
+    var sqlStr = "";
+
+    if (typeId === 0) {
+        sqlStr = "SELECT ast.*,astp.typeName FROM fixedAsset.ASSETS ast " +
+                 "LEFT JOIN ASSETTYPE astp " +
+                 "ON ast.typeId = astp.typeId " +
+                 " WHERE ast.departmentId = :departmentId " +
+                 " AND userId is null " +
+                 " LIMIT :start,:end ";
+    } else {
+        sqlStr = "SELECT ast.*,astp.typeName FROM fixedAsset.ASSETS ast " +
+                 "LEFT JOIN ASSETTYPE astp " +
+                 "ON ast.typeId = astp.typeId " +
+                 " WHERE ast.departmentId = :departmentId AND ast.typeId = :typeId " +
+                 " AND userId is null " +
+                 " LIMIT :start,:end ";
+        baseParams["typeId"] = typeId;
+    }
+
     mysqlClient.query({
-        sql       : "SELECT * FROM fixedAsset.ASSETS " +
-                    " WHERE departmentId = :departmentId AND userId is null " +
-                    " LIMIT :start,:end ",
-        params    : {
-            departmentId  : deptId,
-            start         : ((pageIndex - 1) * config.default_page_size),
-            end           : config.default_page_size
-        }
+        sql       : sqlStr,
+        params    : baseParams
     },  function (err, rows) {
         if (err) {
             return callback(new ServerError(), null);
@@ -500,17 +520,31 @@ exports.getIdelFixedAssetsByDeptId = function (deptId, pageIndex, callback) {
 
 /**
  * get idel fixed asset count
- * @param  {[type]}   deptId   [description]
- * @param  {Function} callback [description]
- * @return {[type]}            [description]
+ * @param  {string}   deptId   the department id
+ * @param {int} typeId asset type id
+ * @param  {Function} callback the callback func
+ * @return {null}            
  */
-exports.getIdelFixedAssetCountByDeptId = function (deptId, callback) {
+exports.getIdelFACountByDeptIdAndTypeId = function (deptId, typeId, callback) {
+
+    var baseParams = {
+        departmentId  : deptId
+    };
+
+    var sqlStr = "";
+
+    if (typeId === 0) {
+        sqlStr = "SELECT count(newId) AS 'count' FROM fixedAsset.ASSETS " +
+                    " WHERE departmentId = :departmentId AND userId IS null";
+    } else {
+        sqlStr = "SELECT count(newId) AS 'count' FROM fixedAsset.ASSETS " +
+                    " WHERE departmentId = :departmentId AND typeId = :typeId AND userId IS null";
+        baseParams["typeId"] = typeId;
+    }
+
     mysqlClient.query({
-        sql     : "SELECT count(newId) AS 'count' FROM fixedAsset.ASSETS " +
-                    " WHERE departmentId = :departmentId AND userId IS null",
-        params  : {
-            departmentId  : deptId
-        }
+        sql     : sqlStr,
+        params  : baseParams
     },  function (err, rows) {
         if (err) {
             return callback(new ServerError(), null);

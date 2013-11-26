@@ -192,8 +192,8 @@ describe("fixedAsset", function () {
         });
     });
 
-    it('is testing /department/:deptId/idelfixedasset/:pageIndex?', function (done) {
-        app.request().get("/department/2/idelfixedasset/").end(function (res) {
+    it('is testing /department/:deptId/idelfixedasset/type/:typeId/page/:pageIndex?', function (done) {
+        app.request().get("/department/2/idelfixedasset/type/3/page/1").end(function (res) {
             console.dir(res.bodyJSON());
             done();
         });

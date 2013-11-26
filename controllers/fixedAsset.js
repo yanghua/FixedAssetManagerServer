@@ -582,16 +582,19 @@ exports.idleFixedAsset = function (req, res, next) {
     console.log("######controllers/idleFixedAsset");
 
     var deptId    = req.params.deptId || "";
+    var typeId    = req.params.typeId || 0;
     var pageIndex = req.params.pageIndex || 1;
 
     try {
-        if (pageIndex === "") {
-            pageIndex = 1;
-        }
         pageIndex = sanitize(pageIndex).toInt();
+        typeId    = sanitize(typeId).toInt();
 
         if (pageIndex < 1) {
             throw new InvalidParamError("the page index must be gt 1");
+        }
+
+        if (typeId < 0) {
+            throw new InvalidParamError("the typeId must >= 0");
         }
 
     } catch (e) {
@@ -607,7 +610,7 @@ exports.idleFixedAsset = function (req, res, next) {
 
     var ep = EventProxy.create();
 
-    FixedAsset.getIdelFixedAssetsByDeptId(deptId, pageIndex, function (err, rows) {
+    FixedAsset.getIdelFAListByDeptIdAndTypeId(deptId, typeId, pageIndex, function (err, rows) {
         if (err) {
                 return ep.emitLater("error", err);
         }
@@ -618,7 +621,7 @@ exports.idleFixedAsset = function (req, res, next) {
     ep.once("after_getIdelFixedAssetsByDeptId", function (idelFAList) {
         var tmp = idelFAList;
 
-        FixedAsset.getIdelFixedAssetCountByDeptId(deptId, function (err, count) {
+        FixedAsset.getIdelFACountByDeptIdAndTypeId(deptId, typeId, function (err, count) {
             if (err) {
                 return ep.emitLater("error", err);
             }
@@ -632,7 +635,7 @@ exports.idleFixedAsset = function (req, res, next) {
         data["pageSize"]   = config.default_page_size;
         data["pageIndex"]  = pageIndex;
         data["total"]      = idelFACount;
-        data["qrCodeList"] = idelFAList;
+        data["idelFAList"] = idelFAList;
 
         return res.send(resUtil.generateRes(data, config.statusCode.SATUS_OK));
     });
