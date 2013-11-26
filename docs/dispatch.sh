@@ -11,8 +11,6 @@ git clone git://github.com/yanghua/FixedAssetManager_Server.git
 
 cd FixedAssetManager_Server
 
-cp docs/dispatch.sh ~/dispatch.sh
-
 npm install
 
 #generate assets for static resource
