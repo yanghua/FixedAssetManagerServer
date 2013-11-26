@@ -36,6 +36,16 @@ var AppConfig    = require("./appConfig").config;
 var Loader       = require("loader");
 var errorHandler = require("./common/errorHandler");
 
+var assets = {};
+if (AppConfig.mini_assets) {
+    try {
+        assets = JSON.parse(fs.readFileSync(path.join(__dirname, 'assets.json')));
+    } catch (e) {
+        console.log('You must execute `make build` before start app when mini_assets is true.');
+        throw e;
+    }
+}
+
 var app          = express.createServer();
 
 //config for all env
@@ -69,7 +79,8 @@ var staticDir = path.join(__dirname, 'public');
 //set static, dynamic helpers
 app.helpers({
     config: AppConfig,
-    Loader: Loader
+    Loader: Loader,
+    assets: assets
 });
 
 //config for devp env
@@ -82,7 +93,6 @@ app.configure('development', function () {
 
 //config for production env
 app.configure("production", function () {
-    console.log("production");
     app.use('/public', express.static(staticDir, { maxAge: maxAge }));
     app.use(express.errorHandler());
     app.set('view cache', true);
