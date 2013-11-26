@@ -20,11 +20,25 @@ $ mocha test
 ```
 
 ## run
+
+* manual:
+
 ```
 $ cd projectPath/
 
 $ node app.js
 ```
+
+* automatic (use pm2):
+
+```
+$ cp projectPath/docs/dispatch.sh ~/dispatch.sh
+
+$ cd ~
+
+$ sudo sh dispatch.sh 
+```
+
 
 ## project structure
 ```
@@ -37,6 +51,7 @@ root
    |-public                         --静态资源文件夹
    |-views                          --视图文件夹
    |-app.js                         --http server的入口，项目主文件
+   |-appConfig.js                   --应用程序配置
    |-config.js                      --项目配置
    |-package.json                   --项目描述文件
    |-README.md                      --readme file
@@ -50,9 +65,15 @@ root
 ## module dependencies
 
 * express
-* easymysql
+* mysql
 * eventproxy
 * validator
+* ejs
+* loader
+* canvas
+* captchagen
+* crypto-js
+* nodemailer
 
 devDependencies
 
@@ -60,10 +81,10 @@ devDependencies
 * mocha
 
 ## screen shots - iOS
-![ios-1](https://github.com/yanghua/FixedAssetManager_Server/raw/master/screenshots/ios/1.png)
+>TODO
 
 ## screen shots -android
->todo
+>TODO
 
 
 
