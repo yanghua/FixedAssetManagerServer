@@ -272,29 +272,27 @@ function searchNoUser (pageIndex) {
 						loadAllocToUser(value);
 					}
 				}
+				$("#noUserAsset").show();
+				$("#addtrAs").html("");
 				if(data.data.total){
-					$("#noUserAsset").show();
-					$("#addtrAs").html("");
-					if(data.data.total){
-						for (var i = 0; i < data.data.idelFAList.length; ++i) {
-							var cellData = data.data.idelFAList[i];
-							var row = createRowContainer();
-							var cellNum = createCellContainer(i);
-							var cellId = createCellContainer(cellData.newId);
-							var cellName = createCellContainer(cellData.assetName);
-							var link = $("<a href='javascript:void(0);'>派发</a>");
-							link.click(itemClick(cellData.newId));
-							var cellDetail = createCellContainer(link);
-							row.append(cellNum);
-							row.append(cellId);
-							row.append(cellName);
-							row.append(cellDetail);
-							$("#addtrAs").append(row);
-						}
-					}else{
-						//$("#addtrAs").html("");
-						$("#addtrAs").html("暂无相关资产信息");
+					
+					for (var i = 0; i < data.data.idelFAList.length; ++i) {
+						var cellData = data.data.idelFAList[i];
+						var row = createRowContainer();
+						var cellNum = createCellContainer(i);
+						var cellId = createCellContainer(cellData.newId);
+						var cellName = createCellContainer(cellData.assetName);
+						var link = $("<a href='javascript:void(0);'>派发</a>");
+						link.click(itemClick(cellData.newId));
+						var cellDetail = createCellContainer(link);
+						row.append(cellNum);
+						row.append(cellId);
+						row.append(cellName);
+						row.append(cellDetail);
+						$("#addtrAs").append(row);
 					}
+				}else{
+					$("#addtrAs").html("");
 				}
 			};
 		}
