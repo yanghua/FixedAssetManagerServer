@@ -22,4 +22,6 @@ npm install
 make build
 
 pm2 stop all
-pm2 start app.js -x -f
+#make sure you have setted 'NODE_ENV'
+#more detail see: docs/node_install_ubuntu.sh
+NODE_ENV=$NODE_ENV pm2 start app.js -x -f
