@@ -34,13 +34,14 @@ exports.config = {
     description         : "Fixed Asset Manager",
     version             : "0.0.1",
 
-    port                : 8080,
+    port                : 8088,
 
     site_headers        : [
         '<meta name="author" content="freedom" />',
     ],
 
     site_static_host    : "",
+    mini_assets         : true,
 
     session_secret      : "Fixed_Asset_0987654321",
 

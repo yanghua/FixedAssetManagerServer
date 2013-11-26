@@ -4,12 +4,12 @@
 	<%- Loader("/public/libs/js/create.min.js")
 	.js("/public/libs/js/create.js")
 	.js("/public/libs/js/bootstrap-select.js")
-	.done()
+	.done(assets)
 	%>
 	<!-- style -->
-	<%- Loader("/public/stylesheets/create.min.js")
+	<%- Loader("/public/stylesheets/create.min.css")
 	.css("/public/stylesheets/bootstrap-select.css")
-	.done()
+	.done(assets)
 	%>
 </head>
 

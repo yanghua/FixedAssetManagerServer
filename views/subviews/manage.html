@@ -5,12 +5,12 @@
 	.js("/public/libs/js/manage.js")
 	.js("/public/libs/js/bootstrap-select.js")
 	.js("/public/libs/js/bootbox.min.js")
-	.done()
+	.done(assets)
 	%>
 	<!-- style -->
 	<%- Loader("/public/stylesheets/manage.min.css")
 	.css("/public/stylesheets/bootstrap-select.css")
-	.done()
+	.done(assets)
 	%>
 </head>
 <script type="text/javascript">
