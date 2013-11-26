@@ -17,6 +17,6 @@ npm install -g pm2
 
 echo "set NODE_ENV, default is deveploment...."
 echo export NODE_ENV=development >> ~/.bash_profile
-. ~/.bash_profile
+source ~/.bash_profile
 echo "the NODE_ENV is :"
 echo $NODE_ENV
