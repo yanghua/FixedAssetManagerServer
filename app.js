@@ -57,7 +57,7 @@ app.configure(function () {
 
     //middleware
     app.use(express.favicon());
-    app.use(express.logger());
+    
     app.use(express.query());
     app.use(express.bodyParser());
 
@@ -85,6 +85,7 @@ app.helpers({
 
 //config for devp env
 app.configure('development', function () {
+    app.use(express.logger());
     app.use("/public", express.static(staticDir));
     app.use(express.errorHandler(
         { showStack : true, dumpException : true }
