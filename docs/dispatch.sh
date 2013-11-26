@@ -15,5 +15,8 @@ cp docs/dispatch.sh ~/dispatch.sh
 
 npm install
 
+#generate assets for static resource
+make build
+
 pm2 stop all
 pm2 start app.js -x -f
