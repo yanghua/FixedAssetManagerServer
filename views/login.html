@@ -11,20 +11,20 @@
     <%- headers[i] %>
     <%  } %>
     <!-- style -->
-    <%- Loader()
+    <%- Loader("/public/stylesheets/login.min.css")
       .css("/public/libs/bootstrap/css/bootstrap.min.css")
       .css("/public/stylesheets/login.css")
       .done()
       %>
     <!-- script -->
-    <%- Loader()
+    <%- Loader("/public/libs/js/login.min.js")
       .js("/public/libs/jquery/jquery-1.10.2.min.js")
       .js('/public/libs/bootstrap/js/bootstrap.min.js')
       .js("/public/libs/CryptoJS_v3.1.2/rollups/sha256.js")
       .js("/public/libs/js/login.js")
       .done()
       
-      %>
+    %>
 
   </head>
   <body>
