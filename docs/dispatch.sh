@@ -15,9 +15,6 @@ cd FixedAssetManager_Server
 
 npm install
 
-#handle node shebung
-
-
 #generate assets for static resource
 make build
 
