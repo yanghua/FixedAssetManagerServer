@@ -56,6 +56,7 @@ app.configure(function () {
     app.register('.html', require('ejs'));
 
     //middleware
+    app.use(express.compress());
     app.use(express.favicon());
     
     app.use(express.query());
