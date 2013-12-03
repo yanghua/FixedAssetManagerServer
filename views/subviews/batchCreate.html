@@ -1,0 +1,57 @@
+<% layout('layout') -%>
+<head>
+	<!-- script -->
+	<%- Loader("/public/libs/js/create.min.js")
+	.js("/public/libs/js/create.js")
+	.js("/public/libs/js/bootstrap-select.js")
+	.done(assets)
+	%>
+	<!-- style -->
+	<%- Loader("/public/stylesheets/create.min.css")
+	.css("/public/stylesheets/bootstrap-select.css")
+	.done(assets)
+	%>
+</head>
+
+<script type="text/javascript">
+	$(document).ready(function(){
+
+		
+	});
+	
+</script>
+<div id="main_div" >
+	
+	<div id="formdiv">
+		<div id="form-content"  aria-hidden="false">
+			<div class="modal-header">
+				<h1>批量入库</h1>
+			</div>
+			<div>
+				<form class="contact" method="POST" action="/fixedasset/import">
+					<fieldset>
+						<div class="modal-body">
+							<ul class="nav nav-list">
+								<label for="">选择文件</label>
+								<li>
+								<div style="position:relative;">
+							        <a class='btn btn-primary' href='javascript:;'>
+							            选择文件...
+							            <input type="file" style='position:absolute;z-index:2;top:0;left:0;filter: alpha(opacity=0);-ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";opacity:0;background-color:transparent;color:transparent;'name="file_source" size="40"  onchange='$("#upload-file-info").html($(this).val());'>
+							        </a>
+							        &nbsp;
+							        <span class='label label-info' id="upload-file-info"></span>
+								</div>
+
+							</ul> 
+						</div>
+						<button type="submit" size="40" style='margin-left:20px;' class="btn btn-success">提交</button>
+					</fieldset>
+				</form>
+			</div>
+
+		</div>
+	</div>
+
+
+</div>
