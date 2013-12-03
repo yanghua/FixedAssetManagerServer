@@ -43,6 +43,7 @@ module.exports = function (app) {
 
     //views
     app.get("/", others.index);
+    app.get("/qrtest",fixedAsset.handleQrcode);
     app.get("/apis", others.apis);
     app.get("/login", login.showLogin);
     app.post("/signin", login.signIn);
@@ -54,6 +55,7 @@ module.exports = function (app) {
     app.get("/fixedasset/:faId/edit", fixedAsset.edit);
     app.get("/fixedasset/create", fixedAsset.create);
     app.post("/fixedasset/import", fixedAsset.importFA);
+    app.get("/fixedasset/batchCreate",fixedAsset.batchCreate);
 
     //apis
     app.get("/user/:userId", user.getUserById);

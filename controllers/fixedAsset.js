@@ -37,6 +37,9 @@ var EventProxy  = require("eventproxy");
 var path        = require("path");
 var fs          = require("fs");
 var parseXlsx   = require("excel");
+var QRCode      = require("qrcode");
+var PDFDocument = require("pdfkit");
+var ping        = require("net-ping");
 
 /**
  * get fixed asset by faId
@@ -284,7 +287,7 @@ exports.modification = function (req, res, next) {
     }
 
     //before retake , get the userId first!
-    FixedAsset.getFixedAssetByfaID(faId, function(err, faInfo) {
+    FixedAsset.getFixedAssetByfaID(faId, function (err, faInfo) {
         if (err) {
             return ep.emitLater("error", err);
         }
@@ -509,6 +512,19 @@ exports.printService = function (req, res, next) {
             renderData["pageIndex"]  = pageIndex;
             renderData["total"]      = totalCount;
             renderData["qrCodeList"] = qrCodeList;
+            var session = ping.createSession ();
+            session.pingHost ("8.8.8.8", function (error, target) {
+            if (error){
+                renderData["networkCheck"] = 0;
+                if (error instanceof ping.RequestTimedOutError)
+                    console.log (target + ": Not alive");
+                else
+                    console.log (target + ": " + error.toString ());
+            }else{
+                console.log (target + ": Alive");
+                renderData["networkCheck"] = 1;
+            }
+        });
 
             res.render('subviews/print.html', 
                 {renderData : renderData});
@@ -570,6 +586,22 @@ exports.create = function (req, res, next) {
     }
     
     res.render('subviews/create');
+};
+
+/**
+ * batchCreate controller
+ * @param  {obj}   req  [description]
+ * @param  {obj}   res  [description]
+ * @param  {Function} next [description]
+ * @return {[type]}        [description]
+ */
+exports.batchCreate = function (req, res, next) {
+    console.log("******controllers/fixedasset->batchCreate");
+    if (!req.session || !req.session.user){
+        return res.redirect("/login");
+    }
+    
+    res.render('subviews/batchCreate');
 };
 
 /**
@@ -684,4 +716,62 @@ exports.importFA = function (req, res, next) {
         return res.send(resUtil.generateRes(null, err.statusCode));
     });
 
+};
+
+/**
+ * [handleQrcode description]
+ * @param  {object}   req  the instance of request
+ * @param  {object}   res  the instance of response
+ * @param  {Function} next the next handler
+ * @return {[type]}        [description]
+ */
+exports.handleQrcode = function (req, res, next) {
+    console.log("######controllers/handleQrcode");
+
+    var ep = EventProxy.create();
+    FixedAsset.updateQrcode('123123',function (err,qUri) {
+        if (err) {
+            return ep.emitLater("error", err);
+        };
+        ep.emitLater("loadpdf",qUri);
+    })
+
+    ep.fail(function (err) {
+        res.send(resUtil.generateRes(null, err.statusCode));
+    });
+    ep.once("completed1", function (tem) {
+        res.send("<img src='"+tem+"'/>");
+    });
+    var doc = new PDFDocument();
+    ep.once("loadpdf", function (tem) {
+        //doc.addPage();
+        doc.text('Hello world!');
+        var base64Data,binaryData;
+        base64Data  =   tem.replace(/^data:image\/png;base64,/, "");
+        base64Data  +=  base64Data.replace('+', ' ');
+        binaryData  =   new Buffer(base64Data, 'base64').toString('binary');
+        fs.writeFile("public/images/out/out.png", binaryData, "binary", function (err) {
+            if(!err){
+                doc.image('public/images/out/out.png', 100, 100);
+            }
+            ep.emitLater("completed");
+        });
+      
+        
+    });
+    ep.once("completed",function () {
+        doc.write('out.pdf');
+        doc.output(function(string) {
+          res.end(string);
+        });
+    })
+
+};
+
+exports.updateAllQrcode = function (req, res, next) {
+    console.log("#####controllers/updateAllQrcode");
+    var ep = EventProxy.create();
+    FixedAsset.updateAllQrcode(function (err,args) {
+        
+    })
 };
