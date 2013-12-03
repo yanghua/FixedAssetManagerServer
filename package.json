@@ -17,7 +17,8 @@
         "nodemailer"    : "0.5.8",
         "qrcode"        : "0.2.8",
         "pdfkit"        : "0.2.6",
-        "excel"         : "0.0.60"
+        "excel"         : "0.0.60",
+        "net-ping"      : "1.1.9"
     },
     "devDependencies": {
         "should": "*",
