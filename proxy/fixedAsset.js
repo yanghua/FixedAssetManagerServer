@@ -590,7 +590,11 @@ exports.updateQrcode = function (newId,callback) {
         });
     }      
 }
-
+/**
+ * update allQrcode
+ * @param  {Function} callback handle the qrcode about each row
+ * @return {null}            
+ */
 exports.updateAllQrcode =  function (callback) {
     mysqlClient.query({
         sql  : " SELECT NEWID FROM ASSETS"
@@ -604,6 +608,7 @@ exports.updateAllQrcode =  function (callback) {
         console.log(rows[0]);
 
     })
+  }
 
 /**
  * import fixed assets to db
