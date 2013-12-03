@@ -36,6 +36,7 @@ var sanitize    = require("validator").sanitize;
 var EventProxy  = require("eventproxy");
 var path        = require("path");
 var fs          = require("fs");
+var parseXlsx   = require("excel");
 
 /**
  * get fixed asset by faId
@@ -644,4 +645,43 @@ exports.idleFixedAsset = function (req, res, next) {
     ep.fail(function (err) {
         return res.send(resUtil.generateRes(null, err.statusCode));
     });
+};
+
+/**
+ * import fixed asset excel records
+ * @param  {object}   req  the instance of request
+ * @param  {object}   res  the instance of response
+ * @param  {Function} next the next handler
+ * @return {null}        
+ */
+exports.importFA = function (req, res, next) {
+    console.log("######controllers/importFA");
+
+    var fileName = "fa.xlsx";
+    var xlsxPath = path.resolve(__dirname, "../uploads/", fileName);
+    console.log("xlsxPath:" + xlsxPath);
+
+    var ep = EventProxy.create();
+    
+    parseXlsx(xlsxPath, function (err, data) {
+        if (err || !data) {
+            return ep.emitLater("error", new ServerError());
+        }
+
+        return ep.emitLater("after_parsedExcelData", data);
+    });
+
+    ep.once("after_parsedExcelData", function (excelData) {
+        //remove first title array
+        excelData.shift();
+        FixedAsset.importFixedAssets(excelData, function () {
+            //delete excel file
+            return res.send(resUtil.generateRes(null, config.statusCode.SATUS_OK));
+        });
+    });
+
+    ep.fail(function (err) {
+        return res.send(resUtil.generateRes(null, err.statusCode));
+    });
+
 };
