@@ -31,6 +31,7 @@ var mysqlClient = require("../libs/mysqlUtil");
 var EventProxy  = require("eventproxy");
 var config      = require("../config").initConfig();
                    require("../libs/DateUtil");
+var QRCode      = require("qrcode");
 
 /**
  * get fixed asset list by userId
@@ -557,3 +558,49 @@ exports.getIdelFACountByDeptIdAndTypeId = function (deptId, typeId, callback) {
         return callback(new ServerError(), null);
     });
 };
+/**
+ * update qrcode by newId (only one )
+ * @param  {string}   newId    AssetNewId
+ * @param  {Function} callback func
+ * @return {null}
+ */
+exports.updateQrcode = function (newId,callback) {
+    var paramObj = {
+        newId  : newId,
+    };
+    if (newId) {
+        QRCode.toDataURL(newId,function (err, url) {
+        paramObj["qrcode"]=url;
+        mysqlClient.query({
+            sql         : " UPDATE ASSETS SET qrcode=:qrcode "+
+            " WHERE newId=:newId",
+            params      : paramObj
+        }, function (err, rows) { 
+            if (err || !rows) {
+                return callback(new ServerError(), null);
+            }
+
+            if (rows.affectedRows === 0) {
+                return callback(new ServerError(), null);
+            }
+
+            callback(null,paramObj["qrcode"]);
+            }); 
+        });
+    }      
+}
+
+exports.updateAllQrcode =  function (callback) {
+    mysqlClient.query({
+        sql  : " SELECT NEWID FROM ASSETS"
+    },function (err,rows) {
+        if (err || !rows) {
+            return callback(new ServerError(), null);
+        };
+        if (rows.affectedRows === 0) {
+            return callback(new ServerError(), null);
+        };
+        console.log(rows[0]);
+
+    })
+}
