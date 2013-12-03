@@ -57,6 +57,7 @@ exports.config = {
     mailDefault_TO      : [
         "huayang@wisedu.com",
         "zcliu@wisedu.com"
-    ]
+    ],
+    networkIsOk:1
 
 };

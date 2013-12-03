@@ -36,19 +36,19 @@ function initConfig() {
         //mysql max connections
         default_max_conns : 50,
 
-        // mysqlConfig       : {
-        //     "host"      : "172.16.206.16",
-        //     "user"      : "root",
-        //     "password"  : "123456",
-        //     "database"  : "fixedAsset"
-        // },
-
         mysqlConfig       : {
-            "host"      : "127.0.0.1",
+            "host"      : "172.16.206.16",
             "user"      : "root",
             "password"  : "123456",
             "database"  : "fixedAsset"
         },
+
+        // mysqlConfig       : {
+        //     "host"      : "127.0.0.1",
+        //     "user"      : "root",
+        //     "password"  : "123456",
+        //     "database"  : "fixedAsset"
+        // },
 
         default_page_size : 50,
 

@@ -36,12 +36,10 @@ var sanitize    = require("validator").sanitize;
 var EventProxy  = require("eventproxy");
 var path        = require("path");
 var fs          = require("fs");
+var parseXlsx   = require("excel");
 var QRCode      = require("qrcode");
 var PDFDocument = require("pdfkit");
 var ping        = require("net-ping");
-
-
-
 
 /**
  * get fixed asset by faId
@@ -604,7 +602,7 @@ exports.batchCreate = function (req, res, next) {
     }
     
     res.render('subviews/batchCreate');
-}
+};
 
 /**
  * get idle fixed asset list
@@ -680,6 +678,77 @@ exports.idleFixedAsset = function (req, res, next) {
         return res.send(resUtil.generateRes(null, err.statusCode));
     });
 };
+
+/**
+ * import fixed asset excel records
+ * @param  {object}   req  the instance of request
+ * @param  {object}   res  the instance of response
+ * @param  {Function} next the next handler
+ * @return {null}        
+ */
+exports.importFA = function (req, res, next) {
+    console.log("######controllers/importFA");
+
+    var fileName = req.files.file_source.name || "";
+    var tmp_path = req.files.file_source.path || "";
+
+    try {
+        check(fileName).notEmpty();
+        check(tmp_path).notEmpty();
+        fileName = sanitize(sanitize(fileName).trim()).xss();
+        if (path.extname(fileName).indexOf("xls") === -1) {
+            throw new InvalidParamError();
+        }
+    } catch (e) {
+        return res.send(resUtil.generateRes(null, config.statusCode.STATUS_INVAILD_PARAMS));
+    }
+
+    var xlsxPath = path.resolve(__dirname, "../uploads/", fileName);
+
+    var ep = EventProxy.create();
+
+    fs.rename(tmp_path, xlsxPath, function (err) {
+        if (err) {
+            return ep.emitLater("error", new ServerError());
+        }
+        
+        ep.emitLater("renamed_file");
+    });
+
+    ep.once("renamed_file", function () {
+        ep.emitLater("after_deletedTmpFile");
+    });
+
+    ep.once("after_deletedTmpFile", function () {
+        parseXlsx(xlsxPath, function (err, data) {
+            if (err || !data) {
+                return ep.emitLater("error", new ServerError());
+            }
+
+            return ep.emitLater("after_parsedExcelData", data);
+        });
+    });
+
+    ep.once("after_parsedExcelData", function (excelData) {
+        console.log(excelData[0].length);
+        if (excelData[0].length != 20) {
+            return ep.emitLater("error", new InvalidParamError());
+        };
+
+        //remove first title array
+        excelData.shift();
+        FixedAsset.importFixedAssets(excelData, function () {
+            fs.unlinkSync(xlsxPath);
+            return res.send(resUtil.generateRes(null, config.statusCode.SATUS_OK));
+        });
+    });
+
+    ep.fail(function (err) {
+        fs.unlinkSync(xlsxPath);
+        return res.send(resUtil.generateRes(null, err.statusCode));
+    });
+};
+
 /**
  * [handleQrcode description]
  * @param  {object}   req  the instance of request
@@ -728,7 +797,7 @@ exports.handleQrcode = function (req, res, next) {
         });
     })
 
-}
+};
 
 exports.updateAllQrcode = function (req, res, next) {
     console.log("#####controllers/updateAllQrcode");
@@ -736,4 +805,4 @@ exports.updateAllQrcode = function (req, res, next) {
     FixedAsset.updateAllQrcode(function (err,args) {
         
     })
-}
+};

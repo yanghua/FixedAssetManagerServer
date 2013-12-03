@@ -28,7 +28,7 @@
 				<h1>批量入库</h1>
 			</div>
 			<div>
-				<form class="contact" method="POST" action="/fixedasset/import">
+				<form class="contact" method="POST" action="/fixedasset/import" enctype="multipart/form-data">
 					<fieldset>
 						<div class="modal-body">
 							<ul class="nav nav-list">
@@ -37,7 +37,8 @@
 								<div style="position:relative;">
 							        <a class='btn btn-primary' href='javascript:;'>
 							            选择文件...
-							            <input type="file" >
+							            <input type="file" name="file_source">
+
 							        </a>
 							        &nbsp;
 							        <span class='label label-info' id="upload-file-info"></span>

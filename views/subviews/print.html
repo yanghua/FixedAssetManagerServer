@@ -2,7 +2,7 @@
 <script type="text/javascript">
   $(document).ready(function(){
     $("li[class='active']").removeAttr("class");
-        $("#print").addClass("active");
+    $("#print").addClass("active");
     $('#paginator_div').pagination({
       items: <%= locals.renderData.total %>,
       itemsOnPage: <%= locals.renderData.pageSize %>,
@@ -37,8 +37,18 @@
       %>
       
       <div class="item_qrcode">
+        <%
+        if(locals.renderData.networkCheck==1){%>
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHwAAAB8CAIAAAAkfEPpAAAABmJLR0QA/wD/AP+gvaeTAAACQUlEQVR4nO3dzWrtMAwA4ab0/V853ZVsDBKSPM7pfMsL54fB6AbHJ73u+/7SXt/0F/iPjA4wOsDoAKMDjA4wOsDoAKMDjA4wOsDoAKMDjA4wOsDoAKMDjA4wOuCn8uLrurq+x5/VPdvIZ1Vem1W5t+xKBxgdYHRAaaY/VWZcdl5XZvT094xwpQOMDjA6oG2mP1WuqSPvGbkej7z/xPeMcKUDjA4wOmBkpk+b2EvZyZUOMDrA6ICjZ/rquns109/y+ylXOsDoAKMDRmZ612yd2J+pvH8XVzrA6ACjA9pm+sR+SGRGZ++dnrBv40oHGB1gdEBpplPXudnPPW1PxpUOMDrA6IBrYt5l97u7ziZWzkTunPuudIDRAUYHlGZ65B5m1wzteu3TxO+bIlzpAKMDjA7A7pFmr80n/s/Y+VunJ1c6wOgAowPa9tOz18LZmZs917hSub7u2p9xpQOMDjA6YOv59MrvP7NnE7O/O81+VoUrHWB0gNEBI/dIu1T2Urr26yfuo7rSAUYHGB3wmucyTrx29f2nz7C70gFGBxgdcPRzGXeeU5w+t/PkSgcYHWB0wGuey5h9bWQWT5zPiXClA4wOMDrgNc/wivz7SvZa2/30D2R0gNEBR8/0p+k5u/MMjCsdYHSA0QGveS5j9vlclWd+df3NjRVXOsDoAKMDjn4u40pkLk+ca3Tv5cWMDjA64Ojz6Z/KlQ4wOsDoAKMDjA4wOsDoAKMDjA4wOsDoAKMDjA4wOsDoAKMDjA4wOsDogF/3uAjuBC/2XQAAAABJRU5ErkJggg=="/>
+
+        <%
+      }else{
+        %>
         <img src="
         http://qr.liantu.com/api.php?w=180&m=10&text=<%= locals.renderData.qrCodeList[i].newId %>"/>
+        <%}
+        %>
+
         <div><%= locals.renderData.qrCodeList[i].typeName %>:<%= locals.renderData.qrCodeList[i].newId %></div>
       </div>
       

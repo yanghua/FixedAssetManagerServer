@@ -60,7 +60,7 @@ app.configure(function () {
     app.use(express.favicon());
     
     app.use(express.query());
-    app.use(express.bodyParser());
+    app.use(express.bodyParser({ uploadDir : "./uploads"}));
 
     app.use(express.cookieParser());
     app.use(express.session({

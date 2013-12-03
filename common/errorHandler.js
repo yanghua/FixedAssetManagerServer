@@ -34,26 +34,29 @@ var mailServie = require("../services/mail");
  * @return {null}     
  */
 exports.appErrorProcess = function (app) {
-    //error hanlder
-    app.error(function(err, req, res, next) {
-        console.log(err);
-        console.log("error:" + err.stack || err.message);
-        mailServie.sendMail({
-          subject : "FixedAssetManager_Server[App Error]",
-          text    : err.message + "\n" + err.stack + "\n" + err.toString()
+    //config for production env
+    app.configure("production", function () {
+        //error hanlder
+        app.error(function(err, req, res, next) {
+            console.log(err);
+            console.log("error:" + err.stack || err.message);
+            mailServie.sendMail({
+              subject : "FixedAssetManager_Server[App Error]",
+              text    : err.message + "\n" + err.stack + "\n" + err.toString()
+            });
+            if (err instanceof PageNotFoundError) {
+                res.render("errors/404");
+            } else if (err instanceof ServerError) {
+                res.render("errors/500");
+            }
         });
-        if (err instanceof PageNotFoundError) {
-            res.render("errors/404");
-        } else if (err instanceof ServerError) {
-            res.render("errors/500");
-        }
-    });
 
-    //catch all errors on process and send mail
-    process.on("uncaughtException", function (err) {
-        mailServie.sendMail({
-            subject : "FixedAssetManager_Server[App Error]",
-            text    : err.message + "\n" + err.stack + "\n" + err.toString()
+        //catch all errors on process and send mail
+        process.on("uncaughtException", function (err) {
+            mailServie.sendMail({
+                subject : "FixedAssetManager_Server[App Error]",
+                text    : err.message + "\n" + err.stack + "\n" + err.toString()
+            });
         });
     });
 };
