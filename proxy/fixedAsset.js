@@ -526,7 +526,7 @@ exports.getIdelFAListByDeptIdAndTypeId = function (deptId, typeId, pageIndex, ca
  * @return {null}            
  */
 exports.getIdelFACountByDeptIdAndTypeId = function (deptId, typeId, callback) {
-
+    console.log("######proxy/fixedAsset/getIdelFACountByDeptIdAndTypeId");
     var baseParams = {
         departmentId  : deptId
     };
@@ -557,3 +557,87 @@ exports.getIdelFACountByDeptIdAndTypeId = function (deptId, typeId, callback) {
         return callback(new ServerError(), null);
     });
 };
+
+/**
+ * import fixed assets to db
+ * @param  {Array}   fixedAssets the array of fixed assets
+ * @param  {Function} callback    the call back handler
+ * @return {null}               
+ */
+exports.importFixedAssets = function (fixedAssets, callback) {
+    console.log("######proxy/fixedAsset/importFixedAssets");
+
+    var ep = EventProxy.create();
+    ep.after("inserted_data", fixedAssets.length, function () {
+        callback();
+    });
+
+    for (var i = 0; i < fixedAssets.length; i++) {
+        importSingleFixedAsset(fixedAssets[i], function (err, rows) {
+            if (err) {
+                console.log(err);
+            }
+            ep.emit("inserted_data");
+        });
+    }
+};
+
+/**
+ * import single fixed asset info
+ * @param  {object}   fixedAssetInfo the instance of fixed asset
+ * @param  {Function} callback       the callback handler
+ * @return {null}                  
+ */
+function importSingleFixedAsset (fixedAssetInfo, callback) {
+
+    //if newId is empty
+    if (fixedAssetInfo[4] === "") {
+        return callback(null,null);
+    }
+
+    mysqlClient.query({
+        sql     : "INSERT INTO ASSETS(departmentId,userId,newId,oldId,assetName,typeId,assetBelong, " +
+                  "currentStatus,brand,model,specifications,price,purchaseDate,possessDate, " +
+                  "serviceCode,mac,remark1,remark2) " +
+                  "                   VALUES( :departmentId,  " +
+                  "                           :userId,        " +
+                  "                           :newId,         " +
+                  "                           :oldId,         " +
+                  "                           :assetName,     " +
+                  "                           :typeId,        " +
+                  "                           :assetBelong,   " +
+                  "                           :currentStatus, " +
+                  "                           :brand,         " +
+                  "                           :model,         " +
+                  "                           :specifications," +
+                  "                           :price,         " +
+                  "                           :purchaseDate,  " +
+                  "                           :possessDate,   " +
+                  "                           :serviceCode,   " +
+                  "                           :mac,           " +
+                  "                           :remark1,       " +
+                  "                           :remark2);      ",
+        params  : {
+            departmentId    : fixedAssetInfo[1],
+            userId          : fixedAssetInfo[3],
+            newId           : fixedAssetInfo[4],
+            oldId           : fixedAssetInfo[5],
+            assetName       : fixedAssetInfo[6],
+            typeId          : fixedAssetInfo[7],
+            assetBelong     : fixedAssetInfo[8],
+            currentStatus   : fixedAssetInfo[9],
+            brand           : fixedAssetInfo[10],
+            model           : fixedAssetInfo[11],
+            specifications  : fixedAssetInfo[12],
+            price           : fixedAssetInfo[13],
+            purchaseDate    : fixedAssetInfo[14],
+            possessDate     : fixedAssetInfo[15],
+            serviceCode     : fixedAssetInfo[16],
+            mac             : fixedAssetInfo[17],
+            remark1         : fixedAssetInfo[18],
+            remark2         : fixedAssetInfo[19]
+        }
+    },  function (err, rows) {
+        callback(err, rows);
+    });
+}

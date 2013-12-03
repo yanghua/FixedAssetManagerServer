@@ -689,33 +689,64 @@ exports.idleFixedAsset = function (req, res, next) {
 exports.importFA = function (req, res, next) {
     console.log("######controllers/importFA");
 
-    var fileName = "fa.xlsx";
+    var fileName = req.files.file_source.name || "";
+    var tmp_path = req.files.file_source.path || "";
+
+    try {
+        check(fileName).notEmpty();
+        check(tmp_path).notEmpty();
+        fileName = sanitize(sanitize(fileName).trim()).xss();
+        if (path.extname(fileName).indexOf("xls") === -1) {
+            throw new InvalidParamError();
+        }
+    } catch (e) {
+        return res.send(resUtil.generateRes(null, config.statusCode.STATUS_INVAILD_PARAMS));
+    }
+
     var xlsxPath = path.resolve(__dirname, "../uploads/", fileName);
-    console.log("xlsxPath:" + xlsxPath);
 
     var ep = EventProxy.create();
-    
-    parseXlsx(xlsxPath, function (err, data) {
-        if (err || !data) {
+
+    fs.rename(tmp_path, xlsxPath, function (err) {
+        if (err) {
             return ep.emitLater("error", new ServerError());
         }
+        
+        ep.emitLater("renamed_file");
+    });
 
-        return ep.emitLater("after_parsedExcelData", data);
+    ep.once("renamed_file", function () {
+        ep.emitLater("after_deletedTmpFile");
+    });
+
+    ep.once("after_deletedTmpFile", function () {
+        parseXlsx(xlsxPath, function (err, data) {
+            if (err || !data) {
+                return ep.emitLater("error", new ServerError());
+            }
+
+            return ep.emitLater("after_parsedExcelData", data);
+        });
     });
 
     ep.once("after_parsedExcelData", function (excelData) {
+        console.log(excelData[0].length);
+        if (excelData[0].length != 20) {
+            return ep.emitLater("error", new InvalidParamError());
+        };
+
         //remove first title array
         excelData.shift();
         FixedAsset.importFixedAssets(excelData, function () {
-            //delete excel file
+            fs.unlinkSync(xlsxPath);
             return res.send(resUtil.generateRes(null, config.statusCode.SATUS_OK));
         });
     });
 
     ep.fail(function (err) {
+        fs.unlinkSync(xlsxPath);
         return res.send(resUtil.generateRes(null, err.statusCode));
     });
-
 };
 
 /**

@@ -199,4 +199,11 @@ describe("fixedAsset", function () {
         });
     });
 
+    it('is testing /fixedasset/import', function (done) {
+        app.request().post("/fixedasset/import").end(function (res) {
+            console.log(res.bodyJSON());
+            done();
+        })
+    });
+
 });
