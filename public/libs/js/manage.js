@@ -301,13 +301,13 @@ function searchNoUser (pageIndex) {
 
 function loadAllocToUser (assetId) {
 	alert("..."+assetId);
-	$.ajax({
-		type:"POST",
-		data:{},
-		url:"/fixedasset/"+assetId+"/allocation",
-		success:function (data) {
+	// $.ajax({
+	// 	type:"POST",
+	// 	data:{},
+	// 	url:"/fixedasset/"+assetId+"/allocation",
+	// 	success:function (data) {
 			
-		};
+	// 	};
 
-	})
+	// })
 }
