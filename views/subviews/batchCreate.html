@@ -4,6 +4,7 @@
 	<%- Loader("/public/libs/js/create.min.js")
 	.js("/public/libs/js/create.js")
 	.js("/public/libs/js/bootstrap-select.js")
+	.js("/public/libs/js/ajaxupload.js")
 	.done(assets)
 	%>
 	<!-- style -->
@@ -15,38 +16,65 @@
 
 <script type="text/javascript">
 	$(document).ready(function(){
-
+		var oBtn = document.getElementById("ssss");
+		var oShow = document.getElementById("uploadedName");
+		var oRemind = document.getElementById("errorRemind")
+		new AjaxUpload($("#ssss"),{
+				action:"/fixedasset/import",
+				name:"file_source",
+				responseType:"JSON",
+				onSubmit:function(file,ext){
+					if(ext && /^(xls|xlsx)$/.test(ext)){
+						//ext是后缀名
+						oBtn.value = "正在上传…";
+						oBtn.disabled = "disabled";
+						
+					}else{	
+						oRemind.style.color = "#ff3300";
+						oRemind.innerHTML = "不支持其他格式，请上传Excel文件！";
+						return false;
+					}
+				},
+				onComplete:function(file,response){
+					if (!response.statusCode) {
+						$("#ssss").disabled = "";
+						oBtn.value = "上传成功";
+						oRemind.innerHTML = "";
+					};
+					// var newChild =  document.createElement("li");
+					// newChild.innerHTML = file;
+					// oShow.appendChild(newChild);
+				}
+			});
 		
 	});
 	
 </script>
 <div id="main_div" >
-	
+	 <!-- method="POST" action="/fixedasset/import" enctype="multipart/form-data" -->
 	<div id="formdiv">
 		<div id="form-content"  aria-hidden="false">
 			<div class="modal-header">
 				<h1>批量入库</h1>
 			</div>
 			<div>
-				<form class="contact" method="POST" action="/fixedasset/import" enctype="multipart/form-data">
+				<form class="contact">
 					<fieldset>
 						<div class="modal-body">
 							<ul class="nav nav-list">
-								<label for="">选择文件</label>
+								
 								<li>
 								<div style="position:relative;">
-							        <a class='btn btn-primary' href='javascript:;'>
-							            选择文件...
-							            <input type="file" name="file_source">
-
-							        </a>
-							        &nbsp;
-							        <span class='label label-info' id="upload-file-info"></span>
+							        <p id="errorRemind"></p>
+					                <p class="uploadBtnP"><strong>单击此按钮：</strong>
+					                <input type="button" id="ssss" size="40" style='margin-left:20px;' class="btn btn-success" value="上传文件" />  </p>
+					                <ol id="uploadedName"></ol>
 								</div>
 
 							</ul> 
 						</div>
-						<button type="submit" size="40" style='margin-left:20px;' class="btn btn-success">提交</button>
+						
+						
 					</fieldset>
 				</form>
 			</div>
@@ -56,7 +84,8 @@
 				<h1>资产导出</h1>
 		</div>
 
-		<button style='margin-left:20px;margin-top:20px' class="btn btn-success">批量导出资产</button>
+		<button style='margin-left:20px;margin-top:20px' class="btn btn-success">
+		<span class="glyphicon glyphicon-save"></span>批量导出资产</button>
 	</div>
 	<div>
 			
