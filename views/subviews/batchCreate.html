@@ -48,6 +48,10 @@
 			});
 		
 	});
+	function bacthExport () {
+		//alert(123+"")
+		window.location.href= "/fixedasset/excelExport";
+	}
 	
 </script>
 <div id="main_div" >
@@ -62,8 +66,6 @@
 					<fieldset>
 						<div class="modal-body">
 							<ul class="nav nav-list">
-								
-								<li>
 								<div style="position:relative;">
 							        <p id="errorRemind"></p>
 					                <p class="uploadBtnP"><strong>单击此按钮：</strong>
@@ -73,8 +75,6 @@
 
 							</ul> 
 						</div>
-						
-						
 					</fieldset>
 				</form>
 			</div>
@@ -84,7 +84,7 @@
 				<h1>资产导出</h1>
 		</div>
 
-		<button style='margin-left:20px;margin-top:20px' class="btn btn-success">
+		<button style='margin-left:20px;margin-top:20px' class="btn btn-success" onclick="javascript:bacthExport()">
 		<span class="glyphicon glyphicon-save"></span>批量导出资产</button>
 	</div>
 	<div>
