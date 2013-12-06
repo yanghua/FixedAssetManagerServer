@@ -36,7 +36,7 @@ var mysqlClient = require("../libs/mysqlUtil");
  * @return {null}            
  */
 exports.getUserInfoById = function (userId, callback) {
-    console.log("######/proxy/user/getUserInfoById");
+    debugProxy("/proxy/user/getUserInfoById");
 
     userId = userId || "";
 

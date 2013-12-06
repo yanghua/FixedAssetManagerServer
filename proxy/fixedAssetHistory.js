@@ -40,7 +40,7 @@ var util        = require("../libs/util");
  * @return {null}              
  */
 exports.insertHistoryRecord = function (recordItem, callback) {
-    console.log("######/proxy/fixedAssetHistory/insertHistoryRecord");
+    debugProxy("/proxy/fixedAssetHistory/insertHistoryRecord");
 
     recordItem["aetId"] = util.GUID();
     
@@ -49,7 +49,7 @@ exports.insertHistoryRecord = function (recordItem, callback) {
         params  : recordItem
     }, function (err, rows) {
         if (err) {
-            console.dir("error" + err);
+            debugProxy("error" + err);
             return callback(new ServerError(), null);
         }
 
@@ -64,9 +64,9 @@ exports.insertHistoryRecord = function (recordItem, callback) {
  * @return {null}            
  */
 exports.getHistoryListByFAId = function (faId, callback) {
-    console.log("######/proxy/fixedAssetHistory/getHistoryListByFAId");
+    debugProxy("/proxy/fixedAssetHistory/getHistoryListByFAId");
 
-    console.log(faId);
+    debugProxy(faId);
 
     mysqlClient.query({
         sql     : "SELECT ae.*,u.userName,aet.aetName FROM ASSETEVENT ae " +
@@ -81,7 +81,7 @@ exports.getHistoryListByFAId = function (faId, callback) {
         }
     }, function(err, rows) {
         if (err) {
-            console.dir("error:" + err);
+            debugProxy("error:" + err);
             return callback(new ServerError(), null);
         }
 

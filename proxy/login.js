@@ -39,7 +39,7 @@ var config      = require("../config").initConfig();
  * @return {null}            
  */
 exports.getUserAuthInfoByUserId = function(userId, callback) {
-    console.log("######/proxy/login/getUserAuthInfoByUserId");
+    debugProxy("/proxy/login/getUserAuthInfoByUserId");
 
     var userId = userId || "";
 

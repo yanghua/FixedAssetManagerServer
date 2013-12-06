@@ -40,7 +40,7 @@ var QRCode      = require("qrcode");
  * @return {null}            
  */
 exports.getFixedAssetListByUserID = function (userId, callback) {
-    console.log("######/proxy/fixedAsset/getFixedAssetListByUserId");
+    debugProxy("/proxy/fixedAsset/getFixedAssetListByUserId");
 
     userId = userId || "";
 
@@ -69,7 +69,7 @@ exports.getFixedAssetListByUserID = function (userId, callback) {
  * @return {null}            
  */
 exports.getFixedAssetByfaID = function (faId, callback) {
-    console.log("######proxy/fixedAsset/getFixedAssetByfaID");
+    debugProxy("proxy/fixedAsset/getFixedAssetByfaID");
 
     faId = faId || "";
 
@@ -196,7 +196,7 @@ exports.getFixedAssetByfaID = function (faId, callback) {
  * @return {null}            
  */
 exports.checkFixedAssetByfaID = function (faId, callback) {
-    console.log("######proxy/checkFixedAssetByfaID");
+    debugProxy("proxy/checkFixedAssetByfaID");
 
     faId = faId || "";
 
@@ -232,7 +232,7 @@ exports.checkFixedAssetByfaID = function (faId, callback) {
  * @return {null}                 
  */
 exports.rejectFixedAsset = function (rejectionInfo, callback) {
-    console.log("######proxy/fixedAsset/rejectFixedAsset");
+    debugProxy("proxy/fixedAsset/rejectFixedAsset");
 
     rejectionInfo = rejectionInfo || null;
 
@@ -268,7 +268,7 @@ exports.rejectFixedAsset = function (rejectionInfo, callback) {
  * @return {null}            
  */
 exports.getFixedAssetDetail = function (faId, faType, callback) {
-    console.log("######proxy/fixedAsset/getFixedAssetDetail");
+    debugProxy("proxy/fixedAsset/getFixedAssetDetail");
 
     faId   = faId || "";
     faType = faType || "";
@@ -299,7 +299,7 @@ exports.getFixedAssetDetail = function (faId, faType, callback) {
  * @return {null}               
  */
 exports.modifyFixedAsset = function (faDetailObj, faId, callback) {
-    console.log("######proxy/fixedAsset/modifyFixedAsset");
+    debugProxy("proxy/fixedAsset/modifyFixedAsset");
 
     mysqlClient.query({
         sql     : "UPDATE ASSETS SET    " +
@@ -327,7 +327,7 @@ exports.modifyFixedAsset = function (faDetailObj, faId, callback) {
         params  : faDetailObj
     }, function (err, rows) {
         if (err || !rows) {
-            console.dir(err);
+            debugProxy(err);
             return callback(new ServerError(), null);
         }
 
@@ -346,7 +346,7 @@ exports.modifyFixedAsset = function (faDetailObj, faId, callback) {
  * @param {Function} callback    the callback func
  */
 exports.addFixedAsset = function (faDetailObj, callback) {
-    console.log("######proxy/addFixedAsset");
+    debugProxy("proxy/addFixedAsset");
 
     mysqlClient.query({
         sql         : "INSERT INTO ASSETS VALUES(:newId,                    " +
@@ -374,7 +374,7 @@ exports.addFixedAsset = function (faDetailObj, callback) {
         params      : faDetailObj
         }, function (err, rows) {
             if (err || !rows) {
-                console.dir(err);
+                debugProxy(err);
                 return callback(new ServerError(), null);
             }
 
@@ -395,7 +395,7 @@ exports.addFixedAsset = function (faDetailObj, callback) {
  * @return {null}            
  */
 exports.allocateFixedAsset = function (allocatingObj, callback) {
-    console.log("######proxy/fixedAsset/allocateFixedAsset");
+    debugProxy("proxy/fixedAsset/allocateFixedAsset");
 
     allocatingObj["possessDate"] = new Date().Format("yyyy-MM-dd")
 
@@ -426,7 +426,7 @@ exports.allocateFixedAsset = function (allocatingObj, callback) {
  * @return {null}            
  */
 exports.getqrCodeByPageIndex = function (pageIndex, timefrom, timeto, callback) {
-    console.log("######proxy/fixedAsset/getAllqrCode");
+    debugProxy("proxy/fixedAsset/getAllqrCode");
 
     var sql       = "";
     var paramsObj = {
@@ -456,7 +456,7 @@ exports.getqrCodeByPageIndex = function (pageIndex, timefrom, timeto, callback) 
         params      : paramsObj
     }, function (err, rows) {
         if (err) {
-            console.dir(err);
+            debugProxy(err);
             return callback(new ServerError(), null);
         }
 
@@ -472,7 +472,7 @@ exports.getqrCodeByPageIndex = function (pageIndex, timefrom, timeto, callback) 
  * @return {null}            
  */
 exports.getFixedAssetCount = function (timefrom, timeto, callback) {
-    console.log("######proxy/fixedAsset/getFixedAssetCount");
+    debugProxy("proxy/fixedAsset/getFixedAssetCount");
 
     var sql = "";
     var paramsObj = {};
@@ -491,7 +491,7 @@ exports.getFixedAssetCount = function (timefrom, timeto, callback) {
         params      : paramsObj
     }, function (err, rows) {
         if (err) {
-            console.dir(err);
+            debugProxy(err);
             return callback(new ServerError(), null);
         }
 
@@ -512,7 +512,7 @@ exports.getFixedAssetCount = function (timefrom, timeto, callback) {
  * @return {null}             
  */
 exports.getIdelFAListByDeptIdAndTypeId = function (deptId, typeId, pageIndex, callback) {
-    console.log("######proxy/fixedAsset/getIdelFixedAssetsByDeptId");
+    debugProxy("proxy/fixedAsset/getIdelFixedAssetsByDeptId");
 
     var baseParams = {
         departmentId  : deptId,
@@ -559,7 +559,7 @@ exports.getIdelFAListByDeptIdAndTypeId = function (deptId, typeId, pageIndex, ca
  * @return {null}            
  */
 exports.getIdelFACountByDeptIdAndTypeId = function (deptId, typeId, callback) {
-    console.log("######proxy/fixedAsset/getIdelFACountByDeptIdAndTypeId");
+    debugProxy("proxy/fixedAsset/getIdelFACountByDeptIdAndTypeId");
     var baseParams = {
         departmentId  : deptId
     };
@@ -637,7 +637,7 @@ exports.updateAllQrcode =  function (callback) {
         if (rows.affectedRows === 0) {
             return callback(new ServerError(), null);
         };
-        console.log(rows[0]);
+        debugProxy(rows[0]);
 
     })
   }
@@ -649,7 +649,7 @@ exports.updateAllQrcode =  function (callback) {
  * @return {null}               
  */
 exports.importFixedAssets = function (fixedAssets, callback) {
-    console.log("######proxy/fixedAsset/importFixedAssets");
+    debugProxy("proxy/fixedAsset/importFixedAssets");
 
     var ep = EventProxy.create();
     ep.after("inserted_data", fixedAssets.length, function () {
@@ -659,7 +659,7 @@ exports.importFixedAssets = function (fixedAssets, callback) {
     for (var i = 0; i < fixedAssets.length; i++) {
         importSingleFixedAsset(fixedAssets[i], function (err, rows) {
             if (err) {
-                console.log(err);
+                debugProxy(err);
             }
             ep.emit("inserted_data");
         });
@@ -732,7 +732,7 @@ function importSingleFixedAsset (fixedAssetInfo, callback) {
  * @return {null}              
  */
 exports.getExportData = function (callback) {
-    console.log("######proxy/fixedAsset/getExportData");
+    debugProxy("proxy/fixedAsset/getExportData");
 
     mysqlClient.query({
         sql         : " SELECT a.*,ast.typeName,dep.departmentName,u.userName FROM ASSETS a "+
@@ -741,7 +741,7 @@ exports.getExportData = function (callback) {
                       " LEFT JOIN USER u ON a.userId = u.userId;"
     }, function (err, rows) {
         if (err) {
-            console.dir(err);
+            debugProxy(err);
             return callback(new ServerError(), null);
         }
 
