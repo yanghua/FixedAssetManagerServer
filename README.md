@@ -19,6 +19,13 @@ $ cd projectPath/
 $ mocha test
 ```
 
+## debug
+```
+$ cd cd projectPath/
+
+$ sudo DEBUG=$DEBUG node app.js
+```
+
 ## run
 
 * manual:
@@ -26,7 +33,7 @@ $ mocha test
 ```
 $ cd projectPath/
 
-$ node app.js
+$ sudo node app.js
 ```
 
 * automatic (use pm2):
