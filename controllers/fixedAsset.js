@@ -805,7 +805,7 @@ exports.handleQrcode = function (req, res, next) {
  * @param  {object}   req  the instance of requset
  * @param  {object}   res  the instance of response
  * @param  {Function} next [description]
- * @return {null}        
+ * @return {null}       
  */
 exports.updateAllQrcode = function (req, res, next) {
     console.log("#####controllers/updateAllQrcode");
@@ -815,6 +815,13 @@ exports.updateAllQrcode = function (req, res, next) {
     })
 };
 
+/**
+ * export data with excel 
+ * @param  {[type]}   req  the instance of request
+ * @param  {object}   res  the instance of response
+ * @param  {Function} next 
+ * @return {null}     send a file to client with all data from mysql database   
+ */
 exports.exportExcel = function (req, res, next) {
     console.log("#####controllers/exportExcel");
     var ep = EventProxy.create();
@@ -870,73 +877,37 @@ exports.exportExcel = function (req, res, next) {
                 row["model"],
                 row["specifications"],
                 row["price"],
-                (new Date(row["purchaseDate"])).Format("yyyy-MM-dd hh:mm:ss.S"),
-                row["possessDate"],
+                dataHandler(row["purchaseDate"]),
+                dataHandler(row["possessDate"]),
                 row["serviceCode"],
                 row["mac"],
                 row["remark1"],
                 row["remark2"]
                 ]);
+            console.dir(row["possessDate"]);
         };
         conf.rows = arrayObj;
         console.dir(conf.rows.length+"~~~~~~");
         var result = nodeExcel.execute(conf);
 
         res.setHeader('Content-Type', 'application/vnd.openxmlformats');
-        res.setHeader("Content-Disposition", "attachment; filename= zichan_" + GetCurrentDate()+".xlsx");
+        res.setHeader("Content-Disposition", "attachment; filename= zichan_" + (new Date().Format("yyyy-MM-dd"))+".xlsx");
         res.end(result, 'binary');
-    })
+    });
+    function dataHandler (dataStr) {
+        if (dataStr) {
+            if (dataStr != "0000-00-00") {
+                return (new Date(dataStr)).Format("yyyy-MM-dd hh:mm:ss")
+            }
+            return "";
+        }else{
+            return "";
+        }
+    }
 
     
     
 }
-    function GetCurrentDate()
-    {
-        var Year=0;
-        var Month=0;
-        var Day=0;
-        var CurrentDate = new Date();
-
-        return ChangeDateToString(CurrentDate);
-    }
-    ////////////////////////////////////////////////////////
-    // 将日期类型转换成字符串型格式yyyy-MM-dd 
-    ////////////////////////////////////////////////////////
-    function ChangeDateToString(DateIn)
-    {
-        var Year=0;
-        var Month=0;
-        var Day=0;
-        var CurrentDate="";
-        //初始化时间
-        Year      = DateIn.getYear();
-        Month     = DateIn.getMonth()+1;
-        Day       = DateIn.getDate();
-
-        if (Year<=2000) {
-            Year = Year+1900;
-        };
-
-        CurrentDate = Year + "-";
-        if (Month >= 10 )
-        {
-            CurrentDate = CurrentDate + Month + "-";
-        }
-        else
-        {
-            CurrentDate = CurrentDate + "0" + Month + "-";
-        }
-        if (Day >= 10 )
-        {
-            CurrentDate = CurrentDate + Day ;
-        }
-        else
-        {
-            CurrentDate = CurrentDate + "0" + Day ;
-        }
-
-        return CurrentDate;
-    }
 
     
 
