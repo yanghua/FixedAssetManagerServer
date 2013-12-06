@@ -49,7 +49,7 @@ module.exports = function (app) {
     app.get("/login", login.showLogin);
     app.post("/signin", login.signIn);
     app.get("/signout", logout.signOut);
-    app.get("/fixedasset/printservice/:pageIndex/:timeFrom/:timeTo", fixedAsset.printService);
+    app.get("/fixedasset/printservice/:pageIndex/:timefrom?/:timeto?", fixedAsset.printService);
     app.get("/fixedasset/manage",fixedAsset.manage);
     app.get("/404",others.fourofour);
     app.get("/captchaImg", login.captchaImg);

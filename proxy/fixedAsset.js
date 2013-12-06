@@ -420,22 +420,40 @@ exports.allocateFixedAsset = function (allocatingObj, callback) {
 /**
  * get qrCode by page index
  * @param {int} pageIndex the page index
+ * @param {String} timefrom time from
+ * @param {String} timeto time to
  * @param  {Function} callback the callback func
  * @return {null}            
  */
-exports.getqrCodeByPageIndex = function (pageIndex, callback) {
+exports.getqrCodeByPageIndex = function (pageIndex, timefrom, timeto, callback) {
     console.log("######proxy/fixedAsset/getAllqrCode");
 
-    mysqlClient.query({
-        sql         : "SELECT newId, t.typeName FROM fixedAsset.ASSETS a " +
-                      "LEFT JOIN fixedAsset.ASSETTYPE t " +
-                      "ON a.typeId = t.typeId " +
-                      "ORDER BY purchaseDate DESC " +
-                      "LIMIT :start,:end ",
-        params      : {
+    var sql       = "";
+    var paramsObj = {
             start : ((pageIndex - 1) * config.default_page_size),
             end   : config.default_page_size
-        }
+    };
+
+    if (timefrom.length === 0) {
+        sql = "SELECT newId, t.typeName FROM fixedAsset.ASSETS a " +
+              "LEFT JOIN fixedAsset.ASSETTYPE t " +
+              "ON a.typeId = t.typeId " +
+              "ORDER BY purchaseDate DESC " +
+              "LIMIT :start,:end ";
+    } else if (timefrom.length !== 0 && timeto.length !== 0) {
+        sql = "SELECT newId, t.typeName FROM fixedAsset.ASSETS a " +
+              "LEFT JOIN fixedAsset.ASSETTYPE t " +
+              "ON a.typeId = t.typeId " +
+              " WHERE purchaseDate BETWEEN :timeFrom AND :timeTo " +
+              "ORDER BY purchaseDate DESC " +
+              "LIMIT :start,:end ";
+        paramsObj["timeFrom"] = timefrom;
+        paramsObj["timeTo"]   = timeto;
+    }
+
+    mysqlClient.query({
+        sql         : sql,
+        params      : paramsObj
     }, function (err, rows) {
         if (err) {
             console.dir(err);
@@ -448,15 +466,29 @@ exports.getqrCodeByPageIndex = function (pageIndex, callback) {
 
 /**
  * get fixed asset's count
+ * @param {String} timefrom time from
+ * @param {String} timeto time to
  * @param  {Function} callback the callback func
  * @return {null}            
  */
-exports.getFixedAssetCount = function (callback) {
+exports.getFixedAssetCount = function (timefrom, timeto, callback) {
     console.log("######proxy/fixedAsset/getFixedAssetCount");
 
+    var sql = "";
+    var paramsObj = {};
+
+    if (timefrom.length === 0) {
+        sql = "SELECT count(newId) AS 'count' FROM fixedAsset.ASSETS ";
+    } else if (timefrom.length !== 0 && timeto.length !== 0) {
+        sql = "SELECT count(newId) AS 'count' FROM fixedAsset.ASSETS " +
+              " WHERE purchaseDate BETWEEN :timeFrom AND :timeTo ";
+        paramsObj["timeFrom"] = timefrom;
+        paramsObj["timeTo"]   = timeto;
+    }
+
     mysqlClient.query({
-        sql         : "SELECT count(newId) AS 'count' FROM fixedAsset.ASSETS ",
-        params      : {}
+        sql         : sql,
+        params      : paramsObj
     }, function (err, rows) {
         if (err) {
             console.dir(err);

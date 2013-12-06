@@ -479,12 +479,16 @@ exports.printService = function (req, res, next) {
     }
 
     var pageIndex = req.params.pageIndex || 1;
+    var timefrom  = req.params.timefrom || "";
+    var timeto    = req.params.timeto || "";
 
     try {
         if (pageIndex === "") {
             pageIndex = 1;
         }
         pageIndex = sanitize(pageIndex).toInt();
+        timefrom  = sanitize(timefrom).xss();
+        timeto    = sanitize(timeto).xss();
 
         if (pageIndex < 1) {
             throw new InvalidParamError("the page index must be gt 1");
@@ -494,8 +498,19 @@ exports.printService = function (req, res, next) {
     }
 
     var ep = EventProxy.create();
+    if (timefrom.length !== 0) {
+        if (timeto.length === 0) {
+            return res.send(resUtil.generateRes(null, config.statusCode.STATUS_INVAILD_PARAMS));
+        }
 
-    FixedAsset.getqrCodeByPageIndex(pageIndex, function (err, rows) {
+        timefrom = parseFloat(timefrom);
+        timeto   = parseFloat(timeto);
+        
+        timefrom = new Date(timefrom).Format("yyyy-MM-dd");
+        timeto   = new Date(timeto).Format("yyyy-MM-dd");
+    }
+
+    FixedAsset.getqrCodeByPageIndex(pageIndex, timefrom, timeto, function (err, rows) {
         if (err) {
             return ep.emitLater("error", err);
         }
@@ -504,7 +519,7 @@ exports.printService = function (req, res, next) {
     });
 
     ep.once("after_getqrCode", function (qrCodeList) {
-        FixedAsset.getFixedAssetCount(function (err, totalCount) {
+        FixedAsset.getFixedAssetCount(timefrom, timeto, function (err, totalCount) {
             if (err) {
                 return ep.emitLater("error", err);
             }
