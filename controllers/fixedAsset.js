@@ -51,7 +51,7 @@ require("../libs/DateUtil");
  * @return {null}
  */
 exports.getFixedAssetByfaID = function (req, res, next) {
-    console.log("******controllers/fixedAsset/getFixedAssetByfaId");
+    debugCtrller("controllers/fixedAsset/getFixedAssetByfaId");
     var faId = req.params.faId || "";
 
     try {
@@ -79,7 +79,7 @@ exports.getFixedAssetByfaID = function (req, res, next) {
  * @return {null}
  */
 exports.inspection = function (req, res, next) {
-    console.log("******controllers/fixedAsset/inspection");
+    debugCtrller("controllers/fixedAsset/inspection");
     var qrCode = req.body.qrCode || "";
 
     try {
@@ -129,7 +129,7 @@ exports.inspection = function (req, res, next) {
  * @return {null}        
  */
 exports.rejection = function (req, res, next) {
-    console.log("******controllers/fixedAsset/rejection");
+    debugCtrller("controllers/fixedAsset/rejection");
 
     req.body.faId   = req.body.faId || "";
     req.body.reject = req.body.reject || 1;
@@ -203,7 +203,7 @@ exports.rejection = function (req, res, next) {
  * @return {null}        
  */
 exports.insertion = function (req, res, next) {
-    console.log("******controllers/fixedAsset/insertion");
+    debugCtrller("controllers/fixedAsset/insertion");
 
     var faObj = req.body;
 
@@ -264,7 +264,7 @@ exports.insertion = function (req, res, next) {
  * @return {null}        
  */
 exports.modification = function (req, res, next) {
-    console.log("******controllers/fixedAsset/modification");
+    debugCtrller("controllers/fixedAsset/modification");
 
     var faId = req.params.faId || "";
 
@@ -347,7 +347,7 @@ exports.modification = function (req, res, next) {
  * @return {null}
  */
 exports.getFixedAssetListByUserID = function (req, res, next) {
-    console.log("******controllers/fixedAsset/getFixedAssetListByUserID");
+    debugCtrller("controllers/fixedAsset/getFixedAssetListByUserID");
     var userId = req.params.userId || "";
 
     try {
@@ -360,7 +360,7 @@ exports.getFixedAssetListByUserID = function (req, res, next) {
 
     FixedAsset.getFixedAssetListByUserID(userId, function (err, rows) {
         if (err) {
-            console.log(err);
+            debugCtrller(err);
             return res.send(resUtil.generateRes(null, err.statusCode));
         } 
             
@@ -377,7 +377,7 @@ exports.getFixedAssetListByUserID = function (req, res, next) {
  * @return {null}        
  */
 exports.allocation = function (req, res, next) {
-    console.log("******controllers/fixedAsset/allocation");
+    debugCtrller("controllers/fixedAsset/allocation");
 
     var faId   = req.body.faId   || "";
     var userId = req.body.userId || "";
@@ -439,7 +439,7 @@ exports.allocation = function (req, res, next) {
  * @return {null}        
  */
 exports.checkExistence = function (req, res, next) {
-    console.log("******controllers/fixedAsset/checkExistence");
+    debugCtrller("controllers/fixedAsset/checkExistence");
 
     var faId = req.params.faId || "";
 
@@ -472,7 +472,7 @@ exports.checkExistence = function (req, res, next) {
  * @return {null}        
  */
 exports.printService = function (req, res, next) {
-    console.log("******controllers/fixedAsset/printService");
+    debugCtrller("controllers/fixedAsset/printService");
 
     if (!req.session || !req.session.user) {
         return res.redirect("/login");
@@ -534,11 +534,11 @@ exports.printService = function (req, res, next) {
             if (error){
                 renderData["networkCheck"] = 0;
                 if (error instanceof ping.RequestTimedOutError)
-                    console.log (target + ": Not alive");
+                    debugCtrller (target + ": Not alive");
                 else
-                    console.log (target + ": " + error.toString ());
+                    debugCtrller (target + ": " + error.toString ());
             }else{
-                console.log (target + ": Alive");
+                debugCtrller (target + ": Alive");
                 renderData["networkCheck"] = 1;
             }
         });
@@ -562,7 +562,7 @@ exports.printService = function (req, res, next) {
  * @return {null}        
  */
 exports.manage = function (req, res, next) {
-    console.log("******controllers/fixedasset->manager");
+    debugCtrller("controllers/fixedasset->manager");
 
     if (!req.session || !req.session.user) {
         return res.redirect("/login");
@@ -579,7 +579,7 @@ exports.manage = function (req, res, next) {
  * @return {null}        
  */
 exports.edit = function (req, res, next) {
-    console.log("******controllers/fixedasset->edit");
+    debugCtrller("controllers/fixedasset->edit");
 
     if (!req.session || !req.session.user) {
         return res.redirect("/login");
@@ -596,7 +596,7 @@ exports.edit = function (req, res, next) {
  * @return {null}        
  */
 exports.create = function (req, res, next) {
-    console.log("******controllers/fixedasset->create");
+    debugCtrller("controllers/fixedasset->create");
 
     if (!req.session || !req.session.user) {
         return res.redirect("/login");
@@ -613,7 +613,7 @@ exports.create = function (req, res, next) {
  * @return {[type]}        [description]
  */
 exports.batchCreate = function (req, res, next) {
-    console.log("******controllers/fixedasset->batchCreate");
+    debugCtrller("controllers/fixedasset->batchCreate");
     if (!req.session || !req.session.user){
         return res.redirect("/login");
     }
@@ -629,7 +629,7 @@ exports.batchCreate = function (req, res, next) {
  * @return {null}        
  */
 exports.idleFixedAsset = function (req, res, next) {
-    console.log("######controllers/idleFixedAsset");
+    debugCtrller("controllers/idleFixedAsset");
 
     var deptId    = req.params.deptId || "";
     var typeId    = req.params.typeId || 0;
@@ -704,7 +704,7 @@ exports.idleFixedAsset = function (req, res, next) {
  * @return {null}        
  */
 exports.importFA = function (req, res, next) {
-    console.log("######controllers/importFA");
+    debugCtrller("controllers/importFA");
 
     var fileName = req.files.file_source.name || "";
     var tmp_path = req.files.file_source.path || "";
@@ -747,7 +747,7 @@ exports.importFA = function (req, res, next) {
     });
 
     ep.once("after_parsedExcelData", function (excelData) {
-        console.log(excelData[0].length);
+        debugCtrller(excelData[0].length);
         if (excelData[0].length != 20) {
             return ep.emitLater("error", new InvalidParamError());
         };
@@ -774,7 +774,7 @@ exports.importFA = function (req, res, next) {
  * @return {[type]}        [description]
  */
 exports.handleQrcode = function (req, res, next) {
-    console.log("######controllers/handleQrcode");
+    debugCtrller("controllers/handleQrcode");
 
     var ep = EventProxy.create();
     FixedAsset.updateQrcode('123123',function (err,qUri) {
@@ -823,7 +823,7 @@ exports.handleQrcode = function (req, res, next) {
  * @return {null}       
  */
 exports.updateAllQrcode = function (req, res, next) {
-    console.log("#####controllers/updateAllQrcode");
+    debugCtrller("#####controllers/updateAllQrcode");
     var ep = EventProxy.create();
     FixedAsset.updateAllQrcode(function (err,args) {
         //to-do 
@@ -838,7 +838,7 @@ exports.updateAllQrcode = function (req, res, next) {
  * @return {null}     send a file to client with all data from mysql database   
  */
 exports.exportExcel = function (req, res, next) {
-    console.log("#####controllers/exportExcel");
+    debugCtrller("#####controllers/exportExcel");
     var ep = EventProxy.create();
 
     //静态数据

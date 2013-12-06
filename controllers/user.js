@@ -40,7 +40,7 @@ var sanitize = require("validator").sanitize;
  * @return {null}        
  */
 exports.getUserById = function (req, res, next) {
-    console.log("******controllers/user/getUserById");
+    debugCtrller("controllers/user/getUserById");
     var userId = req.params.userId || "";
 
     try {

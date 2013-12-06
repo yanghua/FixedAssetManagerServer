@@ -34,7 +34,7 @@
  * @return {null}        
  */
 exports.index = function (req, res, next){
-    console.log("#######controllers/others->index");
+    debugCtrller("#controllers/others->index");
 
     if (!req.session || !req.session.user) {
         return res.redirect("/login");
@@ -51,7 +51,7 @@ exports.index = function (req, res, next){
  * @return {null}        
  */
 exports.apis = function (req, res, next) {
-    console.log("#######controllers/others->apis");
+    debugCtrller("#controllers/others->apis");
     res.render('api');
 };
 
@@ -63,6 +63,6 @@ exports.apis = function (req, res, next) {
  * @return {null}        
  */
 exports.fourofour=function (req, res, next){
-    console.log("#######controllers/others->404");
+    debugCtrller("#controllers/others->404");
     res.render('errors/404');
 };

@@ -40,6 +40,7 @@ var SHA256     = require("crypto-js/sha256");
  * @return {null}        
  */
 exports.showLogin = function (req, res, next) {
+    debugCtrller("controllers/login/showLogin");
     res.render("login");
 };
 

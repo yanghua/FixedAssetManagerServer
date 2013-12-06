@@ -40,7 +40,7 @@ var config            = require("../config").initConfig();
  * @return {null}        
  */
 exports.faHistory = function (req, res, next) {
-    console.log("******controllers/fixedAssetHistory/faHistory");
+    debugCtrller("controllers/fixedAssetHistory/faHistory");
     var faId = req.params.faId;
 
     try {
