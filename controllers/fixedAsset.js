@@ -515,7 +515,7 @@ exports.printService = function (req, res, next) {
             renderData["total"]      = totalCount;
             renderData["qrCodeList"] = qrCodeList;
             var session = ping.createSession ();
-            session.pingHost ("8.8.8.8", function (error, target) {
+            session.pingHost ("127.0.0.1", function (error, target) {
             if (error){
                 renderData["networkCheck"] = 0;
                 if (error instanceof ping.RequestTimedOutError)
@@ -858,8 +858,6 @@ exports.exportExcel = function (req, res, next) {
     });  
     var arrayObj = new Array(); 
     ep.once("after_select",function (rows) {
-        //console.dir(rows);
-        console.dir(rows.length);
         for (var i = 0; i < rows.length; i++) {
             var row = rows[i];
             arrayObj.push([
@@ -884,10 +882,8 @@ exports.exportExcel = function (req, res, next) {
                 row["remark1"],
                 row["remark2"]
                 ]);
-            console.dir(row["possessDate"]);
         };
         conf.rows = arrayObj;
-        console.dir(conf.rows.length+"~~~~~~");
         var result = nodeExcel.execute(conf);
 
         res.setHeader('Content-Type', 'application/vnd.openxmlformats');
