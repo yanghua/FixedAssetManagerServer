@@ -1,29 +1,89 @@
 <% layout('layout') -%>
+<head>
+  <!-- script -->
+  <%- Loader("/public/libs/js/printservice.min.js")
+  .js("/public/libs/js/bootstrap-datepicker.js")
+  .done(assets)
+  %>
+    <!-- style -->
+  <%- Loader("/public/stylesheets/printservice.min.css")
+  .css("/public/stylesheets/print.css")
+  .css("/public/stylesheets/datepicker.css")
+  .done(assets)
+  %>
+</head>
 <script type="text/javascript">
   $(document).ready(function(){
+    
     $("li[class='active']").removeAttr("class");
     $("#print").addClass("active");
-    $('#paginator_div').pagination({
-      items: <%= locals.renderData.total %>,
-      itemsOnPage: <%= locals.renderData.pageSize %>,
-      currentPage:<%= locals.renderData.pageIndex %>,
-      cssStyle: 'light-theme',
-      onPageClick: function(pageNum){
-        window.location.href="/fixedasset/printservice/"+pageNum;
+    if(<%= locals.renderData.total %> >50){
+      $('#paginator_div').pagination({
+        items: <%= locals.renderData.total %>,
+        itemsOnPage: <%= locals.renderData.pageSize %>,
+        currentPage:<%= locals.renderData.pageIndex %>,
+        cssStyle: 'light-theme',
+        onPageClick: function(pageNum){
+
+          window.location.href="/fixedasset/printservice/"+pageNum;
+        }
+      });
+    }
+
+    var nowTemp = new Date();
+    var now = new Date(nowTemp.getFullYear(), nowTemp.getMonth(), nowTemp.getDate(), 0, 0, 0, 0);
+     
+    var checkin = $('#dpd1').datepicker({
+      onRender: function(date) {
+        return date.valueOf() < now.valueOf() ? 'disabled' : '';
       }
-    });
+    }).on('changeDate', function(ev) {
+      if (ev.date.valueOf() > checkout.date.valueOf()) {
+        var newDate = new Date(ev.date)
+        newDate.setDate(newDate.getDate() + 1);
+        checkout.setValue(newDate);
+      }
+      checkin.hide();
+      $('#dpd2')[0].focus();
+    }).data('datepicker');
+    var checkout = $('#dpd2').datepicker({
+      onRender: function(date) {
+        return date.valueOf() <= checkin.date.valueOf() ? 'disabled' : '';
+      }
+    }).on('changeDate', function(ev) {
+      checkout.hide();
+    }).data('datepicker');
+    
 
   });
   function btnPrintClick(){  
     window.print();  
-  }             
+  }    
+  function btnResearch () {
+    var $dp1 = $("#dpd1"),
+        $dp2 = $("#dpd2"),
+        d1 = new Date($dp1.val()).getTime(),
+        d2 = new Date($dp2.val()).getTime();
+    if(d1>d2){
+      alert("时间选择错误！后者大于前者！");
+    }else{
+      alert("to-do");
+      window.location.href="/fixedasset/printservice/1/"+d1+"/"+d2;
+    }
+  }         
 </script>
 <div >
   <h1>打印二维码</h1>
   <div class="pagination_print">
     <div id='paginator_div' style="float:left;padding-top:10px" ></div>
     <div style="float:right">
-      <button type="button" class="btn btn-default btn-lg" onclick="btnPrintClick()">
+      选择时间：
+      <input type="text" class="datePicker1" value="" id="dpd1">
+      -
+      <input type="text" class="datePicker1" value="" id="dpd2">
+       <button type="button" class="btn btn-default" onclick="btnResearch()">
+        <span class="glyphicon glyphicon-search"></span> 查询
+      </button>      <button type="button" class="btn btn-default" onclick="btnPrintClick()">
         <span class="glyphicon glyphicon-print"></span> 打印
       </button>
     </div>
