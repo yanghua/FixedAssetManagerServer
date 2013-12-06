@@ -1,61 +1,21 @@
 <% layout('layout') -%>
 <head>
 	<!-- script -->
-	<%- Loader("/public/libs/js/create.min.js")
-	.js("/public/libs/js/create.js")
-	.js("/public/libs/js/bootstrap-select.js")
+	<%- Loader("/public/libs/js/batchCreate.min.js")
+	.js("/public/libs/js/batchCreate.js")
 	.js("/public/libs/js/ajaxupload.js")
-	.done(assets)
-	%>
-	<!-- style -->
-	<%- Loader("/public/stylesheets/create.min.css")
-	.css("/public/stylesheets/bootstrap-select.css")
 	.done(assets)
 	%>
 </head>
 
 <script type="text/javascript">
 	$(document).ready(function(){
-		var oBtn = document.getElementById("ssss");
-		var oShow = document.getElementById("uploadedName");
-		var oRemind = document.getElementById("errorRemind")
-		new AjaxUpload($("#ssss"),{
-				action:"/fixedasset/import",
-				name:"file_source",
-				responseType:"JSON",
-				onSubmit:function(file,ext){
-					if(ext && /^(xls|xlsx)$/.test(ext)){
-						//ext是后缀名
-						oBtn.value = "正在上传…";
-						oBtn.disabled = "disabled";
-						
-					}else{	
-						oRemind.style.color = "#ff3300";
-						oRemind.innerHTML = "不支持其他格式，请上传Excel文件！";
-						return false;
-					}
-				},
-				onComplete:function(file,response){
-					if (!response.statusCode) {
-						$("#ssss").disabled = "";
-						oBtn.value = "上传成功";
-						oRemind.innerHTML = "";
-					};
-					// var newChild =  document.createElement("li");
-					// newChild.innerHTML = file;
-					// oShow.appendChild(newChild);
-				}
-			});
-		
+		loadAjaxUpload();
 	});
-	function bacthExport () {
-		//alert(123+"")
-		window.location.href= "/fixedasset/excelExport";
-	}
+	
 	
 </script>
 <div id="main_div" >
-	 <!-- method="POST" action="/fixedasset/import" enctype="multipart/form-data" -->
 	<div id="formdiv">
 		<div id="form-content"  aria-hidden="false">
 			<div class="modal-header">
@@ -68,11 +28,9 @@
 							<ul class="nav nav-list">
 								<div style="position:relative;">
 							        <p id="errorRemind"></p>
-					                <p class="uploadBtnP"><strong>单击此按钮：</strong>
-					                <input type="button" id="ssss" size="40" style='margin-left:20px;' class="btn btn-success" value="上传文件" />  </p>
+					                <input type="button" id="ssss" size="40" class="btn btn-success" value="上传文件" />  </p>
 					                <ol id="uploadedName"></ol>
 								</div>
-
 							</ul> 
 						</div>
 					</fieldset>
