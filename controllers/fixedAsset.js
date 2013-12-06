@@ -515,7 +515,7 @@ exports.printService = function (req, res, next) {
             renderData["total"]      = totalCount;
             renderData["qrCodeList"] = qrCodeList;
             var session = ping.createSession ();
-            session.pingHost ("8.8.8.8", function (error, target) {
+            session.pingHost ("127.0.0.1", function (error, target) {
             if (error){
                 renderData["networkCheck"] = 0;
                 if (error instanceof ping.RequestTimedOutError)

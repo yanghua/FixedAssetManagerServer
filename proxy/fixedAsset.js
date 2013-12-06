@@ -696,16 +696,15 @@ function importSingleFixedAsset (fixedAssetInfo, callback) {
 
 /**
  * get all data from database 
- * @param  {[type]}   pageIndex [description]
- * @param  {Function} callback  [description]
- * @return {[type]}             [description]
+ * @param  {Function} callback     the callback handler
+ * @return {null}              
  */
 exports.getExportData = function (callback) {
     console.log("######proxy/fixedAsset/getExportData");
 
     mysqlClient.query({
         sql         : " SELECT a.*,ast.typeName,dep.departmentName,u.userName FROM ASSETS a "+
-                      " LEFT JOIN ASSETTYPE  ast On a.typeId = ast.typeId "+
+                      " LEFT JOIN ASSETTYPE  ast ON a.typeId = ast.typeId "+
                       " LEFT JOIN DEPARTMENT dep ON a.departmentId = dep.departmentId "+
                       " LEFT JOIN USER u ON a.userId = u.userId;"
     }, function (err, rows) {
