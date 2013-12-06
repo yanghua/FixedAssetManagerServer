@@ -693,3 +693,28 @@ function importSingleFixedAsset (fixedAssetInfo, callback) {
         callback(err, rows);
     });
 }
+
+/**
+ * get all data from database 
+ * @param  {[type]}   pageIndex [description]
+ * @param  {Function} callback  [description]
+ * @return {[type]}             [description]
+ */
+exports.getExportData = function (callback) {
+    console.log("######proxy/fixedAsset/getExportData");
+
+    mysqlClient.query({
+        sql         : " SELECT a.*,ast.typeName,dep.departmentName,u.userName FROM ASSETS a "+
+                      " LEFT JOIN ASSETTYPE  ast On a.typeId = ast.typeId "+
+                      " LEFT JOIN DEPARTMENT dep ON a.departmentId = dep.departmentId "+
+                      " LEFT JOIN USER u ON a.userId = u.userId;"
+    }, function (err, rows) {
+        if (err) {
+            console.dir(err);
+            return callback(new ServerError(), null);
+        }
+
+        callback(null, rows);
+    });
+};
+
