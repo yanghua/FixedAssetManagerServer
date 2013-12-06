@@ -40,6 +40,8 @@ var parseXlsx   = require("excel");
 var QRCode      = require("qrcode");
 var PDFDocument = require("pdfkit");
 var ping        = require("net-ping");
+var nodeExcel   = require('excel-export');
+require("../libs/DateUtil");
 
 /**
  * get fixed asset by faId
@@ -798,11 +800,115 @@ exports.handleQrcode = function (req, res, next) {
     })
 
 };
-
+/**
+ * update all qrcode 
+ * @param  {object}   req  the instance of requset
+ * @param  {object}   res  the instance of response
+ * @param  {Function} next [description]
+ * @return {null}       
+ */
 exports.updateAllQrcode = function (req, res, next) {
     console.log("#####controllers/updateAllQrcode");
     var ep = EventProxy.create();
     FixedAsset.updateAllQrcode(function (err,args) {
-        
+        //to-do 
     })
 };
+
+/**
+ * export data with excel 
+ * @param  {[type]}   req  the instance of request
+ * @param  {object}   res  the instance of response
+ * @param  {Function} next 
+ * @return {null}     send a file to client with all data from mysql database   
+ */
+exports.exportExcel = function (req, res, next) {
+    console.log("#####controllers/exportExcel");
+    var ep = EventProxy.create();
+
+    //静态数据
+    var conf ={};
+    conf.cols = [
+        {caption:'部门', type:'string'},
+        {caption:'部门编号', type:'string'},
+        {caption:'领用人', type:'string'},
+        {caption:'领用人工号', type:'string'},
+        {caption:'设备编号', type:'string'},
+        {caption:'旧编号', type:'string'},
+        {caption:'资产名称', type:'string'},
+        {caption:'资产类型', type:'string'},
+        {caption:'资产归属', type:'string'},
+        {caption:'当前状态', type:'string'},
+        {caption:'品牌', type:'string'},
+        {caption:'型号', type:'string'},
+        {caption:'规格', type:'string'},
+        {caption:'金额', type:'string'},
+        {caption:'购买日期', type:'string'},
+        {caption:'领用日期', type:'string'},
+        {caption:'快速服务代码', type:'string'},
+        {caption:'Mac地址', type:'string'},
+        {caption:'备注1', type:'string'},
+        {caption:'备注2', type:'string'}                       
+    ];
+    FixedAsset.getExportData(function (err, rows) {
+        if (err) {
+            return ep.emitLater("error", err);
+        }
+        ep.emitLater("after_select", rows);
+    });  
+    var arrayObj = new Array(); 
+    ep.once("after_select",function (rows) {
+        //console.dir(rows);
+        console.dir(rows.length);
+        for (var i = 0; i < rows.length; i++) {
+            var row = rows[i];
+            arrayObj.push([
+                row["departmentId"],
+                row["departmentName"],
+                row["userName"],
+                row["userId"],
+                row["newId"],
+                row["oldId"],
+                row["assetName"],
+                row["typeId"],
+                row["assetBelong"],
+                row["currentStatus"],
+                row["brand"],
+                row["model"],
+                row["specifications"],
+                row["price"],
+                dataHandler(row["purchaseDate"]),
+                dataHandler(row["possessDate"]),
+                row["serviceCode"],
+                row["mac"],
+                row["remark1"],
+                row["remark2"]
+                ]);
+            console.dir(row["possessDate"]);
+        };
+        conf.rows = arrayObj;
+        console.dir(conf.rows.length+"~~~~~~");
+        var result = nodeExcel.execute(conf);
+
+        res.setHeader('Content-Type', 'application/vnd.openxmlformats');
+        res.setHeader("Content-Disposition", "attachment; filename= zichan_" + (new Date().Format("yyyy-MM-dd"))+".xlsx");
+        res.end(result, 'binary');
+    });
+    function dataHandler (dataStr) {
+        if (dataStr) {
+            if (dataStr != "0000-00-00") {
+                return (new Date(dataStr)).Format("yyyy-MM-dd hh:mm:ss")
+            }
+            return "";
+        }else{
+            return "";
+        }
+    }
+
+    
+    
+}
+
+    
+
+
