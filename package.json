@@ -18,7 +18,8 @@
         "qrcode"        : "0.2.8",
         "pdfkit"        : "0.2.6",
         "excel"         : "0.0.60",
-        "net-ping"      : "1.1.9"
+        "net-ping"      : "1.1.9",
+        "debug"         : "0.7.4"
     },
     "devDependencies": {
         "should": "*",
