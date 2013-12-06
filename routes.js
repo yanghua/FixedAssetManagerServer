@@ -49,7 +49,7 @@ module.exports = function (app) {
     app.get("/login", login.showLogin);
     app.post("/signin", login.signIn);
     app.get("/signout", logout.signOut);
-    app.get("/fixedasset/printservice/:pageIndex?", fixedAsset.printService);
+    app.get("/fixedasset/printservice/:pageIndex/:timeFrom/:timeTo", fixedAsset.printService);
     app.get("/fixedasset/manage",fixedAsset.manage);
     app.get("/404",others.fourofour);
     app.get("/captchaImg", login.captchaImg);
@@ -57,7 +57,6 @@ module.exports = function (app) {
     app.get("/fixedasset/create", fixedAsset.create);
     app.post("/fixedasset/import", fixedAsset.importFA);
     app.get("/fixedasset/batchCreate",fixedAsset.batchCreate);
-    app.get("/fixedasset/excelExport",fixedAsset.exportExcel);
 
     //apis
     app.get("/user/:userId", user.getUserById);
