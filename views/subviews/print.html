@@ -24,8 +24,15 @@
         currentPage:<%= locals.renderData.pageIndex %>,
         cssStyle: 'light-theme',
         onPageClick: function(pageNum){
-
-          window.location.href="/fixedasset/printservice/"+pageNum;
+          var dURL = document.URL;
+          if(dURL.indexOf("0000")!=-1){
+              var d1 = dURL.split('/')[6],
+                  d2 = dURL.split('/')[7];
+              window.location.href="/fixedasset/printservice/"+pageNum+"/"+d1+"/"+d2;
+          }else{
+              window.location.href="/fixedasset/printservice/"+pageNum;
+          }
+          
         }
       });
     }
@@ -69,9 +76,9 @@
     <div id='paginator_div' style="float:left;padding-top:10px" ></div>
     <div style="float:right">
       选择时间：
-      <input type="text" class="datePicker1" value="" id="dpd1">
+      <input id="dpd1"class="datePicker1" size="16" type="text" value="12-13-2013" readonly="">
       -
-      <input type="text" class="datePicker1" value="" id="dpd2">
+      <input id="dpd2"class="datePicker1" size="16" type="text" value="12-13-2012" readonly="">
        <button type="button" class="btn btn-default" onclick="btnResearch()">
         <span class="glyphicon glyphicon-search"></span> 查询
       </button>      <button type="button" class="btn btn-default" onclick="btnPrintClick()">
