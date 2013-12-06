@@ -57,6 +57,7 @@ module.exports = function (app) {
     app.get("/fixedasset/create", fixedAsset.create);
     app.post("/fixedasset/import", fixedAsset.importFA);
     app.get("/fixedasset/batchCreate",fixedAsset.batchCreate);
+    app.get("/fixedasset/excelExport",fixedAsset.exportExcel);
 
     //apis
     app.get("/user/:userId", user.getUserById);
