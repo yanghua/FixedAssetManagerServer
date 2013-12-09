@@ -39,6 +39,7 @@ var config  = require("../config").initConfig();
  * @return {null}        
  */
 exports.getAllFATypes = function (req, res, next) {
+    debugCtrller("controllers/faType/getAllFATypes");
     FAType.getAllFATypes(function (err, faTypeList) {
         if (err) {
             return res.send(resUtil.generateRes(null, err.statusCode));

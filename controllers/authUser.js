@@ -38,6 +38,7 @@ var AuthUser = require("../proxy/authUser");
  * @return {null}        
  */
 exports.create = function (req, res, next) {
+    debugCtrller("controllers/authUser/create");
     if (!req.session || !req.session.user) {
         return res.redirect("/login");
     }
@@ -70,6 +71,7 @@ exports.create = function (req, res, next) {
  * @return {null}        
  */
 exports.allUsers = function (req, res, next) {
+    debugCtrller("controllers/authUser/allUsers");
     if (!req.session || !req.session.user) {
         return res.redirect("/login");
     }

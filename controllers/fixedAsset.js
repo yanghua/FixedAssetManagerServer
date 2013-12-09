@@ -206,7 +206,6 @@ exports.insertion = function (req, res, next) {
     debugCtrller("controllers/fixedAsset/insertion");
 
     var faObj = req.body;
-
     var ep = EventProxy.create();
 
     FixedAsset.addFixedAsset(faObj, function (err, rows) {
@@ -613,7 +612,7 @@ exports.create = function (req, res, next) {
  * @return {[type]}        [description]
  */
 exports.batchCreate = function (req, res, next) {
-    debugCtrller("controllers/fixedasset->batchCreate");
+    debugCtrller("controllers/fixedasset/batchCreate");
     if (!req.session || !req.session.user){
         return res.redirect("/login");
     }
@@ -629,7 +628,7 @@ exports.batchCreate = function (req, res, next) {
  * @return {null}        
  */
 exports.idleFixedAsset = function (req, res, next) {
-    debugCtrller("controllers/idleFixedAsset");
+    debugCtrller("controllers/fixedasset/idleFixedAsset");
 
     var deptId    = req.params.deptId || "";
     var typeId    = req.params.typeId || 0;
@@ -704,7 +703,7 @@ exports.idleFixedAsset = function (req, res, next) {
  * @return {null}        
  */
 exports.importFA = function (req, res, next) {
-    debugCtrller("controllers/importFA");
+    debugCtrller("controllers/fixedasset/importFA");
 
     var fileName = req.files.file_source.name || "";
     var tmp_path = req.files.file_source.path || "";
@@ -774,7 +773,7 @@ exports.importFA = function (req, res, next) {
  * @return {[type]}        [description]
  */
 exports.handleQrcode = function (req, res, next) {
-    debugCtrller("controllers/handleQrcode");
+    debugCtrller("controllers/fixedAsset/handleQrcode");
 
     var ep = EventProxy.create();
     FixedAsset.updateQrcode('123123',function (err,qUri) {
@@ -787,9 +786,11 @@ exports.handleQrcode = function (req, res, next) {
     ep.fail(function (err) {
         res.send(resUtil.generateRes(null, err.statusCode));
     });
+
     ep.once("completed1", function (tem) {
         res.send("<img src='"+tem+"'/>");
     });
+
     var doc = new PDFDocument();
     ep.once("loadpdf", function (tem) {
         //doc.addPage();
@@ -804,17 +805,17 @@ exports.handleQrcode = function (req, res, next) {
             }
             ep.emitLater("completed");
         });
-      
-        
     });
+
     ep.once("completed",function () {
         doc.write('out.pdf');
         doc.output(function(string) {
           res.end(string);
         });
-    })
+    });
 
 };
+
 /**
  * update all qrcode 
  * @param  {object}   req  the instance of requset
@@ -823,7 +824,7 @@ exports.handleQrcode = function (req, res, next) {
  * @return {null}       
  */
 exports.updateAllQrcode = function (req, res, next) {
-    debugCtrller("#####controllers/updateAllQrcode");
+    debugCtrller("controllers/fixedAsset/updateAllQrcode");
     var ep = EventProxy.create();
     FixedAsset.updateAllQrcode(function (err,args) {
         //to-do 
@@ -838,7 +839,7 @@ exports.updateAllQrcode = function (req, res, next) {
  * @return {null}     send a file to client with all data from mysql database   
  */
 exports.exportExcel = function (req, res, next) {
-    debugCtrller("#####controllers/exportExcel");
+    debugCtrller("controllers/fixedAsset/exportExcel");
     var ep = EventProxy.create();
 
     //静态数据
@@ -865,12 +866,14 @@ exports.exportExcel = function (req, res, next) {
         {caption:'备注1', type:'string'},
         {caption:'备注2', type:'string'}                       
     ];
+
     FixedAsset.getExportData(function (err, rows) {
         if (err) {
             return ep.emitLater("error", err);
         }
         ep.emitLater("after_select", rows);
-    });  
+    });
+
     var arrayObj = new Array(); 
     ep.once("after_select",function (rows) {
         for (var i = 0; i < rows.length; i++) {
@@ -905,6 +908,7 @@ exports.exportExcel = function (req, res, next) {
         res.setHeader("Content-Disposition", "attachment; filename= zichan_" + (new Date().Format("yyyy-MM-dd"))+".xlsx");
         res.end(result, 'binary');
     });
+
     function dataHandler (dataStr) {
         if (dataStr) {
             if (dataStr != "0000-00-00") {
@@ -915,7 +919,4 @@ exports.exportExcel = function (req, res, next) {
             return "";
         }
     }
-
-    
-    
 }

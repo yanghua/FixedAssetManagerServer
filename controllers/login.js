@@ -52,6 +52,7 @@ exports.showLogin = function (req, res, next) {
  * @return {null}        
  */
 exports.signIn = function (req, res, next) {
+    debugCtrller("controllers/login/signIn");
     var captchaCode = req.body.auth.captchaCode || "";
     var userId      = req.body.auth.userId || "";
     var passwd      = req.body.auth.passwd || "";
@@ -103,6 +104,7 @@ exports.signIn = function (req, res, next) {
  * @return {null}        
  */
 exports.commonProcess = function (req, res, next) {
+    debugCtrller("controllers/login/commonProcess");
     var param = req.query.api || 0;
     var isAPI = parseInt(param);
 
@@ -127,6 +129,7 @@ exports.commonProcess = function (req, res, next) {
  * @return {null}        
  */
 exports.captchaImg = function (req, res, next) {
+    debugCtrller("controllers/login/captchaImg");
     var captcha     = captchagen.create();
     var captchaCode = captcha.text();
         

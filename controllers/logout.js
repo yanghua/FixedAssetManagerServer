@@ -34,6 +34,7 @@
  * @return {null}        
  */
 exports.signOut = function (req, res, next) {
+    debugCtrller("controllers/logout/signOut");
     req.session.destroy();
     res.clearCookie();
     return res.redirect("/login");

@@ -39,6 +39,7 @@ var config      = require("../config").initConfig();
  * @return {null}        
  */
 exports.getAllDepartments = function (req, res, next) {
+    debugCtrller("controllers/department/getAllDepartments");
     Department.getAllDepartment(function (err, deptList) {
         if (err) {
             return res.send(resUtil.generateRes(null, err.statusCode));
