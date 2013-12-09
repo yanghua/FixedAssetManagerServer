@@ -43,7 +43,8 @@ var logout            = require("./controllers/logout");
 module.exports = function (app) {
 
     //views
-    app.get("/", others.index);
+    // app.get("/", others.index);
+    app.get("/", fixedAsset.manage);
     app.get("/qrtest",fixedAsset.handleQrcode);
     app.get("/apis", others.apis);
     app.get("/login", login.showLogin);

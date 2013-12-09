@@ -63,7 +63,7 @@ function postAuthUserForm () {
         success : function (statusCode) {
             if (statusCode) {
                 if (statusCode === "1") {               //validated
-                    window.location="/fixedasset/printservice/1";
+                    window.location="/";
                 } else {
                     showTip(statusCode);
                 }

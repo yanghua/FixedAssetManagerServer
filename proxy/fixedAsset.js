@@ -399,12 +399,15 @@ exports.allocateFixedAsset = function (allocatingObj, callback) {
 
     allocatingObj["possessDate"] = new Date().Format("yyyy-MM-dd")
 
+    console.log(allocatingObj);
+
     mysqlClient.query({
         sql         : "UPDATE ASSETS SET userId=:userId, possessDate=:possessDate, " +
                       "                  departmentId=:departmentId" +
                       " WHERE newId=:newId",
         params      : allocatingObj
     }, function (err, rows) {
+        debugProxy("###"+err);
         if (err || !rows) {
             return callback(new ServerError(), null);
         }

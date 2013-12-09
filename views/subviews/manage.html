@@ -33,8 +33,10 @@
 						+data.data[i].departmentName
 						+"</option>";
 						$("#assetDep").append(temp);
+						$("#assetDep2").append(temp);
 					};
 					$('#assetDep').selectpicker();
+					$('#assetDep2').selectpicker();
 				}
 			}
 		})
@@ -54,13 +56,12 @@
 			}
 		})
 	});
-	$(document).keyup(function(event){
- 	if(event.keyCode ==13){
- 		//$("#twoSearch").focus();
-    	$("#twoSearch").click();
-  	}
-
-});
+	// $(document).keyup(function(event){
+	//  	if(event.keyCode ==13){
+	//  		//$("#twoSearch").focus();
+	//     	$("#twoSearch").click();
+	//   	}
+	// });
 
 
 </script>
@@ -79,12 +80,12 @@
 						<li>
 							<a href="#panel-2" data-toggle="tab">资产派发</a>
 						</li>
-						<li>
+						<!-- <li>
 							<a href="#panel-3" data-toggle="tab">第3部分</a>
 						</li>
 						<li>
 							<a href="#panel-4" data-toggle="tab">第4部分</a>
-						</li>
+						</li> -->
 					</ul>
 					<div class="tab-content">
 						<div class="tab-pane active fade in" id="panel-1">
@@ -139,6 +140,7 @@
 							<legend>资产派发：</legend> 
 							<div class="controls controls-row" >
 								<span class="help-block">提示：根据下拉框选择空闲资产所在部门，可以将该设备分给当前部门的人员。</span>
+								<span class="help-block">注意：如果设备和人员不是一个部门的，则需要在右侧选择人员当前的部门。</span>
 								<select  id="assetDep"  class="selectpicker show-tick ">
 
 								</select>
@@ -147,9 +149,16 @@
 
 								</select>
 								
-								<button type="submit" onclick="searchNoUser(1)"  style="margin-bottom:10px;margin-left:20px;margin-right:20px; "id="twoSearch" class="btn btn-default span4" data-container="body" >
+								<button type="" onclick="searchNoUser(1)"  style="margin-bottom:10px;margin-left:20px;margin-right:20px; "id="twoSearch" class="btn btn-default span4" data-container="body" >
 									Search
 								</button>
+								<div style="float:right">
+									选择人员所在部门：
+									<select  id="assetDep2"  class="selectpicker show-tick ">
+
+									</select>
+								</div>
+								
 							</div>
 							<div class="panel panel-default" id="noUserAsset">
 								<div class="panel-heading" >当前部门闲置资产列表</div>
@@ -170,7 +179,7 @@
 							</div>
 						
 						</div>
-						<div class="tab-pane" id="panel-3">
+						<!-- <div class="tab-pane" id="panel-3">
 						<p>
 							第3部分内容.
 						</p>
@@ -179,7 +188,7 @@
 						<p>
 							第4部分内容.
 						</p>
-						</div>
+						</div> -->
 
 					</div>
 					
