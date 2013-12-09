@@ -34,6 +34,7 @@ var mysqlClient = require("../libs/mysqlUtil");
  * @return {null}            
  */
 exports.getAllDepartment = function (callback) {
+    debugProxy("/proxy/department/getAllDepartment");
     mysqlClient.query({
         sql     : "SELECT * FROM DEPARTMENT",
         params  : {}

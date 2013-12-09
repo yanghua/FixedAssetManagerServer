@@ -196,7 +196,7 @@ exports.getFixedAssetByfaID = function (faId, callback) {
  * @return {null}            
  */
 exports.checkFixedAssetByfaID = function (faId, callback) {
-    debugProxy("proxy/checkFixedAssetByfaID");
+    debugProxy("proxy/fixedAsset/checkFixedAssetByfaID");
 
     faId = faId || "";
 
@@ -346,7 +346,7 @@ exports.modifyFixedAsset = function (faDetailObj, faId, callback) {
  * @param {Function} callback    the callback func
  */
 exports.addFixedAsset = function (faDetailObj, callback) {
-    debugProxy("proxy/addFixedAsset");
+    debugProxy("proxy/fixedAsset/addFixedAsset");
 
     mysqlClient.query({
         sql         : "INSERT INTO ASSETS VALUES(:newId,                    " +
@@ -601,6 +601,7 @@ exports.getIdelFACountByDeptIdAndTypeId = function (deptId, typeId, callback) {
  * @return {null}
  */
 exports.updateQrcode = function (newId,callback) {
+    debugProxy("/proxy/fixedAsset/updateQrcode");
     var paramObj = {
         newId  : newId,
     };
@@ -676,7 +677,7 @@ exports.importFixedAssets = function (fixedAssets, callback) {
  * @return {null}                  
  */
 function importSingleFixedAsset (fixedAssetInfo, callback) {
-
+    debugProxy("/proxy/fixedAsset/importSingleFixedAsset");
     //if newId is empty
     if (fixedAssetInfo[4] === "") {
         return callback(null,null);

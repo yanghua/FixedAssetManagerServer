@@ -34,6 +34,7 @@ var mysqlClient = require("../libs/mysqlUtil");
  * @return {null}            
  */
 exports.getAllFATypes = function (callback) {
+    debugProxy("/proxy/faType/getAllFATypes");
     mysqlClient.query({
         sql     : "SELECT * FROM ASSETTYPE",
         params  : {}
