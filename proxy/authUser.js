@@ -36,6 +36,7 @@ var SHA256      = require("crypto-js/sha256");
  * @return {null}            
  */
 exports.create = function (userInfo, callback) {
+    debugProxy("/proxy/authUser/create");
     mysqlClient.query({
         sql     : "INSERT INTO AUTHUSER VALUES(:uid, :pwd, :uName)",
         params  : {
@@ -58,6 +59,7 @@ exports.create = function (userInfo, callback) {
  * @return {null}            
  */
 exports.getAllUsers = function (callback) {
+    debugProxy("/proxy/authUser/getAllUsers");
     mysqlClient.query({
         sql       : "SELECT * FROM AUTHUSER WHERE uid != 'admin'",
         params    : null
