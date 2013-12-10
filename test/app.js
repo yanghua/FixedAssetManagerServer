@@ -23,9 +23,6 @@
   Desc: app - the test of server
  */
 
-//mode:
-"use strict";
-
 var app = require("../app");
 
 describe("app.js", function () {

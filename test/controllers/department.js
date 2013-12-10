@@ -23,9 +23,6 @@
   Desc: department - the test of department
  */
 
-//mode:
-'use strict';
-
 var should = require("should");
 var app    = require("../../app");
 

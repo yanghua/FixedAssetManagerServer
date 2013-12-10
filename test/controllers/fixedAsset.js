@@ -23,9 +23,6 @@
   Desc: fixedAsset - the test of fixedAsset
  */
 
-//mode:
-'use strict';
-
 var should = require("should");
 var app    = require("../../app");
 

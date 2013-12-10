@@ -23,9 +23,6 @@
   Desc: fixedAssetHistory - the test of fixedAsset history
  */
 
-//mode:
-'use strict';
-
 var should    = require("should");
 var app       = require("../../app");
 var FAHistory = require("../../proxy/fixedAssetHistory");
@@ -42,12 +39,12 @@ describe("fixedAsset", function () {
 
     it('is testing func: insertHistoryRecord', function (done) {
         var obj = {};
-        obj["atId"]   = "2002";
-        obj["aetId"]  = "1234";
-        obj["aetpId"] = "2";
-        obj["userId"] = "3";
-        obj["aeDesc"] = "4";
-        obj["aeTime"] = "";
+        obj.atId   = "2002";
+        obj.aetId  = "1234";
+        obj.aetpId = "2";
+        obj.userId = "3";
+        obj.aeDesc = "4";
+        obj.aeTime = "";
 
         // FAHistory.insertHistoryRecord(obj, function (err, data) {
         //     if (err) {

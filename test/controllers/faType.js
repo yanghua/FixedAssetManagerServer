@@ -23,9 +23,6 @@
   Desc: faType - the test of faType
  */
 
-//mode:
-'use strict';
-
 var should = require("should");
 var app    = require("../../app");
 

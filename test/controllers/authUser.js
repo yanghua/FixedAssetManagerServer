@@ -22,10 +22,6 @@
   Desc: the test of authUser
  */
 
-
-//mode
-'use strict';
-
 var should = require("should");
 var app    = require("../../app");
 
@@ -46,7 +42,7 @@ describe("auth user test", function () {
             uid   : "lzc",
             pwd   : "adminn",
             uName : "刘志成"
-        }
+        };
 
         app.request().post('/departments').setBody(param).end(function (res) {
             console.dir(res.bodyJSON());
