@@ -22,10 +22,6 @@
   Desc: the proxy of auth user
  */
 
-
-//mode
-'use strict';
-
 var mysqlClient = require("../libs/mysqlUtil");
 var SHA256      = require("crypto-js/sha256");
 
@@ -40,9 +36,9 @@ exports.create = function (userInfo, callback) {
     mysqlClient.query({
         sql     : "INSERT INTO AUTHUSER VALUES(:uid, :pwd, :uName)",
         params  : {
-            uid   : userInfo["uid"],
-            pwd   : SHA256(userInfo["pwd"]),
-            uName : userInfo["uName"]
+            uid   : userInfo.uid,
+            pwd   : SHA256(userInfo.pwd),
+            uName : userInfo.uName
         }
     },  function (err, rows) {
         if (err || !rows || rows.affectedRows === 0) {

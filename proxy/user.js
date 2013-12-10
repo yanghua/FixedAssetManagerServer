@@ -23,9 +23,6 @@
   Desc: user - the proxy of user
  */
 
-//mode
-'use strict';
-
 var User        = require("../models/user");
 var mysqlClient = require("../libs/mysqlUtil");
 

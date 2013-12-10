@@ -23,9 +23,6 @@
   Desc: login - the proxy of login
  */
 
-//mode:
-'use strict';
-
 var mysqlClient = require("../libs/mysqlUtil");
 
 var EventProxy  = require("eventproxy");
@@ -41,7 +38,7 @@ var config      = require("../config").initConfig();
 exports.getUserAuthInfoByUserId = function(userId, callback) {
     debugProxy("/proxy/login/getUserAuthInfoByUserId");
 
-    var userId = userId || "";
+    userId = userId || "";
 
     if (userId.length === 0) {
         return callback(new InvalidParamError(), null);

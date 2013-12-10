@@ -23,9 +23,6 @@
   Desc: fixedAsset - the proxy of fixedAsset
  */
 
-//mode
-'use strict';
-
 var User        = require('../models/fixedAsset');
 var mysqlClient = require("../libs/mysqlUtil");
 var EventProxy  = require("eventproxy");
@@ -92,7 +89,7 @@ exports.getFixedAssetByfaID = function (faId, callback) {
         var faInfo = {};
         if (rows && rows.length > 0) {
             var faDetail       = rows[0];
-            faInfo["faDetail"] = faDetail;
+            faInfo.faDetail = faDetail;
             ep.emitLater("after_getFAInfo", faInfo);
         } else {
             return ep.emitLater("error", new DataNotFoundError());
@@ -103,7 +100,7 @@ exports.getFixedAssetByfaID = function (faId, callback) {
 
         faInfo.faDetail.userId  = faInfo.faDetail.userId || "";
 
-        if (faInfo.faDetail.userId.length != 0) {
+        if (faInfo.faDetail.userId.length !== 0) {
             mysqlClient.query({
                 sql     : "SELECT * FROM USER WHERE userId = :userId",
                 params  : {
@@ -119,7 +116,7 @@ exports.getFixedAssetByfaID = function (faId, callback) {
                     userInfo = rows[0];
                 }
 
-                faInfo["userInfo"] = userInfo;
+                faInfo.userInfo = userInfo;
                 ep.emitLater("after_getUserInfo", faInfo);
             });
         } else {
@@ -131,7 +128,7 @@ exports.getFixedAssetByfaID = function (faId, callback) {
     ep.once("after_getUserInfo", function (faInfo) {
         faInfo.faDetail.departmentId = faInfo.faDetail.departmentId || "";
 
-        if (faInfo.faDetail.departmentId.length != 0) {
+        if (faInfo.faDetail.departmentId.length !== 0) {
             mysqlClient.query({
                 sql     : "SELECT * FROM DEPARTMENT WHERE departmentId = :departmentId",
                 params  : {
@@ -144,8 +141,8 @@ exports.getFixedAssetByfaID = function (faId, callback) {
 
                 var deptInfo = {};
                 if (rows && rows.length > 0) {
-                    deptInfo           = rows[0];
-                    faInfo["deptInfo"] = deptInfo;   
+                    deptInfo        = rows[0];
+                    faInfo.deptInfo = deptInfo;   
                 }
 
                 ep.emitLater("after_getDeptInfo", faInfo);
@@ -159,7 +156,7 @@ exports.getFixedAssetByfaID = function (faId, callback) {
     ep.once("after_getDeptInfo", function (faInfo) {
         faInfo.faDetail.typeId = faInfo.faDetail.typeId || "";
 
-        if (faInfo.faDetail.typeId.length != 0) {
+        if (faInfo.faDetail.typeId.length !== 0) {
             mysqlClient.query({
                 sql     : "SELECT * FROM ASSETTYPE WHERE typeId = :typeId",
                 params  : {
@@ -172,8 +169,8 @@ exports.getFixedAssetByfaID = function (faId, callback) {
 
                 var typeInfo = {};
                 if (rows && rows.length > 0) {
-                    typeInfo           = rows[0];
-                    faInfo["typeInfo"] = typeInfo;   
+                    typeInfo        = rows[0];
+                    faInfo.typeInfo = typeInfo;   
                 }
 
                 callback(null, faInfo);
@@ -241,9 +238,9 @@ exports.rejectFixedAsset = function (rejectionInfo, callback) {
     }
 
     var rejectionObj = {};
-    rejectionObj["newId"] = rejectionInfo["faId"];
-    rejectionObj["reject"] = rejectionInfo["reject"];
-    rejectionObj["rejectDate"] = new Date().Format("yyyy-MM-dd");
+    rejectionObj.newId      = rejectionInfo.faId;
+    rejectionObj.reject     = rejectionInfo.reject;
+    rejectionObj.rejectDate = new Date().Format("yyyy-MM-dd");
 
     mysqlClient.query({
         sql     : "UPDATE ASSETS SET reject=:reject, rejectDate=:rejectDate WHERE newId = :newId",
@@ -397,7 +394,7 @@ exports.addFixedAsset = function (faDetailObj, callback) {
 exports.allocateFixedAsset = function (allocatingObj, callback) {
     debugProxy("proxy/fixedAsset/allocateFixedAsset");
 
-    allocatingObj["possessDate"] = new Date().Format("yyyy-MM-dd")
+    allocatingObj.possessDate = new Date().Format("yyyy-MM-dd");
 
     mysqlClient.query({
         sql         : "UPDATE ASSETS SET userId=:userId, possessDate=:possessDate, " +
@@ -447,8 +444,8 @@ exports.getqrCodeByPageIndex = function (pageIndex, timefrom, timeto, callback) 
               " WHERE purchaseDate BETWEEN :timeFrom AND :timeTo " +
               "ORDER BY purchaseDate DESC " +
               "LIMIT :start,:end ";
-        paramsObj["timeFrom"] = timefrom;
-        paramsObj["timeTo"]   = timeto;
+        paramsObj.timeFrom = timefrom;
+        paramsObj.timeTo   = timeto;
     }
 
     mysqlClient.query({
@@ -482,8 +479,8 @@ exports.getFixedAssetCount = function (timefrom, timeto, callback) {
     } else if (timefrom.length !== 0 && timeto.length !== 0) {
         sql = "SELECT count(newId) AS 'count' FROM fixedAsset.ASSETS " +
               " WHERE purchaseDate BETWEEN :timeFrom AND :timeTo ";
-        paramsObj["timeFrom"] = timefrom;
-        paramsObj["timeTo"]   = timeto;
+        paramsObj.timeFrom = timefrom;
+        paramsObj.timeTo   = timeto;
     }
 
     mysqlClient.query({
@@ -536,7 +533,7 @@ exports.getIdelFAListByDeptIdAndTypeId = function (deptId, typeId, pageIndex, ca
                  " WHERE ast.departmentId = :departmentId AND ast.typeId = :typeId " +
                  " AND userId is null " +
                  " LIMIT :start,:end ";
-        baseParams["typeId"] = typeId;
+        baseParams.typeId = typeId;
     }
 
     mysqlClient.query({
@@ -572,7 +569,7 @@ exports.getIdelFACountByDeptIdAndTypeId = function (deptId, typeId, callback) {
     } else {
         sqlStr = "SELECT count(newId) AS 'count' FROM fixedAsset.ASSETS " +
                     " WHERE departmentId = :departmentId AND typeId = :typeId AND userId IS null";
-        baseParams["typeId"] = typeId;
+        baseParams.typeId = typeId;
     }
 
     mysqlClient.query({
@@ -604,25 +601,26 @@ exports.updateQrcode = function (newId,callback) {
     };
     if (newId) {
         QRCode.toDataURL(newId,function (err, url) {
-        paramObj["qrcode"]=url;
-        mysqlClient.query({
-            sql         : " UPDATE ASSETS SET qrcode=:qrcode "+
-            " WHERE newId=:newId",
-            params      : paramObj
-        }, function (err, rows) { 
-            if (err || !rows) {
-                return callback(new ServerError(), null);
-            }
+            paramObj.qrcode = url;
+            mysqlClient.query({
+                sql         : " UPDATE ASSETS SET qrcode=:qrcode " +
+                              " WHERE newId=:newId",
+                params      : paramObj
+            }, function (err, rows) { 
+                if (err || !rows) {
+                    return callback(new ServerError(), null);
+                }
 
-            if (rows.affectedRows === 0) {
-                return callback(new ServerError(), null);
-            }
+                if (rows.affectedRows === 0) {
+                    return callback(new ServerError(), null);
+                }
 
-            callback(null,paramObj["qrcode"]);
+                callback(null, paramObj.qrcode);
             }); 
         });
     }      
-}
+};
+
 /**
  * update allQrcode
  * @param  {Function} callback handle the qrcode about each row
@@ -634,14 +632,15 @@ exports.updateAllQrcode =  function (callback) {
     },function (err,rows) {
         if (err || !rows) {
             return callback(new ServerError(), null);
-        };
+        }
+
         if (rows.affectedRows === 0) {
             return callback(new ServerError(), null);
-        };
-        debugProxy(rows[0]);
+        }
 
-    })
-  }
+        debugProxy(rows[0]);
+    });
+};
 
 /**
  * import fixed assets to db
@@ -662,6 +661,7 @@ exports.importFixedAssets = function (fixedAssets, callback) {
             if (err) {
                 debugProxy(err);
             }
+
             ep.emit("inserted_data");
         });
     }

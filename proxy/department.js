@@ -23,9 +23,6 @@
   Desc: departments - the controller of departments
  */
 
-//mode:
-'use strict';
-
 var mysqlClient = require("../libs/mysqlUtil");
 
 /**

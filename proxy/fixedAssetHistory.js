@@ -23,9 +23,6 @@
   Desc: fixedAssetHistory - the proxy of fixedAsset history
  */
 
-//mode
-'use strict';
-
 var mysqlClient = require("../libs/mysqlUtil");
 var EventProxy  = require("eventproxy");
 var config      = require("../config").initConfig();
@@ -42,7 +39,7 @@ var util        = require("../libs/util");
 exports.insertHistoryRecord = function (recordItem, callback) {
     debugProxy("/proxy/fixedAssetHistory/insertHistoryRecord");
 
-    recordItem["aetId"] = util.GUID();
+    recordItem.aetId = util.GUID();
     
     mysqlClient.query({
         sql     : "INSERT INTO ASSETEVENT VALUES(:aetId, :aetpId, :atId, :userId, :aeDesc, :aeTime)",
@@ -54,7 +51,7 @@ exports.insertHistoryRecord = function (recordItem, callback) {
         }
 
         callback(null, null);
-    })
+    });
 };
 
 /**

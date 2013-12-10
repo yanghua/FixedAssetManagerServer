@@ -23,9 +23,6 @@
   Desc: fixedAsset type - the proxy of fixedAsset type
  */
 
-//mode:
-'use strict';
-
 var mysqlClient = require("../libs/mysqlUtil");
 
 /**
