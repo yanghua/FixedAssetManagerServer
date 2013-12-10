@@ -24,18 +24,13 @@
   service url: https://chart.googleapis.com/chart?cht=qr&chs=200x200&chl=:qrCode (qrCode is param)
  */
 
-//mode:
-'use strict';
-
 var fs            = require("fs");
 var https         = require("https");
 var check         = require("validator").check;
 var StringDecoder = require('string_decoder').StringDecoder;
-// var QRCode        = require("qrcode");
 
 //service:
-var serviceUrl = "https://chart.googleapis.com/chart?cht=qr&chs=200x200&chl="
-
+var serviceUrl = "https://chart.googleapis.com/chart?cht=qr&chs=200x200&chl=";
 
 /**
  * get qrData from google service api
@@ -71,9 +66,9 @@ exports.getQRData = function (qrCode, callback) {
         res.on("end", function() {
 
             if (receivedLen == expectedLen) {
-                return callback(null, Buffer.concat(imgBytes).toString("base64"));
+                // return callback(null, Buffer.concat(imgBytes).toString("base64"));
             } else {
-                return callback(new ServerError(), null);
+                // return callback(new ServerError(), null);
             }
 
             // pngFileStream.end();

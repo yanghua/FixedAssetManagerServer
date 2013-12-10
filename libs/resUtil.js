@@ -30,9 +30,9 @@
  * @param  {string} resCode response status code
  * @return {object}         warpped response data
  */
-exports.generateRes=function (data, resCode){
+exports.generateRes = function (data, resCode) {
     return {
         statusCode  : resCode,
         data        : data
     };
-}
+};

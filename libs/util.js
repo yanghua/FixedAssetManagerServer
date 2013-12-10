@@ -23,9 +23,6 @@
   Desc: util - the helper methods
  */
 
-//mode:
-'use strict';
-
 var debug4Ctrller   = require("debug")("controller");
 var debug4Proxy     = require("debug")("proxy");
 var debug4Lib       = require("debug")("lib");
