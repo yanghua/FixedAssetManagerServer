@@ -36,14 +36,14 @@
   </div>
   <div class="navbar-collapse collapse">
      <ul id="w_nav" class="nav navbar-nav">
-      <li id="home" class="active"><a href="/">首 页</a></li>
+      <!-- <li id="home" class="active"><a href="/">首 页</a></li> -->
       <li id="print"><a href="/fixedasset/printservice/1">打印服务</a></li>
       <li id="manage"><a href="/fixedasset/manage">资产管理</a></li>
       <li id="add"><a href="/fixedasset/create">资产入库</a></li>
-      <li id="batchAdd"><a href="/fixedasset/batchCreate">批量入库</a></li>
+      <li id="batchAdd"><a href="/fixedasset/batchCreate">导入导出</a></li>
    </ul>
    <ul class="nav navbar-nav navbar-right">
-      <li><a href="#"><%= current_user.userId %> 你好</a></li>
+      <li><a href="#"><%= current_user.uName %> 你好</a></li>
       <li><a href="#">设置</a></li>
       <li><a href="/signout">退出</a></li>
    </ul>

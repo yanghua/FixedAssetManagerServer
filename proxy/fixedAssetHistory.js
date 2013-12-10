@@ -42,7 +42,7 @@ exports.insertHistoryRecord = function (recordItem, callback) {
     recordItem.aetId = util.GUID();
     
     mysqlClient.query({
-        sql     : "INSERT INTO ASSETEVENT VALUES(:aetId, :aetpId, :atId, :userId, :aeDesc, :aeTime)",
+        sql     : "INSERT INTO ASSETEVENT(aetId, aetpId, atId, userId, aeDesc, aeTime) VALUES(:aetId, :aetpId, :atId, :userId, :aeDesc, :aeTime)",
         params  : recordItem
     }, function (err, rows) {
         if (err) {

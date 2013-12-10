@@ -13,7 +13,8 @@ function btnPrintClick(){
 			$("#assetDetails").after($("#underName").clone());
 			$("#underName").remove();
 		}else{
-			alert("请输入编号后查询");
+			bootbox.alert("请输入编号后查询!");
+
 		}
 	}else{
 		$("#assetDetails").hide();
@@ -22,7 +23,8 @@ function btnPrintClick(){
 		if ($("#baseInput").val()) {
 			loadUnderName($("#baseInput").val());
 		}else{
-			alert("请输入人员编号后查询");
+			bootbox.alert("请输入人员编号后查询!");
+
 		}
 		
 		$("#underName").after($("#assetDetails").clone());
@@ -53,7 +55,7 @@ function loadAssetDetails(qrCode){
 						$("#assetDetails ul").append(temp+'设备编号:'+det.newId+'</li>');
 						$("#the_new_id").val(det.newId);
 					}else{
-						alert("设备不存在!");
+						bootbox.alert("设备不存在!");
 					}
 					if (det.typeId) {
 						if (data.data.typeInfo.typeName==det.assetName) {
@@ -300,14 +302,28 @@ function searchNoUser (pageIndex) {
 }
 
 function loadAllocToUser (assetId) {
-	alert("..."+assetId);
-	// $.ajax({
-	// 	type:"POST",
-	// 	data:{},
-	// 	url:"/fixedasset/"+assetId+"/allocation",
-	// 	success:function (data) {
-			
-	// 	};
+	bootbox.prompt("请输入人员编号：", function(userId) {                
+	  if (userId === null) {                                             
+	                               
+	  } else {
+	    if (userId){
+		$.ajax({
+			type:"POST",
+			data:{'userId':userId,
+			'deptId':$("#assetDep2").val(),
+			'faId':assetId},
+			url:"/fixedasset/"+assetId+"/allocation",
+			success:function (data) {
+				if (data.statusCode==0) {
+					bootbox.alert("操作成功！");
+				}else{
+					bootbox.alert("操作失败，请联系管理员！");
+				}
+			}
+		});
+		}                          
+	  }
+	});
+	
 
-	// })
 }
