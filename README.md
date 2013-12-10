@@ -10,6 +10,16 @@ $ cd projectPath/
 $ npm install
 ```
 
+## grunt
+
+```
+$ npm install -g grunt-cli
+
+$ cd projectPath/
+
+$ grunt
+```
+
 ## test
 ```
 $ npm install -g mocha
@@ -21,7 +31,7 @@ $ mocha test
 
 ## debug
 ```
-$ cd cd projectPath/
+$ cd projectPath/
 
 $ sudo DEBUG=$DEBUG node app.js
 ```
@@ -66,6 +76,7 @@ root
    |-docs                           --项目文档资源文件夹
    |-screenshots                    --终端图片截图(iOS/Android)
    |-common                         --系统公用文件定义
+   |-services                       --各种service集合
    
 ```
 
