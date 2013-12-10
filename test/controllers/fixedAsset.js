@@ -199,18 +199,17 @@ describe("fixedAsset", function () {
         });
     });
 
-
     it('is testing handleQrcode',function (done) {
         app.request().get("/qrtest").end(function (res) {
             console.dir(res.statusCode);
             done();
         });
+    });
 
     it('is testing /fixedasset/import', function (done) {
         app.request().post("/fixedasset/import").end(function (res) {
             console.log(res.bodyJSON());
             done();
-        })
+        });
     });
-
 });
