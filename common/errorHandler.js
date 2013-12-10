@@ -23,9 +23,6 @@
   Desc: error handler of application
  */
 
-//mode
-'use strict';
-
 var mailServie = require("../services/mail");
 
 /**

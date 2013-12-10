@@ -23,9 +23,6 @@
   Desc: Error definition and inherit
  */
 
-//mode
-'use strict';
-
 var config = require("../config").initConfig();
 
 function BaseError(message) {
