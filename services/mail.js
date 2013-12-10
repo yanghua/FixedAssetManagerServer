@@ -26,7 +26,7 @@
 //mode:
 'use strict';
 
-var mailer = require("nodemailer");
+var mailer    = require("nodemailer");
 var appConfig = require("../appConfig").config;
 
 var transport = mailer.createTransport("SMTP", appConfig.mail_opts);

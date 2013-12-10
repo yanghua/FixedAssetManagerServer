@@ -27,9 +27,6 @@
  routes - the router of url request
  */
 
-//mode
-'use strict';
-
 var user              = require("./controllers/user");
 var fixedAsset        = require("./controllers/fixedAsset");
 var fixedAssetHistory = require("./controllers/fixedAssetHistory");
