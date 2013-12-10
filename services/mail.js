@@ -23,9 +23,6 @@
   Desc: mail - the service of mail
  */
 
-//mode:
-'use strict';
-
 var mailer    = require("nodemailer");
 var appConfig = require("../appConfig").config;
 
@@ -46,12 +43,12 @@ var transport = mailer.createTransport("SMTP", appConfig.mail_opts);
 exports.sendMail = function (mailObj) {
 
     if (!mailObj.hasOwnProperty("from")) {
-        mailObj["from"] = appConfig.mail_opts.auth.user;
-    };
+        mailObj.from = appConfig.mail_opts.auth.user;
+    }
 
     //if there is no property then use default
     if (!mailObj.hasOwnProperty("to")) {
-        mailObj["to"] = appConfig.mailDefault_TO.join(",");
+        mailObj.to = appConfig.mailDefault_TO.join(",");
     }
 
     console.log("sending mail .....");
@@ -60,6 +57,6 @@ exports.sendMail = function (mailObj) {
         if (err) {
             console.log("mail error:");
             console.log(err);
-        };
+        }
     });
 };
