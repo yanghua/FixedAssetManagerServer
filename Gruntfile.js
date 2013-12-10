@@ -33,13 +33,17 @@ module.exports = function (grunt) {
                 //ignore:Don't make functions within a loop.
                 '-W083' : true,
 
+                '-W103' : true,
+
                 globals : {
+                    process             : true,
+                    global              : true,
                     module              : true,
                     __dirname           : true,
                     require             : true,
                     console             : true,
                     exports             : true,
-                    debug4Ctrller       : true,
+                    debugCtrller        : true,
                     debugProxy          : true,
                     debugLib            : true,
                     debugTest           : true,
@@ -49,7 +53,12 @@ module.exports = function (grunt) {
                     InvalidParamError   : true,
                     DataNotFoundError   : true,
                     PageNotFoundError   : true,
-                    DBError             : true
+                    DBError             : true,
+                    /*      test below      */
+                    describe            : true,
+                    before              : true,
+                    after               : true,
+                    it                  : true
                 },
                 ignores : [
                             "public/src/libs/*.js",
@@ -57,8 +66,13 @@ module.exports = function (grunt) {
                 ]
             },
             src         : [
-                            "controller/*.js",
+                            "controllers/*.js",
                             "proxy/*.js",
+                            "common/*.js",
+                            "libs/*.js",
+                            "services/*.js",
+                            "test/*.js",
+                            "test/*/*.js",
                             "routes.js",
                             "config.js",
                             "app.js",
