@@ -32,10 +32,11 @@ module.exports = function (grunt) {
 
                 //ignore:Don't make functions within a loop.
                 '-W083' : true,
-
+                //ignore:__proto__
                 '-W103' : true,
 
                 globals : {
+                    /*  node global below   */
                     process             : true,
                     global              : true,
                     module              : true,
@@ -43,18 +44,20 @@ module.exports = function (grunt) {
                     require             : true,
                     console             : true,
                     exports             : true,
+                    /*      debug below      */
                     debugCtrller        : true,
                     debugProxy          : true,
                     debugLib            : true,
                     debugTest           : true,
                     debugOther          : true,
+                    /*      Error below      */
                     BaseError           : true,
                     ServerError         : true,
                     InvalidParamError   : true,
                     DataNotFoundError   : true,
                     PageNotFoundError   : true,
                     DBError             : true,
-                    /*      test below      */
+                    /*      test below       */
                     describe            : true,
                     before              : true,
                     after               : true,
