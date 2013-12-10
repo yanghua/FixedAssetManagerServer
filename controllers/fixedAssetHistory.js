@@ -23,9 +23,6 @@
   Desc: fixedAssetHistory - the controller of fixedAsset history
  */
 
-//mode
-'use strict';
-
 var FixedAssetHistory = require("../proxy/fixedAssetHistory");
 var resUtil           = require("../libs/resUtil");
 var check             = require("validator").check;

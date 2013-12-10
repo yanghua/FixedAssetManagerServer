@@ -23,9 +23,6 @@
   Desc: login - the controller of login
  */
 
-//mode:
-'use strict';
-
 var Login      = require("../proxy/login");
 var captchagen = require('captchagen');
 var check      = require("validator").check;
@@ -83,10 +80,10 @@ exports.signIn = function (req, res, next) {
         }
 
         //check
-        if (userId === userAuthInfo["uid"] && passwd === userAuthInfo["pwd"]) {
+        if (userId === userAuthInfo.uid && passwd === userAuthInfo.pwd) {
             var user         = {};
-            user["userId"]   = userId;
-            user["uName"]    = userAuthInfo["uName"]; 
+            user.userId      = userId;
+            user.uName       = userAuthInfo.uName; 
             req.session.user = user;
 
             return res.send("1");

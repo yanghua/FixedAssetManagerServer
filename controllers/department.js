@@ -23,9 +23,6 @@
   Desc: departments - the controller of departments
  */
 
-//mode:
-'use strict';
-
 var Department  = require("../proxy/department");
 var resUtil     = require("../libs/resUtil");
 var config      = require("../config").initConfig();

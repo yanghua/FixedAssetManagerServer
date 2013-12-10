@@ -23,9 +23,6 @@
   Desc: logout - the controller of logout
  */
 
-//mode:
-'use strict';
-
 /**
  * sign out
  * @param  {object}   req  the instance of request
@@ -38,4 +35,4 @@ exports.signOut = function (req, res, next) {
     req.session.destroy();
     res.clearCookie();
     return res.redirect("/login");
-}
+};

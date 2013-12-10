@@ -22,12 +22,9 @@
   Desc: the controller of authUser
  */
 
-
-//mode
-'use strict';
-
 var check    = require("validator").check;
 var sanitize = require("validator").sanitize;
+var resUtil  = require("../libs/resUtil");
 var AuthUser = require("../proxy/authUser");
 
 /**

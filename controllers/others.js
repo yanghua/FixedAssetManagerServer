@@ -23,9 +23,6 @@
   Desc: others - the controller of others
  */
 
-//mode:
-'use strict';
-
 /**
  * the home controller
  * @param  {object}   req  the request obj
@@ -38,7 +35,7 @@ exports.index = function (req, res, next){
 
     if (!req.session || !req.session.user) {
         return res.redirect("/login");
-    };
+    }
 
     res.render('subviews/index');
 };

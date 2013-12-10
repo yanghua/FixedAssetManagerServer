@@ -23,9 +23,6 @@
   Desc: fixedAsset - the controller of fixedAsset
  */
 
-//mode:
-'use strict';
-
 var FixedAsset  = require("../proxy/fixedAsset");
 var FAHistory   = require("../proxy/fixedAssetHistory");
 var User        = require("../proxy/user");
@@ -169,11 +166,11 @@ exports.rejection = function (req, res, next) {
     ep.once("after_getFAInfo", function(faInfo) {
 
         var historyRecord       = {};
-        historyRecord["atId"]   = faInfo["faDetail"]["newId"];
-        historyRecord["aetpId"] = 2;                //reject
-        historyRecord["userId"] = faInfo["faDetail"]["userId"];
-        historyRecord["aeDesc"] = "";
-        historyRecord["aeTime"] = new Date().Format("yyyy-MM-dd hh:mm:ss");
+        historyRecord.atId   = faInfo.faDetail.newId;
+        historyRecord.aetpId = 2;                //reject
+        historyRecord.userId = faInfo.faDetail.userId;
+        historyRecord.aeDesc = "";
+        historyRecord.aeTime = new Date().Format("yyyy-MM-dd hh:mm:ss");
 
         FAHistory.insertHistoryRecord(historyRecord, function (err, data) {
             if (err) {
@@ -228,12 +225,12 @@ exports.insertion = function (req, res, next) {
 
     ep.once("after_getFAInfo", function(faInfo) {
 
-        var historyRecord       = {};
-        historyRecord["atId"]   = faInfo["faDetail"]["newId"];
-        historyRecord["aetpId"] = 1;                //insert
-        historyRecord["userId"] = faInfo["faDetail"]["userId"];
-        historyRecord["aeDesc"] = "";
-        historyRecord["aeTime"] = new Date().Format("yyyy-MM-dd");
+        var historyRecord    = {};
+        historyRecord.atId   = faInfo.faDetail.newId;
+        historyRecord.aetpId = 1;                //insert
+        historyRecord.userId = faInfo.faDetail.userId;
+        historyRecord.aeDesc = "";
+        historyRecord.aeTime = new Date().Format("yyyy-MM-dd");
 
         FAHistory.insertHistoryRecord(historyRecord, function (err, data) {
             if (err) {
@@ -279,7 +276,7 @@ exports.modification = function (req, res, next) {
 
     var ep = EventProxy.create();
 
-    var userId = detailObj["userId"] || "";
+    var userId = detailObj.userId || "";
     var retake = false;
 
     //if userId is null ,it means retake this fixed asset
@@ -294,7 +291,7 @@ exports.modification = function (req, res, next) {
         }
 
         //get the userId it's retaking from 
-        userId = faInfo["faDetail"]["userId"] || "";
+        userId = faInfo.faDetail.userId || "";
         ep.emitLater("after_getFAInfo");
     });
 
@@ -314,11 +311,11 @@ exports.modification = function (req, res, next) {
 
     ep.once("after_retake", function () {
         var historyRecord       = {};
-        historyRecord["atId"]   = faId;
-        historyRecord["aetpId"] = 4;                //retake
-        historyRecord["userId"] = userId;
-        historyRecord["aeDesc"] = "";
-        historyRecord["aeTime"] = new Date().Format("yyyy-MM-dd");
+        historyRecord.atId   = faId;
+        historyRecord.aetpId = 4;                //retake
+        historyRecord.userId = userId;
+        historyRecord.aeDesc = "";
+        historyRecord.aeTime = new Date().Format("yyyy-MM-dd");
 
         FAHistory.insertHistoryRecord(historyRecord, function (err, data) {
             if (err) {
@@ -406,11 +403,11 @@ exports.allocation = function (req, res, next) {
 
     ep.once("after_allocation", function() {
         var historyRecord       = {};
-        historyRecord["atId"]   = faId;
-        historyRecord["aetpId"] = 3;                //allocation
-        historyRecord["userId"] = userId;
-        historyRecord["aeDesc"] = "";
-        historyRecord["aeTime"] = new Date().Format("yyyy-MM-dd");
+        historyRecord.atId   = faId;
+        historyRecord.aetpId = 3;                //allocation
+        historyRecord.userId = userId;
+        historyRecord.aeDesc = "";
+        historyRecord.aeTime = new Date().Format("yyyy-MM-dd");
 
         FAHistory.insertHistoryRecord(historyRecord, function (err, data) {
             if (err) {
@@ -423,7 +420,7 @@ exports.allocation = function (req, res, next) {
 
     ep.once("completed", function () {
         res.send(resUtil.generateRes(null, config.statusCode.SATUS_OK));
-    })
+    });
 
     ep.fail(function(err) {
         res.send(resUtil.generateRes(null, err.statusCode));
@@ -461,7 +458,7 @@ exports.checkExistence = function (req, res, next) {
             return res.send(resUtil.generateRes(0, config.statusCode.SATUS_OK));
         }
     });
-}
+};
 
 /**
  * print service 
@@ -524,21 +521,21 @@ exports.printService = function (req, res, next) {
             }
 
             var renderData = {};
-            renderData["pageSize"]   = config.default_page_size;
-            renderData["pageIndex"]  = pageIndex;
-            renderData["total"]      = totalCount;
-            renderData["qrCodeList"] = qrCodeList;
+            renderData.pageSize   = config.default_page_size;
+            renderData.pageIndex  = pageIndex;
+            renderData.total      = totalCount;
+            renderData.qrCodeList = qrCodeList;
             var session = ping.createSession ();
             session.pingHost ("127.0.0.1", function (error, target) {
             if (error){
-                renderData["networkCheck"] = 0;
+                renderData.networkCheck = 0;
                 if (error instanceof ping.RequestTimedOutError)
                     debugCtrller (target + ": Not alive");
                 else
                     debugCtrller (target + ": " + error.toString ());
             }else{
                 debugCtrller (target + ": Alive");
-                renderData["networkCheck"] = 1;
+                renderData.networkCheck = 1;
             }
         });
 
@@ -681,10 +678,10 @@ exports.idleFixedAsset = function (req, res, next) {
 
     ep.once("completed", function (idelFAList, idelFACount) {
         var data = {};
-        data["pageSize"]   = config.default_page_size;
-        data["pageIndex"]  = pageIndex;
-        data["total"]      = idelFACount;
-        data["idelFAList"] = idelFAList;
+        data.pageSize   = config.default_page_size;
+        data.pageIndex  = pageIndex;
+        data.total      = idelFACount;
+        data.idelFAList = idelFAList;
 
         return res.send(resUtil.generateRes(data, config.statusCode.SATUS_OK));
     });
@@ -749,7 +746,7 @@ exports.importFA = function (req, res, next) {
         debugCtrller(excelData[0].length);
         if (excelData[0].length != 20) {
             return ep.emitLater("error", new InvalidParamError());
-        };
+        }
 
         //remove first title array
         excelData.shift();
@@ -779,9 +776,10 @@ exports.handleQrcode = function (req, res, next) {
     FixedAsset.updateQrcode('123123',function (err,qUri) {
         if (err) {
             return ep.emitLater("error", err);
-        };
+        }
+
         ep.emitLater("loadpdf",qUri);
-    })
+    });
 
     ep.fail(function (err) {
         res.send(resUtil.generateRes(null, err.statusCode));
@@ -828,7 +826,7 @@ exports.updateAllQrcode = function (req, res, next) {
     var ep = EventProxy.create();
     FixedAsset.updateAllQrcode(function (err,args) {
         //to-do 
-    })
+    });
 };
 
 /**
@@ -874,33 +872,34 @@ exports.exportExcel = function (req, res, next) {
         ep.emitLater("after_select", rows);
     });
 
-    var arrayObj = new Array(); 
+    var arrayObj = []; 
     ep.once("after_select",function (rows) {
         for (var i = 0; i < rows.length; i++) {
             var row = rows[i];
             arrayObj.push([
-                row["departmentId"],
-                row["departmentName"],
-                row["userName"],
-                row["userId"],
-                row["newId"],
-                row["oldId"],
-                row["assetName"],
-                row["typeId"],
-                row["assetBelong"],
-                row["currentStatus"],
-                row["brand"],
-                row["model"],
-                row["specifications"],
-                row["price"],
-                dataHandler(row["purchaseDate"]),
-                dataHandler(row["possessDate"]),
-                row["serviceCode"],
-                row["mac"],
-                row["remark1"],
-                row["remark2"]
-                ]);
-        };
+                row.departmentId,
+                row.departmentName,
+                row.userName,
+                row.userId,
+                row.newId,
+                row.oldId,
+                row.assetName,
+                row.typeId,
+                row.assetBelong,
+                row.currentStatus,
+                row.brand,
+                row.model,
+                row.specifications,
+                row.price,
+                dataHandler(row.purchaseDate),
+                dataHandler(row.possessDate),
+                row.serviceCode,
+                row.mac,
+                row.remark1,
+                row.remark2
+            ]);
+        }
+
         conf.rows = arrayObj;
         var result = nodeExcel.execute(conf);
 
@@ -912,11 +911,11 @@ exports.exportExcel = function (req, res, next) {
     function dataHandler (dataStr) {
         if (dataStr) {
             if (dataStr != "0000-00-00") {
-                return (new Date(dataStr)).Format("yyyy-MM-dd hh:mm:ss")
+                return (new Date(dataStr)).Format("yyyy-MM-dd hh:mm:ss");
             }
             return "";
         }else{
             return "";
         }
     }
-}
+};

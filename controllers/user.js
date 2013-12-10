@@ -23,9 +23,6 @@
   Desc: user - the controller of user
  */
 
-//mode:
-'use strict';
-
 var resUtil  = require("../libs/resUtil");
 var User     = require('../proxy/user');
 var config   = require("../config").initConfig();
