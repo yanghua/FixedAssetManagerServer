@@ -1,6 +1,6 @@
 # overview
 
-It's a node server.
+It's a node server used `grunt` as build tool and `pm2` as maintain tool.
 
 ## install
 
@@ -92,19 +92,23 @@ root
 * captchagen
 * crypto-js
 * nodemailer
+* qrcode
+* pdfkit
+* excel
+* net-ping
+* debug
+* excel-export
 
 devDependencies
 
 * should
 * mocha
+* grunt
+* grunt-contrib-uglify
+* grunt-contrib-jshint
 
-## screen shots - iOS
->TODO
-
-## screen shots -android
->TODO
-
-
+## more detail
+[使用Node.js完成的第一个项目的实践总结](http://blog.csdn.net/yanghua_kobe/article/details/17199417)
 
 ## reference
 
