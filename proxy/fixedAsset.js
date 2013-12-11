@@ -895,6 +895,15 @@ exports.getFixedAssetListWithConditions = function (conditions, callback) {
         sql += " AND a.assetBelong = :assetBelong ";
     }
 
+    if (!conditions.page && conditions.page.length === 0) {
+        conditions.page  = 1;
+    }
+
+    conditions.start = ((conditions.page - 1) * config.default_page_size);
+    conditions.end   = config.default_page_size;
+
+    sql += " LIMIT :start,:end ;"
+
     var ep = EventProxy.create();
 
     mysqlClient.query({
