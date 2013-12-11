@@ -35,6 +35,7 @@ var department        = require("./controllers/department");
 var others            = require("./controllers/others");
 var login             = require("./controllers/login");
 var logout            = require("./controllers/logout");
+var company           = require("./controllers/company");
 // var authUser          = require("./controllers/authUser");
 
 module.exports = function (app) {
@@ -66,6 +67,7 @@ module.exports = function (app) {
     app.get("/fixedasset/:faId/existence", fixedAsset.checkExistence);
     app.get("/fixedasset/:faId/history", fixedAssetHistory.faHistory);
     app.get("/department/:deptId/idelfixedasset/type/:typeId/page/:pageIndex?", fixedAsset.idleFixedAsset);
+    app.get("/companies", company.companies);
     // app.post("/authuser/create", authUser.create);
     // app.get("/authusers", authUser.allUsers);
 
