@@ -941,7 +941,7 @@ exports.exportExcel = function (req, res, next) {
  * @param  {Function} next the next handler
  * @return {null}        
  */
-expors.conditionInfo = function (req, res, next) {
+exports.conditionInfo = function (req, res, next) {
     debugCtrller("controllers/fixedAsset/conditionInfo");
 
     FixedAsset.getFixedAssetConditions(function (err, result) {
@@ -953,3 +953,5 @@ expors.conditionInfo = function (req, res, next) {
     });
 
 };
+
+
