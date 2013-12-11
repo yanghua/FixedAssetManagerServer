@@ -310,7 +310,6 @@ exports.modifyFixedAsset = function (faDetailObj, faId, callback) {
                   "                 brand=:brand,                   " +
                   "                 model=:model,                   " +
                   "                 specifications=:specifications, " +
-                  "                 amount=:amount,                 " +
                   "                 price=:price,                   " +
                   "                 purchaseDate=:purchaseDate,     " +
                   "                 possessDate=:possessDate,       " +
@@ -357,7 +356,6 @@ exports.addFixedAsset = function (faDetailObj, callback) {
                           "                             :brand,             " +
                           "                             :model,             " +
                           "                             :specifications,    " +
-                          "                             :amount,            " +
                           "                             :price,             " +
                           "                             :purchaseDate,      " +
                           "                             :possessDate,       " +
