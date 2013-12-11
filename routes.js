@@ -53,7 +53,7 @@ module.exports = function (app) {
     app.get("/captchaImg", login.captchaImg);
     app.get("/fixedasset/:faId/edit", fixedAsset.edit);
     app.get("/fixedasset/create", fixedAsset.create);
-    app.post("/fixedasset/import", fixedAsset.importFA);
+    app.post("/fixedasset/import/company/:companyId", fixedAsset.importFA);
     app.get("/fixedasset/batchCreate",fixedAsset.batchCreate);
     app.get("/fixedasset/excelExport/:companyId",fixedAsset.exportExcel);
 
