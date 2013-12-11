@@ -866,3 +866,107 @@ exports.getFixedAssetConditions = function (callback) {
     });
 };
 
+/**
+ * get fixed asset list with search conditions
+ * @param  {Object}   conditions the condition object
+ * @param  {Function} callback   the call back func
+ * @return {null}              
+ */
+exports.getFixedAssetListWithConditions = function (conditions, callback) {
+    debugProxy("proxy/fixedAsset/getFixedAssetListWithConditions");
+    conditions = conditions || {};
+
+    var sql = "SELECT a.* FROM ASSETS a " +
+              "LEFT JOIN ASSETTYPE ast ON a.typeId = ast.typeId " +
+              "LEFT JOIN DEPARTMENT d ON a.departmentId = d.departmentId " +
+              " WHERE 1 = 1 ";
+
+    if (conditions.departmentId && conditions.departmentId.length !== 0) {
+        sql += " AND a.departmentId = :departmentId ";
+    }
+
+    if (conditions.typeId && conditions.typeId.length !== 0) {
+        sql += " AND a.typeId = :typeId ";
+    }
+
+    if (conditions.currentStatus && conditions.currentStatus.length !== 0) {
+        sql += " AND a.currentStatus = :currentStatus ";
+    }
+
+    if (conditions.assetBelong && conditions.assetBelong.length !== 0) {
+        sql += " AND a.assetBelong = :assetBelong ";
+    }
+
+    var ep = EventProxy.create();
+
+    mysqlClient.query({
+        sql     : sql,
+        params  : conditions
+    }, function (err, rows) {
+        if (err) {
+            return ep.emitLater("error", new ServerError());
+        }
+
+        ep.emitLater("after_list", { fixedAssets : rows });
+    });
+
+    ep.once("after_list", function (result) {
+        getFixedAssetCountWithCondition(conditions, function (err, count) {
+            if (err || !count) {
+                return ep.emitLater("error", new ServerError());
+            }
+
+            result.total = count;
+            ep.emitLater("completed", result);
+        });
+    });
+
+    ep.once("completed", function (result) {
+        callback(null, result);
+    });
+
+    ep.fail(function (err) {
+        callback(err, null);
+    });
+};
+
+/**
+ * get fixed asset count with condition
+ * @param  {Object}   conditions the condition of the sql
+ * @param  {Function} callback   the call back func
+ * @return {null}              
+ */
+function getFixedAssetCountWithCondition (conditions, callback) {
+    debugProxy("proxy/fixedAsset/getFixedAssetCountWithCondition");
+    conditions = conditions || {};
+
+    var sql = "SELECT a.* FROM ASSETS a " +
+              " WHERE 1 = 1 ";
+
+    if (conditions.departmentId && conditions.departmentId.length !== 0) {
+        sql += " AND a.departmentId = :departmentId ";
+    }
+
+    if (conditions.typeId && conditions.typeId.length !== 0) {
+        sql += " AND a.typeId = :typeId ";
+    }
+
+    if (conditions.currentStatus && conditions.currentStatus.length !== 0) {
+        sql += " AND a.currentStatus = :currentStatus ";
+    }
+
+    if (conditions.assetBelong && conditions.assetBelong.length !== 0) {
+        sql += " AND a.assetBelong = :assetBelong ";
+    }
+
+    mysqlClient.query({
+        sql     : sql,
+        params  : conditions
+    }, function (err, rows) {
+        if (err || !rows) {
+            return callback(new ServerError(), null);
+        }
+
+        callback(null, rows[0]);
+    });
+}
