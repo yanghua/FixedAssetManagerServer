@@ -79,7 +79,13 @@ module.exports = function (grunt) {
                             "routes.js",
                             "config.js",
                             "app.js",
-                            "appConfig.js"
+                            "appConfig.js",
+                            /*     for front end    */
+                            "public/libs/js/create.js",
+                            "public/libs/js/login.js",
+                            "public/libs/js/print.js",
+                            "public/libs/js/manage.js",
+                            "public/libs/js/batchCreate.js"
             ]
         }
     });
