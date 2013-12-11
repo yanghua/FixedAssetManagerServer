@@ -69,7 +69,7 @@ module.exports = function (app) {
     app.get("/department/:deptId/idelfixedasset/type/:typeId/page/:pageIndex?", fixedAsset.idleFixedAsset);
     app.get("/companies", company.companies);
     app.get("/fixedasset/conditionInfo", fixedAsset.conditionInfo);
-    app.get("/fixedasset/retrieve", fixedAsset.retrieve);
+    app.post("/fixedasset/retrieve", fixedAsset.retrieve);
     // app.post("/authuser/create", authUser.create);
     // app.get("/authusers", authUser.allUsers);
 
