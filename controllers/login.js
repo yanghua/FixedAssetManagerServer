@@ -130,6 +130,8 @@ exports.captchaImg = function (req, res, next) {
     debugCtrller("controllers/login/captchaImg");
     var captcha     = captchagen.create();
     var captchaCode = captcha.text();
+
+    debugCtrller(captchaCode);
         
     if (captchaCode) {
         req.session.captchaCode = captchaCode;

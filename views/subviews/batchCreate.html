@@ -11,6 +11,7 @@
 <script type="text/javascript">
 	$(document).ready(function(){
 		loadAjaxUpload();
+		loadAjaxUploadYunzhi();
 	});
 	
 	
@@ -26,9 +27,10 @@
 					<fieldset>
 						<div class="modal-body">
 							<ul class="nav nav-list">
-								<div style="position:relative;">
+								<div style="position:relative;float:left">
 							        <p id="errorRemind"></p>
-					                <input type="button" id="ssss" size="40" class="btn btn-success" value="上传文件" />  </p>
+					                <input type="button" id="wiseduExcel"  class="btn btn-success" value="上传教育Excel数据" />
+					                <input type="button" id="yunzhiExcel"  class="btn btn-success" value="上传云智Excel数据" />  </p>
 					                <ol id="uploadedName"></ol>
 								</div>
 							</ul> 
@@ -42,8 +44,10 @@
 				<h1>资产导出</h1>
 		</div>
 
-		<button style='margin-left:20px;margin-top:20px' class="btn btn-success" onclick="javascript:bacthExport()">
-		<span class="glyphicon glyphicon-save"></span>批量导出资产</button>
+		<button style='margin-left:20px;margin-top:20px' class="btn btn-success" onclick="javascript:bacthExport(1)">
+		<span class="glyphicon glyphicon-save"></span>批量导出教育资产</button>
+		<button style='margin-left:20px;margin-top:20px' class="btn btn-success" onclick="javascript:bacthExport(2)">
+		<span class="glyphicon glyphicon-save"></span>批量导出云智资产</button>
 	</div>
 	<div>
 			

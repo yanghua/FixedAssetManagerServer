@@ -838,9 +838,16 @@ exports.updateAllQrcode = function (req, res, next) {
  */
 exports.exportExcel = function (req, res, next) {
     debugCtrller("controllers/fixedAsset/exportExcel");
+    var companyId    = req.params.companyId || "";
+
+    try {
+        check(companyId).notEmpty();
+    } catch (e) {
+        return res.send(resUtil.generateRes(null, config.statusCode.STATUS_INVAILD_PARAMS));
+    }
     var ep = EventProxy.create();
 
-    //静态数据
+    //静态标题
     var conf ={};
     conf.cols = [
         {caption:'部门', type:'string'},
@@ -865,7 +872,7 @@ exports.exportExcel = function (req, res, next) {
         {caption:'备注2', type:'string'}                       
     ];
 
-    FixedAsset.getExportData(function (err, rows) {
+    FixedAsset.getExportData(companyId, function (err, rows) {
         if (err) {
             return ep.emitLater("error", err);
         }
@@ -902,9 +909,14 @@ exports.exportExcel = function (req, res, next) {
 
         conf.rows = arrayObj;
         var result = nodeExcel.execute(conf);
-
+        var fileTitle ;
+        if (companyId-1){
+            fileTitle = "yunzhi_";
+        }else{
+            fileTitle = "jinzhi_";
+        }
         res.setHeader('Content-Type', 'application/vnd.openxmlformats');
-        res.setHeader("Content-Disposition", "attachment; filename= zichan_" + (new Date().Format("yyyy-MM-dd"))+".xlsx");
+        res.setHeader("Content-Disposition", "attachment; filename= "+fileTitle + (new Date().Format("yyyy-MM-dd"))+".xlsx");
         res.end(result, 'binary');
     });
 
