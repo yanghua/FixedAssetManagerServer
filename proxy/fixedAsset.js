@@ -648,37 +648,58 @@ exports.updateAllQrcode =  function (callback) {
 
 /**
  * import fixed assets to db
+ * @param {String} companyId the company id
  * @param  {Array}   fixedAssets the array of fixed assets
  * @param  {Function} callback    the call back handler
  * @return {null}               
  */
-exports.importFixedAssets = function (fixedAssets, callback) {
+exports.importFixedAssets = function (companyId, fixedAssets, callback) {
     debugProxy("proxy/fixedAsset/importFixedAssets");
 
     var ep = EventProxy.create();
-    ep.after("inserted_data", fixedAssets.length, function () {
+    ep.after("imported", fixedAssets.length, function () {
         callback();
     });
 
     for (var i = 0; i < fixedAssets.length; i++) {
-        importSingleFixedAsset(fixedAssets[i], function (err, rows) {
+        var item = fixedAssets[i];
+        item.push(companyId);
+        
+        //check exists
+        require("fixedAsset").checkFixedAssetByfaID(item[4], function (err, hasFA) {
             if (err) {
                 debugProxy(err);
             }
 
-            ep.emit("inserted_data");
+            if (hasFA) {            //update
+                updateSingleFixedAsset(item, function (err, rows) {
+                    if (err) {
+                        debugProxy(err);
+                    }
+
+                    ep.emit("imported");
+                });
+            } else {                //insert
+                insertSingleFixedAsset(item, function (err, rows) {
+                    if (err) {
+                        debugProxy(err);
+                    }
+
+                    ep.emit("imported");
+                });
+            }
         });
     }
 };
 
 /**
- * import single fixed asset info
+ * insert single fixed asset info
  * @param  {object}   fixedAssetInfo the instance of fixed asset
  * @param  {Function} callback       the callback handler
  * @return {null}                  
  */
-function importSingleFixedAsset (fixedAssetInfo, callback) {
-    debugProxy("/proxy/fixedAsset/importSingleFixedAsset");
+function insertSingleFixedAsset (fixedAssetInfo, callback) {
+    debugProxy("/proxy/fixedAsset/insertSingleFixedAsset");
     //if newId is empty
     if (fixedAssetInfo[4] === "") {
         return callback(null,null);
@@ -687,7 +708,7 @@ function importSingleFixedAsset (fixedAssetInfo, callback) {
     mysqlClient.query({
         sql     : "INSERT INTO ASSETS(departmentId,userId,newId,oldId,assetName,typeId,assetBelong, " +
                   "currentStatus,brand,model,specifications,price,purchaseDate,possessDate, " +
-                  "serviceCode,mac,remark1,remark2) " +
+                  "serviceCode,mac,remark1,remark2,companyId) " +
                   "                   VALUES( :departmentId,  " +
                   "                           :userId,        " +
                   "                           :newId,         " +
@@ -705,7 +726,8 @@ function importSingleFixedAsset (fixedAssetInfo, callback) {
                   "                           :serviceCode,   " +
                   "                           :mac,           " +
                   "                           :remark1,       " +
-                  "                           :remark2);      ",
+                  "                           :remark2,       " +
+                  "                           :companyId);    ",
         params  : {
             departmentId    : fixedAssetInfo[1],
             userId          : fixedAssetInfo[3],
@@ -724,7 +746,49 @@ function importSingleFixedAsset (fixedAssetInfo, callback) {
             serviceCode     : fixedAssetInfo[16],
             mac             : fixedAssetInfo[17],
             remark1         : fixedAssetInfo[18],
-            remark2         : fixedAssetInfo[19]
+            remark2         : fixedAssetInfo[19],
+            companyId       : fixedAssetInfo[20]
+        }
+    },  function (err, rows) {
+        callback(err, rows);
+    });
+}
+
+function updateSingleFixedAsset (fixedAssetInfo, callback) {
+    debugProxy("/proxy/fixedAsset/updateSingleFixedAsset");
+    //if newId is empty
+    if (fixedAssetInfo[4] === "") {
+        return callback(null,null);
+    }
+
+    mysqlClient.query({
+        sql     : "UPDATE ASSETS SET departmentId=:departmentId,userId=:userId," +
+                  "oldId=:oldId,assetName=:assetName,typeId=:typeId," +
+                  "assetBelong=:assetBelong,currentStatus=:currentStatus," +
+                  "brand=:brand,model=:model,specifications=:specifications,price=:price," +
+                  "purchaseDate=:purchaseDate,possessDate=:possessDate," +
+                  "serviceCode=:serviceCode,mac=:mac,remark1=:remark1,remark2=:remark2,companyId=:companyId " +
+                  " WHERE newId=:newId",
+        params  : {
+            departmentId    : fixedAssetInfo[1],
+            userId          : fixedAssetInfo[3],
+            newId           : fixedAssetInfo[4],
+            oldId           : fixedAssetInfo[5],
+            assetName       : fixedAssetInfo[6],
+            typeId          : fixedAssetInfo[7],
+            assetBelong     : fixedAssetInfo[8],
+            currentStatus   : fixedAssetInfo[9],
+            brand           : fixedAssetInfo[10],
+            model           : fixedAssetInfo[11],
+            specifications  : fixedAssetInfo[12],
+            price           : fixedAssetInfo[13],
+            purchaseDate    : fixedAssetInfo[14],
+            possessDate     : fixedAssetInfo[15],
+            serviceCode     : fixedAssetInfo[16],
+            mac             : fixedAssetInfo[17],
+            remark1         : fixedAssetInfo[18],
+            remark2         : fixedAssetInfo[19],
+            companyId       : fixedAssetInfo[20]
         }
     },  function (err, rows) {
         callback(err, rows);
