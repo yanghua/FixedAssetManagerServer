@@ -938,7 +938,7 @@ function getFixedAssetCountWithCondition (conditions, callback) {
     debugProxy("proxy/fixedAsset/getFixedAssetCountWithCondition");
     conditions = conditions || {};
 
-    var sql = "SELECT a.* FROM ASSETS a " +
+    var sql = "SELECT count(*) totalCount FROM ASSETS a " +
               " WHERE 1 = 1 ";
 
     if (conditions.departmentId && conditions.departmentId.length !== 0) {

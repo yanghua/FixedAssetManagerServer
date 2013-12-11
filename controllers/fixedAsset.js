@@ -964,7 +964,7 @@ exports.conditionInfo = function (req, res, next) {
 exports.retrieve = function (req, res, next) {
     debugCtrller("controllers/fixedAsset/retrieve");
 
-    FixedAsset.getFixedAssetListWithConditions(function (err, result) {
+    FixedAsset.getFixedAssetListWithConditions(req.body, function (err, result) {
         if (err) {
             return res.send(resUtil.generateRes(null, err.statusCode));
         }
