@@ -3,6 +3,8 @@
   <!-- script -->
   <%- Loader("/public/libs/js/printservice.min.js")
   .js("/public/libs/js/bootstrap-datepicker.js")
+  .js("/public/libs/js/print.js")
+  .js("/public/libs/js/bootbox.min.js")
   .done(assets)
   %>
     <!-- style -->
@@ -52,23 +54,9 @@
     var checkout = $('#dpd2').datepicker().on('changeDate', function(ev) {
       checkout.hide();
     }).data('datepicker');
-    
 
   });
-  function btnPrintClick(){  
-    window.print();  
-  }    
-  function btnResearch () {
-    var $dp1 = $("#dpd1"),
-        $dp2 = $("#dpd2"),
-        d1 = new Date($dp1.val()).getTime(),
-        d2 = new Date($dp2.val()).getTime();
-    if(d1>=d2){
-      alert("时间选择错误！后者需大于前者！");
-    }else{
-      window.location.href="/fixedasset/printservice/1/"+d1+"/"+d2;
-    }
-  }         
+      
 </script>
 <div >
   <h1>打印二维码</h1>
@@ -78,7 +66,7 @@
       选择时间：
       <input id="dpd1"class="datePicker1" size="16" type="text" value="12-13-2013" readonly="">
       -
-      <input id="dpd2"class="datePicker1" size="16" type="text" value="12-13-2012" readonly="">
+      <input id="dpd2"class="datePicker1" size="16" type="text" value="12-13-2013" readonly="">
        <button type="button" class="btn btn-default" onclick="btnResearch()">
         <span class="glyphicon glyphicon-search"></span> 查询
       </button>      <button type="button" class="btn btn-default" onclick="btnPrintClick()">
@@ -96,9 +84,8 @@
       
       <div class="item_qrcode">
         <%
-        if(locals.renderData.networkCheck==1){%>
+        if(0==1){%>
         <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHwAAAB8CAIAAAAkfEPpAAAABmJLR0QA/wD/AP+gvaeTAAACQUlEQVR4nO3dzWrtMAwA4ab0/V853ZVsDBKSPM7pfMsL54fB6AbHJ73u+/7SXt/0F/iPjA4wOsDoAKMDjA4wOsDoAKMDjA4wOsDoAKMDjA4wOsDoAKMDjA4wOuCn8uLrurq+x5/VPdvIZ1Vem1W5t+xKBxgdYHRAaaY/VWZcdl5XZvT094xwpQOMDjA6oG2mP1WuqSPvGbkej7z/xPeMcKUDjA4wOmBkpk+b2EvZyZUOMDrA6ICjZ/rquns109/y+ylXOsDoAKMDRmZ612yd2J+pvH8XVzrA6ACjA9pm+sR+SGRGZ++dnrBv40oHGB1gdEBpplPXudnPPW1PxpUOMDrA6IBrYt5l97u7ziZWzkTunPuudIDRAUYHlGZ65B5m1wzteu3TxO+bIlzpAKMDjA7A7pFmr80n/s/Y+VunJ1c6wOgAowPa9tOz18LZmZs917hSub7u2p9xpQOMDjA6YOv59MrvP7NnE7O/O81+VoUrHWB0gNEBI/dIu1T2Urr26yfuo7rSAUYHGB3wmucyTrx29f2nz7C70gFGBxgdcPRzGXeeU5w+t/PkSgcYHWB0wGuey5h9bWQWT5zPiXClA4wOMDrgNc/wivz7SvZa2/30D2R0gNEBR8/0p+k5u/MMjCsdYHSA0QGveS5j9vlclWd+df3NjRVXOsDoAKMDjn4u40pkLk+ca3Tv5cWMDjA64Ojz6Z/KlQ4wOsDoAKMDjA4wOsDoAKMDjA4wOsDoAKMDjA4wOsDoAKMDjA4wOsDogF/3uAjuBC/2XQAAAABJRU5ErkJggg=="/>
-
         <%
       }else{
         %>

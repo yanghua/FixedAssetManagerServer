@@ -50,67 +50,68 @@ function loadAssetDetails(qrCode){
 					$("#assetDetails").show();
 					$("#assetDetails ul").html("");
 					var det=data.data.faDetail;
+					var $assetDetailsul =  $("#assetDetails ul");
 					var temp ='<li class="list-group-item">';
 					if (det.newId) {
-						$("#assetDetails ul").append(temp+'设备编号:'+det.newId+'</li>');
+						 $assetDetailsul.append(temp+'设备编号:'+det.newId+'</li>');
 						$("#the_new_id").val(det.newId);
 					}else{
 						bootbox.alert("设备不存在!");
 					}
 					if (det.typeId) {
 						if (data.data.typeInfo.typeName==det.assetName) {
-							$("#assetDetails ul").append(temp+'设备名称:'+data.data.typeInfo.typeName+'</li>');
+							 $assetDetailsul.append(temp+'设备名称:'+data.data.typeInfo.typeName+'</li>');
 						}else{
-							$("#assetDetails ul").append(temp+'设备名称:'+data.data.typeInfo.typeName + '-> '+ det.assetName +'</li>');
+							 $assetDetailsul.append(temp+'设备名称:'+data.data.typeInfo.typeName + '-> '+ det.assetName +'</li>');
 						}
 					}
 					if(det.oldId){
-						$("#assetDetails ul").append(temp+'旧编号:'+det.oldId+'</li>');
+						 $assetDetailsul.append(temp+'旧编号:'+det.oldId+'</li>');
 					}
 					if(det.userId){
-						$("#assetDetails ul").append(temp+'领用人:'+data.data.userInfo.userName+'</li>');
+						 $assetDetailsul.append(temp+'领用人:'+data.data.userInfo.userName+'</li>');
 						loadUnderName(det.userId);
 					}
 					if(det.departmentId){
-						$("#assetDetails ul").append(temp+'部门:'+data.data.deptInfo.departmentName+'</li>');
+						 $assetDetailsul.append(temp+'部门:'+data.data.deptInfo.departmentName+'</li>');
 					}
 					if(det.assetBelong){
-						$("#assetDetails ul").append(temp+'资产归属:'+det.assetBelong+'</li>');
+						 $assetDetailsul.append(temp+'资产归属:'+det.assetBelong+'</li>');
 					}
 					if(det.currentStatus){
-						$("#assetDetails ul").append(temp+'当前状态:'+det.currentStatus+'</li>');
+						 $assetDetailsul.append(temp+'当前状态:'+det.currentStatus+'</li>');
 					}
 					if(det.brand){
-						$("#assetDetails ul").append(temp+'品牌:'+det.brand+'</li>');
+						 $assetDetailsul.append(temp+'品牌:'+det.brand+'</li>');
 					}
 					if(det.model){
-						$("#assetDetails ul").append(temp+'型号:'+det.model+'</li>');
+						 $assetDetailsul.append(temp+'型号:'+det.model+'</li>');
 					}
 					if(det.specifications){
-						$("#assetDetails ul").append(temp+'规格:'+det.specifications+'</li>');
+						 $assetDetailsul.append(temp+'规格:'+det.specifications+'</li>');
 					}
 					if(det.price>0){
-						$("#assetDetails ul").append(temp+'价格:'+det.price+'</li>');
+						 $assetDetailsul.append(temp+'价格:'+det.price+'</li>');
 					}
 					if(det.purchaseDate&&det.purchaseDate!='0000-00-00'){
-						$("#assetDetails ul").append(temp+'采购日期:'+det.purchaseDate.substring(0,10)+'</li>');
+						 $assetDetailsul.append(temp+'采购日期:'+det.purchaseDate.substring(0,10)+'</li>');
 					}
 					if(det.possessDate&&det.possessDate!='0000-00-00'){
-						$("#assetDetails ul").append(temp+'领用日期:'+det.possessDate+'</li>');
+						 $assetDetailsul.append(temp+'领用日期:'+det.possessDate+'</li>');
 					}
 					if(det.serviceCode){
-						$("#assetDetails ul").append(temp+'快速服务代码:'+det.serviceCode+'</li>');
+						 $assetDetailsul.append(temp+'快速服务代码:'+det.serviceCode+'</li>');
 					}
 					if(det.mac){
-						$("#assetDetails ul").append(temp+'MAC地址:'+det.mac+'</li>');
+						 $assetDetailsul.append(temp+'MAC地址:'+det.mac+'</li>');
 					}
 					if(det.reject>0){
-						$("#assetDetails ul").append(temp+'已报废 <button type="button" onclick="onMakeSureClick()" class="btn btn-warning">取消报废</button>'+'</li>');
+						 $assetDetailsul.append(temp+'已报废 <button type="button" onclick="onMakeSureClick()" class="btn btn-warning">取消报废</button>'+'</li>');
 						if (det.rejectDate&&det.rejectDate!='0000-00-00') {
-							$("#assetDetails ul").append(temp+'报废时间:'+det.rejectDate+'</li>');
+							 $assetDetailsul.append(temp+'报废时间:'+det.rejectDate+'</li>');
 						};
 					}else{
-						$("#assetDetails ul").append(temp+'未报废</li>');
+						 $assetDetailsul.append(temp+'未报废</li>');
 					}
 					//add history 
 					loadAssetEvevt(det.newId);
@@ -300,30 +301,105 @@ function searchNoUser (pageIndex) {
 		}
 	})
 }
-
+/**
+ * alloc asset to user
+ * @param  {string} assetId 
+ * @return {null}         
+ */
 function loadAllocToUser (assetId) {
-	bootbox.prompt("请输入人员编号：", function(userId) {                
-	  if (userId === null) {                                             
-	                               
-	  } else {
-	    if (userId){
-		$.ajax({
-			type:"POST",
-			data:{'userId':userId,
-			'deptId':$("#assetDep2").val(),
-			'faId':assetId},
-			url:"/fixedasset/"+assetId+"/allocation",
-			success:function (data) {
-				if (data.statusCode==0) {
-					bootbox.alert("操作成功！");
-				}else{
-					bootbox.alert("操作失败，请联系管理员！");
-				}
+	if($("#assetDep2").val()!=0){
+		bootbox.prompt("请输入人员编号：", function(userId) {                
+			if (userId === null) {                                             
+
+			} else {
+				if (userId){
+					$.ajax({
+						type:"POST",
+						data:{'userId':userId,
+						'deptId':$("#assetDep2").val(),
+						'faId':assetId},
+						url:"/fixedasset/"+assetId+"/allocation",
+						success:function (data) {
+							if (data.statusCode==0) {
+								bootbox.alert("操作成功！");
+							}else{
+								bootbox.alert("操作失败，请联系管理员！");
+							}
+						}
+					});
+				}                          
 			}
 		});
-		}                          
-	  }
-	});
-	
+	}else{
+		bootbox.alert("请输入设备将被分配至的部门!");
+	}
 
 }
+function retrieveSearch (pageIndex) {
+	$.ajax({
+		type: "POST",
+		url: "/fixedasset/retrieve",
+		data: {departmentId:$('#assetDepartSel').val(),typeId:$('#assetTypeSel').val(),
+		assetBelong:$('#assetBelongSel').val(),currentStatus:$('#currentStaSel').val(),
+		page:pageIndex},
+		success: function(data){
+			if (data.statusCode==0) {
+
+				function createCellContainer(item){
+					return $("<td></td>").html(item);
+				}
+
+				function createRowContainer(){
+					return $("<tr></tr>");
+				}
+
+					// function itemClick(value){
+					// 	return function(){
+					// 		//loadAssetDetails(value);
+					// 	}
+					// }
+					if(data.data.fixedAssets.length){
+						//$("#underName").show();
+						$("#dataSearchDetail").html("");
+						$("#viewTitle").html("");
+						$("#viewTitle").append("查询结果__总数:"+data.data.total.totalCount);
+						for (var i = 0; i < data.data.fixedAssets.length; ++i) {
+							var cellData = data.data.fixedAssets[i];
+							var row = createRowContainer();
+							var cellNum = createCellContainer(cellData.newId);
+							var cellId = createCellContainer(cellData.assetName);
+							var cellName = createCellContainer(cellData.specifications);
+							var cellDetail = createCellContainer(cellData.userId);
+							row.append(cellNum);
+							row.append(cellId);
+							row.append(cellName);
+							row.append(cellDetail);
+							$("#dataSearchDetail").append(row);
+							if(data.data.total.totalCount>50){
+								$('#viewPaginator').show();
+								$('#viewPaginator').pagination({
+									items: data.data.total.totalCount,
+									itemsOnPage: 50,
+									currentPage: pageIndex,
+									cssStyle: 'light-theme',
+									onPageClick: function(pageNum){
+										retrieveSearch(pageNum);
+									}
+								});
+							}else{
+								$('#viewPaginator').hide();
+							}
+						}
+					}else{
+						$("#dataSearchDetail").html("未查询到相关数据!");
+					}
+				};
+			},
+			error: function(){
+				alert("出错");
+			}
+
+
+		})
+}
+
