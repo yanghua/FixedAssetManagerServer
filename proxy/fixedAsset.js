@@ -735,14 +735,18 @@ function importSingleFixedAsset (fixedAssetInfo, callback) {
  * @param  {Function} callback     the callback handler
  * @return {null}              
  */
-exports.getExportData = function (callback) {
+exports.getExportData = function (companyId, callback) {
     debugProxy("proxy/fixedAsset/getExportData");
-
+    var paramObj = {
+        companyId  : companyId,
+    };
     mysqlClient.query({
         sql         : " SELECT a.*,ast.typeName,dep.departmentName,u.userName FROM ASSETS a "+
                       " LEFT JOIN ASSETTYPE  ast ON a.typeId = ast.typeId "+
                       " LEFT JOIN DEPARTMENT dep ON a.departmentId = dep.departmentId "+
-                      " LEFT JOIN USER u ON a.userId = u.userId;"
+                      " LEFT JOIN USER u ON a.userId = u.userId "+
+                      " WHERE a.companyId = :companyId ;",
+        params      : paramObj
     }, function (err, rows) {
         if (err) {
             debugProxy(err);
