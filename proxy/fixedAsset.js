@@ -822,3 +822,47 @@ exports.getExportData = function (companyId, callback) {
     });
 };
 
+/**
+ * get fixed asset conditions
+ * @param  {Function} callback the call back func
+ * @return {null}            
+ */
+exports.getFixedAssetConditions = function (callback) {
+    debugProxy("proxy/fixedAsset/getFixedAssetConditions");
+
+    var ep = EventProxy();
+
+    mysqlClient.query({
+        sql       : "SELECT distinct(currentStatus) FROM ASSETS;",
+        params    : {}
+    }, function (err, rows) {
+        if (err) {
+            return ep.emitLater("error", new ServerError());
+        }
+
+        ep.emitLater("after_status", { status : rows });
+    });
+
+    ep.once("after_status", function (result) {
+        mysqlClient.query({
+            sql   : "SELECT distinct(assetBelong) FROM ASSETS;",
+            params: {}
+        }, function (err, rows) {
+            if (err) {
+                return ep.emitLater("error", new ServerError());
+            }
+
+            result.belong = rows;
+            ep.emitLater("completed", result);
+        });
+    });
+
+    ep.once("completed", function (result) {
+        callback(null, result);
+    });
+
+    ep.fail(function (err) {
+        callback(err, null);
+    });
+};
+

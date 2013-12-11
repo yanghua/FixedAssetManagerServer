@@ -933,3 +933,23 @@ exports.exportExcel = function (req, res, next) {
         }
     }
 };
+
+/**
+ * get search condition info
+ * @param  {Object}   req  the instance of request
+ * @param  {Object}   res  the instance of response
+ * @param  {Function} next the next handler
+ * @return {null}        
+ */
+expors.conditionInfo = function (req, res, next) {
+    debugCtrller("controllers/fixedAsset/conditionInfo");
+
+    FixedAsset.getFixedAssetConditions(function (err, result) {
+        if (err || !result) {
+            return res.send(resUtil.generateRes(null, err.statusCode));
+        }
+
+        res.send(resUtil.generateRes(result, config.statusCode.SATUS_OK));
+    });
+
+};

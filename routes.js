@@ -68,6 +68,7 @@ module.exports = function (app) {
     app.get("/fixedasset/:faId/history", fixedAssetHistory.faHistory);
     app.get("/department/:deptId/idelfixedasset/type/:typeId/page/:pageIndex?", fixedAsset.idleFixedAsset);
     app.get("/companies", company.companies);
+    app.get("/fixedasset/conditionInfo", fixedAsset.conditionInfo);
     // app.post("/authuser/create", authUser.create);
     // app.get("/authusers", authUser.allUsers);
 
