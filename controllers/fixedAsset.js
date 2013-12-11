@@ -702,12 +702,14 @@ exports.idleFixedAsset = function (req, res, next) {
 exports.importFA = function (req, res, next) {
     debugCtrller("controllers/fixedasset/importFA");
 
-    var fileName = req.files.file_source.name || "";
-    var tmp_path = req.files.file_source.path || "";
+    var companyId = req.params.companyId;
+    var fileName  = req.files.file_source.name || "";
+    var tmp_path  = req.files.file_source.path || "";
 
     try {
         check(fileName).notEmpty();
         check(tmp_path).notEmpty();
+        check(companyId).notEmpty();
         fileName = sanitize(sanitize(fileName).trim()).xss();
         if (path.extname(fileName).indexOf("xls") === -1) {
             throw new InvalidParamError();
@@ -750,7 +752,7 @@ exports.importFA = function (req, res, next) {
 
         //remove first title array
         excelData.shift();
-        FixedAsset.importFixedAssets(excelData, function () {
+        FixedAsset.importFixedAssets(companyId, excelData, function () {
             fs.unlinkSync(xlsxPath);
             return res.send(resUtil.generateRes(null, config.statusCode.SATUS_OK));
         });
@@ -931,3 +933,25 @@ exports.exportExcel = function (req, res, next) {
         }
     }
 };
+
+/**
+ * get search condition info
+ * @param  {Object}   req  the instance of request
+ * @param  {Object}   res  the instance of response
+ * @param  {Function} next the next handler
+ * @return {null}        
+ */
+exports.conditionInfo = function (req, res, next) {
+    debugCtrller("controllers/fixedAsset/conditionInfo");
+
+    FixedAsset.getFixedAssetConditions(function (err, result) {
+        if (err || !result) {
+            return res.send(resUtil.generateRes(null, err.statusCode));
+        }
+
+        res.send(resUtil.generateRes(result, config.statusCode.SATUS_OK));
+    });
+
+};
+
+
