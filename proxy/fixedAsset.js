@@ -346,7 +346,7 @@ exports.addFixedAsset = function (faDetailObj, callback) {
     debugProxy("proxy/fixedAsset/addFixedAsset");
 
     mysqlClient.query({
-        sql         : "INSERT INTO ASSETS VALUES(:newId,                    " +
+        sql         : "INSERT INTO ASSETS VALUES(       :newId,             " +
                           "                             :oldId,             " +
                           "                             :userId,            " +
                           "                             :departmentId,      " +
@@ -367,7 +367,8 @@ exports.addFixedAsset = function (faDetailObj, callback) {
                           "                             :rejectDate,        " +
                           "                             :remark1,           " +
                           "                             :remark2,           " +
-                          "                             :qrcode)",
+                          "                             :qrcode,            " +
+                          "                             :companyId)",
         params      : faDetailObj
         }, function (err, rows) {
             if (err || !rows) {
