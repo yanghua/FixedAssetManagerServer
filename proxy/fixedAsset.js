@@ -693,7 +693,7 @@ exports.importFixedAssets = function (companyId, fixedAssets, callback) {
         item.push(companyId);
         
         //check exists
-        require("fixedAsset").checkFixedAssetByfaID(item[4], function (err, hasFA) {
+        require("./fixedAsset").checkFixedAssetByfaID(item[4], function (err, hasFA) {
             if (err) {
                 debugProxy(err);
             }
