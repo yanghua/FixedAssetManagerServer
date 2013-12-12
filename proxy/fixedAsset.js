@@ -903,9 +903,10 @@ exports.getFixedAssetListWithConditions = function (conditions, callback) {
     debugProxy("proxy/fixedAsset/getFixedAssetListWithConditions");
     conditions = conditions || {};
 
-    var sql = "SELECT a.* FROM ASSETS a " +
+    var sql = "SELECT a.*, ast.typeName, u.userName, d.departmentName FROM ASSETS a " +
               "LEFT JOIN ASSETTYPE ast ON a.typeId = ast.typeId " +
               "LEFT JOIN DEPARTMENT d ON a.departmentId = d.departmentId " +
+              "LEFT JOIN USER u ON a.userId = u.userId "
               " WHERE 1 = 1 ";
 
     if (conditions.departmentId && conditions.departmentId.length !== 0) {
