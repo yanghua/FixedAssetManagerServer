@@ -153,6 +153,17 @@ function loadUnderName(userId){
 						loadAssetDetails(value);
 					}
 				}
+				function itemClickDrop(value,value2){
+					return function(){
+						loadReturnAsset(value,value2);
+					}
+				}
+				function itemClickOther(value){
+					return function(){
+						loadSendOther(value);
+					}
+				}
+
 				if(data.data.length){
 					$("#underName").show();
 					$("#addtr").html("");
@@ -162,13 +173,21 @@ function loadUnderName(userId){
 						var cellNum = createCellContainer(i);
 						var cellId = createCellContainer(cellData.newId);
 						var cellName = createCellContainer(cellData.assetName);
-						var link = $("<a href='javascript:void(0);'>查看详情</a>");
+						var link = $("<a href='javascript:void(0);'>详情</a>");
+						var linkDrop = $("<a href='javascript:void(0);'>回收</a>");
+						var linkOther = $("<a data-toggle='modal' href='javascript:void(0);'>改派</a>");
 						link.click(itemClick(cellData.newId));
+						linkDrop.click(itemClickDrop(cellData.newId,cellData.userId));
+						linkOther.click(itemClickOther(cellData.newId));
 						var cellDetail = createCellContainer(link);
+						var cellDrop = createCellContainer(linkDrop);
+						var cellOther = createCellContainer(linkOther);
 						row.append(cellNum);
 						row.append(cellId);
 						row.append(cellName);
 						row.append(cellDetail);
+						row.append(cellDrop);
+						row.append(cellOther);
 						$("#addtr").append(row);
 					}
 				}else{
@@ -335,6 +354,12 @@ function loadAllocToUser (assetId) {
 	}
 
 }
+/**
+ * search the retrieve assets
+ * @param  {string} pageIndex page
+ * @return {null}           
+ * 
+ *   */
 function retrieveSearch (pageIndex) {
 	$.ajax({
 		type: "POST",
@@ -401,5 +426,75 @@ function retrieveSearch (pageIndex) {
 
 
 		})
+}
+/**
+ * load return asset 
+ * @param  {string} assetId assetId
+ * @return {null}        
+ */
+function loadReturnAsset (assetId,userId) {
+	bootbox.confirm("确认回收吗?", function(result) {
+		$.ajax({
+			type:"POST",
+			url:"/fixedasset/"+assetId+"/recycle",
+			success:function (data) {
+				if(data.statusCode==0){
+					bootbox.alert("资产回收成功!");
+					loadUnderName(userId);
+				}
+			}
+		})
+		
+	}); 
+
+}
+/**
+ * show send to other 
+ * @param  {string} assetId 
+ * @return {null}         
+ */
+function loadSendOther (assetId) {
+	$('#myModal').modal('show');
+	$('#assetUserId').val(assetId);
+}
+
+/**
+ * sent asset to other user
+ * @param  {string} assetId assetId
+ * @param  {string} userId  userId
+ * @param  {string} depId   departmentId
+ * @return {null}         
+ */
+function updateAssetToUser (assetId,userId,depId) {
+
+	$.ajax({
+		type:"POST",
+		data:{'userId':userId,
+		'deptId':depId,
+		'faId':assetId},
+		url:"/fixedasset/"+assetId+"/allocation",
+		success:function (data) {
+			if (data.statusCode==0) {
+				bootbox.alert("操作成功！");
+				loadUnderName($("#baseInput").val());
+			}else{
+				bootbox.alert("操作失败，请联系管理员！");
+			}
+		}
+	});
+}
+function updateAssetToUser2 (argument) {
+
+	if ($("#assetDepAlloc").val()==0||!$("#assetUserIdAlloc").val()) {
+		bootbox.alert("请选择部门或者输入人员工号后操作!")
+	}else{
+		$('#myModal').modal('hide');
+		updateAssetToUser(
+			$('#assetUserId').val(),
+			$('#assetUserIdAlloc').val(),
+			$('#assetDepAlloc').val()
+		);
+	}
+
 }
 

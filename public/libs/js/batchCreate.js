@@ -12,7 +12,7 @@ function loadAjaxUpload(companyId) {
 
 			if(ext && /^(xls|xlsx)$/.test(ext)){
 				oBtn.value = "正在上传…";
-				oBtn.disabled = "disabled";
+				//oBtn.disabled = "disabled";
 
 			}else{	
 				oRemind.style.color = "#ff3300";
@@ -22,8 +22,7 @@ function loadAjaxUpload(companyId) {
 		},
 		onComplete:function(file,response){
 			if (!response.statusCode) {
-				//$("#ssss").disabled = "";
-				oBtn.value = "上传成功";
+				oBtn.value = "上传成功,继续上传?";
 				oRemind.innerHTML = "";
 			};
 		}
