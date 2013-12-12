@@ -906,7 +906,7 @@ exports.getFixedAssetListWithConditions = function (conditions, callback) {
     var sql = "SELECT a.*, ast.typeName, u.userName, d.departmentName FROM ASSETS a " +
               "LEFT JOIN ASSETTYPE ast ON a.typeId = ast.typeId " +
               "LEFT JOIN DEPARTMENT d ON a.departmentId = d.departmentId " +
-              "LEFT JOIN USER u ON a.userId = u.userId "
+              "LEFT JOIN USER u ON a.userId = u.userId " +
               " WHERE 1 = 1 ";
 
     if (conditions.departmentId && conditions.departmentId.length !== 0) {
@@ -932,7 +932,9 @@ exports.getFixedAssetListWithConditions = function (conditions, callback) {
     conditions.start = ((conditions.page - 1) * config.default_page_size);
     conditions.end   = config.default_page_size;
 
-    sql += " LIMIT :start,:end ;";
+    sql += " ORDER BY a.userId LIMIT :start,:end  ;";
+
+    debugProxy("sql:%s", sql);
 
     var ep = EventProxy.create();
 

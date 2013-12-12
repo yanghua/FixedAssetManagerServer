@@ -394,7 +394,13 @@ function retrieveSearch (pageIndex) {
 							var cellNum = createCellContainer(cellData.newId);
 							var cellId = createCellContainer(cellData.assetName);
 							var cellName = createCellContainer(cellData.specifications);
-							var cellDetail = createCellContainer(cellData.userId);
+							var cellDetail;
+							if(cellData.userId){
+								cellDetail = createCellContainer(cellData.userId+"("+cellData.userName+")");
+							}else{
+								cellDetail = null;
+							}
+							
 							row.append(cellNum);
 							row.append(cellId);
 							row.append(cellName);
