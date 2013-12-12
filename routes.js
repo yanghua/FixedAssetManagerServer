@@ -88,7 +88,7 @@ module.exports = function (app) {
 
     //params:faType / ...(the field's key and value pair)
     app.post("/fixedasset/insertion", fixedAsset.insertion);
-
+    app.post("/fixedasset/:faId/recycle", fixedAsset.recycle);
     app.post("/fixedasset/:faId/modification", fixedAsset.modification);
     app.post("/fixedasset/:faId/allocation", fixedAsset.allocation);
 

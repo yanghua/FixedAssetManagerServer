@@ -251,6 +251,74 @@ exports.insertion = function (req, res, next) {
 
 };
 
+/**
+ * recycle fixed asset
+ * @param  {Object}   req  the instance of request
+ * @param  {Object}   res  the instance of response
+ * @param  {Function} next the next handler
+ * @return {null}        
+ */
+exports.recycle = function (req, res, next) {
+    debugCtrller("controllers/fixedAsset/recycle");
+
+    var faId = req.params.faId || "";
+    try {
+        check(faId).notEmpty();
+        faId = sanitize(sanitize(faId).trim()).xss();
+    } catch (e) {
+        return res.send(resUtil.generateRes(null, config.statusCode.STATUS_INVAILD_PARAMS));
+    }
+
+    var ep = EventProxy.create();
+    var userId = "";
+
+    //before retake , get the userId first!
+    FixedAsset.getFixedAssetByfaID(faId, function (err, faInfo) {
+        if (err) {
+            return ep.emitLater("error", err);
+        }
+
+        //get the userId it's retaking from 
+        userId = faInfo.faDetail.userId || "";
+        ep.emitLater("after_getFAInfo");
+    });
+
+    ep.once("after_getFAInfo", function () {
+        FixedAsset.recycleFixedAsset(faId, function (err, rows) {
+            if (err) {
+                return ep.emitLater("error", err);
+            }
+
+            ep.emitLater("after_retake");
+        });
+    });
+
+    ep.once("after_retake", function () {
+        var historyRecord       = {};
+        historyRecord.atId   = faId;
+        historyRecord.aetpId = 4;                //retake
+        historyRecord.userId = userId;
+        historyRecord.aeDesc = "";
+        historyRecord.aeTime = new Date().Format("yyyy-MM-dd");
+
+        FAHistory.insertHistoryRecord(historyRecord, function (err, data) {
+            if (err) {
+                return ep.emitLater("error", err);
+            }
+
+            ep.emitLater("completed");
+        });
+    });
+
+    ep.once("completed", function() {
+        res.send(resUtil.generateRes(null, config.statusCode.SATUS_OK));
+    });
+
+    ep.fail(function (err) {
+        res.send(resUtil.generateRes(null, err.statusCode));
+    });
+}
+
 
 /**
  * the modification of fixed asset
@@ -266,11 +334,10 @@ exports.modification = function (req, res, next) {
 
     try {
         check(faId).notEmpty();
+        faId = sanitize(sanitize(faId).trim()).xss();
     } catch (e) {
         return res.send(resUtil.generateRes(null, config.statusCode.STATUS_INVAILD_PARAMS));
     }
-
-    faId = sanitize(sanitize(faId).trim()).xss();
 
     var detailObj = req.body;
 
@@ -963,6 +1030,10 @@ exports.conditionInfo = function (req, res, next) {
  */
 exports.retrieve = function (req, res, next) {
     debugCtrller("controllers/fixedAsset/retrieve");
+
+    if (!req.session || !req.session.user) {
+        return res.redirect("/login");
+    }
 
     FixedAsset.getFixedAssetListWithConditions(req.body, function (err, result) {
         if (err) {

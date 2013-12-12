@@ -289,6 +289,35 @@ exports.getFixedAssetDetail = function (faId, faType, callback) {
 };
 
 /**
+ * recycle fixed asset
+ * @param  {String}   faId     the fixed asset id
+ * @param  {Function} callback the call back func
+ * @return {null}            
+ */
+exports.recycleFixedAsset = function (faId, callback) {
+    debugProxy("proxy/fixedAsset/recycleFixedAsset");
+
+    mysqlClient.query({
+        sql     : "UPDATE ASSETS SET userId='' " +
+                  " WHERE newId = :newId",
+        params  : {
+            newId   : faId
+        }
+    }, function (err, rows) {
+        if (err || !rows) {
+            debugProxy(err);
+            return callback(new ServerError(), null);
+        }
+
+        if (rows.affectedRows === 0) {
+            return callback(new DataNotFoundError(), null);
+        }
+
+        callback(null, null);
+    });
+}
+
+/**
  * modify fixed asset
  * @param  {object}   faDetailObj the detail object of the fixed asset
  * @param  {string}   faId        the fixed asset id
