@@ -317,7 +317,7 @@ exports.recycle = function (req, res, next) {
     ep.fail(function (err) {
         res.send(resUtil.generateRes(null, err.statusCode));
     });
-}
+};
 
 
 /**

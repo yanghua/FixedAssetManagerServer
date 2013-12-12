@@ -315,7 +315,7 @@ exports.recycleFixedAsset = function (faId, callback) {
 
         callback(null, null);
     });
-}
+};
 
 /**
  * modify fixed asset
@@ -931,7 +931,7 @@ exports.getFixedAssetListWithConditions = function (conditions, callback) {
     conditions.start = ((conditions.page - 1) * config.default_page_size);
     conditions.end   = config.default_page_size;
 
-    sql += " LIMIT :start,:end ;"
+    sql += " LIMIT :start,:end ;";
 
     var ep = EventProxy.create();
 
