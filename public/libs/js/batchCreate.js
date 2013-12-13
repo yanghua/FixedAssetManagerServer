@@ -24,7 +24,7 @@ function loadAjaxUpload(companyId) {
 			if (!response.statusCode) {
 				oBtn.value = "上传成功,继续上传?";
 				oRemind.innerHTML = "";
-			};
+			}
 		}
 	});
 }

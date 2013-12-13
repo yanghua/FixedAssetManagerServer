@@ -26,7 +26,7 @@ $(function () {
  */
 function randomImgSrc (jqObj) {
     var src        = jqObj.attr("src");
-    var paramIndex = src.indexOf("?")
+    var paramIndex = src.indexOf("?");
     var hasParam   = paramIndex != -1;
 
     if (hasParam) {
