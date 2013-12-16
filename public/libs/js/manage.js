@@ -6,7 +6,7 @@ function btnPrintClick(){
 	$("#assetDetails").hide();
 	$("#assetEvent").hide();
 	$("#underName").hide();
-	if ($("#baseType").val()==0) {
+	if ($("#baseType").val()==="0") {
 		var qrCode=$("#baseInput").val();
 		if (qrCode) {
 			loadAssetDetails(qrCode);
@@ -46,72 +46,72 @@ function loadAssetDetails(qrCode){
 				$("#assetDetails").hide();
 				$("#assetEvent").hide();
 				$("#underName").hide();
-				if(data.statusCode==0){
+				if(data.statusCode===0){
 					$("#assetDetails").show();
 					$("#assetDetails ul").html("");
 					var det=data.data.faDetail;
 					var $assetDetailsul =  $("#assetDetails ul");
 					var temp ='<li class="list-group-item">';
 					if (det.newId) {
-						 $assetDetailsul.append(temp+'设备编号:'+det.newId+'</li>');
+						$assetDetailsul.append(temp + '设备编号:' + det.newId + '</li>');
 						$("#the_new_id").val(det.newId);
 					}else{
 						bootbox.alert("设备不存在!");
 					}
 					if (det.typeId) {
 						if (data.data.typeInfo.typeName==det.assetName) {
-							 $assetDetailsul.append(temp+'设备名称:'+data.data.typeInfo.typeName+'</li>');
+							$assetDetailsul.append(temp + '设备名称:' + data.data.typeInfo.typeName + '</li>');
 						}else{
-							 $assetDetailsul.append(temp+'设备名称:'+data.data.typeInfo.typeName + '-> '+ det.assetName +'</li>');
+							$assetDetailsul.append(temp + '设备名称:' + data.data.typeInfo.typeName  +  '-> ' +  det.assetName  + '</li>');
 						}
 					}
 					if(det.oldId){
-						 $assetDetailsul.append(temp+'旧编号:'+det.oldId+'</li>');
+						$assetDetailsul.append(temp + '旧编号:' + det.oldId + '</li>');
 					}
 					if(det.userId){
-						 $assetDetailsul.append(temp+'领用人:'+data.data.userInfo.userName+'</li>');
+						$assetDetailsul.append(temp + '领用人:' + data.data.userInfo.userName + '</li>');
 						loadUnderName(det.userId);
 					}
 					if(det.departmentId){
-						 $assetDetailsul.append(temp+'部门:'+data.data.deptInfo.departmentName+'</li>');
+						$assetDetailsul.append(temp + '部门:' + data.data.deptInfo.departmentName + '</li>');
 					}
 					if(det.assetBelong){
-						 $assetDetailsul.append(temp+'资产归属:'+det.assetBelong+'</li>');
+						$assetDetailsul.append(temp + '资产归属:' + det.assetBelong + '</li>');
 					}
 					if(det.currentStatus){
-						 $assetDetailsul.append(temp+'当前状态:'+det.currentStatus+'</li>');
+						$assetDetailsul.append(temp + '当前状态:' + det.currentStatus + '</li>');
 					}
 					if(det.brand){
-						 $assetDetailsul.append(temp+'品牌:'+det.brand+'</li>');
+						$assetDetailsul.append(temp + '品牌:' + det.brand + '</li>');
 					}
 					if(det.model){
-						 $assetDetailsul.append(temp+'型号:'+det.model+'</li>');
+						$assetDetailsul.append(temp + '型号:' + det.model + '</li>');
 					}
 					if(det.specifications){
-						 $assetDetailsul.append(temp+'规格:'+det.specifications+'</li>');
+						$assetDetailsul.append(temp + '规格:' + det.specifications + '</li>');
 					}
 					if(det.price>0){
-						 $assetDetailsul.append(temp+'价格:'+det.price+'</li>');
+						$assetDetailsul.append(temp + '价格:' + det.price + '</li>');
 					}
 					if(det.purchaseDate&&det.purchaseDate!='0000-00-00'){
-						 $assetDetailsul.append(temp+'采购日期:'+det.purchaseDate.substring(0,10)+'</li>');
+						$assetDetailsul.append(temp + '采购日期:' + det.purchaseDate.substring(0,10) + '</li>');
 					}
 					if(det.possessDate&&det.possessDate!='0000-00-00'){
-						 $assetDetailsul.append(temp+'领用日期:'+det.possessDate+'</li>');
+						$assetDetailsul.append(temp + '领用日期:' + det.possessDate + '</li>');
 					}
 					if(det.serviceCode){
-						 $assetDetailsul.append(temp+'快速服务代码:'+det.serviceCode+'</li>');
+						$assetDetailsul.append(temp + '快速服务代码:' + det.serviceCode + '</li>');
 					}
 					if(det.mac){
-						 $assetDetailsul.append(temp+'MAC地址:'+det.mac+'</li>');
+						$assetDetailsul.append(temp + 'MAC地址:' + det.mac + '</li>');
 					}
 					if(det.reject>0){
-						 $assetDetailsul.append(temp+'已报废 <button type="button" onclick="onMakeSureClick()" class="btn btn-warning">取消报废</button>'+'</li>');
+						$assetDetailsul.append(temp + '已报废 <button type="button" onclick="onMakeSureClick()" class="btn btn-warning">取消报废</button>' + '</li>');
 						if (det.rejectDate&&det.rejectDate!='0000-00-00') {
-							 $assetDetailsul.append(temp+'报废时间:'+det.rejectDate+'</li>');
-						};
+							$assetDetailsul.append(temp + '报废时间:' + det.rejectDate + '</li>');
+						}
 					}else{
-						 $assetDetailsul.append(temp+'未报废</li>');
+						$assetDetailsul.append(temp + '未报废</li>');
 					}
 					//add history 
 					loadAssetEvevt(det.newId);
@@ -139,49 +139,26 @@ function loadUnderName(userId){
 		type: 'GET', 
 		url: '/user/'+userId+'/fixedassets', 
 		success: function (data) { 
-			if(data.statusCode==0){
-				function createCellContainer(item){
-					return $("<td></td>").html(item);
-				}
-
-				function createRowContainer(){
-					return $("<tr></tr>");
-				}
-
-				function itemClick(value){
-					return function(){
-						loadAssetDetails(value);
-					}
-				}
-				function itemClickDrop(value,value2){
-					return function(){
-						loadReturnAsset(value,value2);
-					}
-				}
-				function itemClickOther(value){
-					return function(){
-						loadSendOther(value);
-					}
-				}
+			if(data.statusCode===0){
 
 				if(data.data.length){
 					$("#underName").show();
 					$("#addtr").html("");
 					for (var i = 0; i < data.data.length; ++i) {
 						var cellData = data.data[i];
-						var row = createRowContainer();
-						var cellNum = createCellContainer(i);
-						var cellId = createCellContainer(cellData.newId);
-						var cellName = createCellContainer(cellData.assetName);
+						var row = searchNoUserContainer().createRowContainer();
+						var cellNum = searchNoUserContainer().createCellContainer(i);
+						var cellId = searchNoUserContainer().createCellContainer(cellData.newId);
+						var cellName = searchNoUserContainer().createCellContainer(cellData.assetName);
 						var link = $("<a href='javascript:void(0);'>详情</a>");
 						var linkDrop = $("<a href='javascript:void(0);'>回收</a>");
 						var linkOther = $("<a data-toggle='modal' href='javascript:void(0);'>改派</a>");
-						link.click(itemClick(cellData.newId));
-						linkDrop.click(itemClickDrop(cellData.newId,cellData.userId));
-						linkOther.click(itemClickOther(cellData.newId));
-						var cellDetail = createCellContainer(link);
-						var cellDrop = createCellContainer(linkDrop);
-						var cellOther = createCellContainer(linkOther);
+						link.click(searchNoUserContainer().itemClick2(cellData.newId));
+						linkDrop.click(searchNoUserContainer().itemClickDrop(cellData.newId,cellData.userId));
+						linkOther.click(searchNoUserContainer().itemClickOther(cellData.newId));
+						var cellDetail = searchNoUserContainer().createCellContainer(link);
+						var cellDrop = searchNoUserContainer().createCellContainer(linkDrop);
+						var cellOther = searchNoUserContainer().createCellContainer(linkOther);
 						row.append(cellNum);
 						row.append(cellId);
 						row.append(cellName);
@@ -213,7 +190,7 @@ function loadAssetEvevt (aetid) {
 		type: 'GET', 
 		url: '/fixedasset/'+aetid+'/history', 
 		success: function (data) { 
-			if(data.statusCode==0){
+			if(data.statusCode===0){
 				if (data.data.length>0) {
 					$("#assetEvent").show();
 					$("#historyul").html("");
@@ -258,16 +235,47 @@ function onMakeSureClick () {
 			url: '/fixedasset/rejection', 
 			data:{'faId':$("#the_new_id").val(),'reject':1},
 			success: function (data) { 
-				if (data.statusCode==0) {
+				if (data.statusCode===0) {
 					loadAssetDetails($("#the_new_id").val());
-				};
+				}
 			}
-			})
-		};
-		
-	})
-	
-};
+			});
+		}
+	});
+}
+
+function searchNoUserContainer () {
+	return {
+		createCellContainer : function (item) {
+			return $("<td></td>").html(item);
+		},
+
+		createRowContainer : function () {
+			return $("<tr></tr>");
+		},
+		itemClick : function (value) {
+			return function(){
+				loadAllocToUser(value);
+			};
+		},
+		itemClick2 : function (value) {
+			return function(){
+				loadAssetDetails(value);
+			};
+		},
+		itemClickDrop : function (value, value2) {
+			return function(){
+				loadReturnAsset(value,value2);
+			};
+		},
+		itemClickOther : function (value) {
+			return function(){
+				loadSendOther(value);
+			};
+		}
+	};
+}
+
 /**
  * search asset without user about 
  * @param  {string} depId     部门id
@@ -280,33 +288,21 @@ function searchNoUser (pageIndex) {
 		type: 'GET', 
 		url: '/department/'+$("#assetDep").val()+'/idelfixedasset/type/'+$("#assetTypes").val()+'/page/'+pageIndex,
 		success: function (data) { 
-			if (data.statusCode==0) {
-				function createCellContainer(item){
-					return $("<td></td>").html(item);
-				}
+			if (data.statusCode===0) {
 
-				function createRowContainer(){
-					return $("<tr></tr>");
-				}
-
-				function itemClick(value){
-					return function(){
-						loadAllocToUser(value);
-					}
-				}
 				$("#noUserAsset").show();
 				$("#addtrAs").html("");
 				if(data.data.total){
 					
 					for (var i = 0; i < data.data.idelFAList.length; ++i) {
 						var cellData = data.data.idelFAList[i];
-						var row = createRowContainer();
-						var cellNum = createCellContainer(i);
-						var cellId = createCellContainer(cellData.newId);
-						var cellName = createCellContainer(cellData.assetName);
+						var row = searchNoUserContainer().createRowContainer();
+						var cellNum = searchNoUserContainer().createCellContainer(i);
+						var cellId = searchNoUserContainer().createCellContainer(cellData.newId);
+						var cellName = searchNoUserContainer().createCellContainer(cellData.assetName);
 						var link = $("<a href='javascript:void(0);'>派发</a>");
-						link.click(itemClick(cellData.newId));
-						var cellDetail = createCellContainer(link);
+						link.click(searchNoUserContainer().itemClick(cellData.newId));
+						var cellDetail = searchNoUserContainer().createCellContainer(link);
 						row.append(cellNum);
 						row.append(cellId);
 						row.append(cellName);
@@ -316,9 +312,9 @@ function searchNoUser (pageIndex) {
 				}else{
 					$("#addtrAs").html("");
 				}
-			};
+			}
 		}
-	})
+	});
 }
 /**
  * alloc asset to user
@@ -339,7 +335,7 @@ function loadAllocToUser (assetId) {
 						'faId':assetId},
 						url:"/fixedasset/"+assetId+"/allocation",
 						success:function (data) {
-							if (data.statusCode==0) {
+							if (data.statusCode===0) {
 								bootbox.alert("操作成功！");
 							}else{
 								bootbox.alert("操作失败，请联系管理员！");
@@ -368,21 +364,7 @@ function retrieveSearch (pageIndex) {
 		assetBelong:$('#assetBelongSel').val(),currentStatus:$('#currentStaSel').val(),
 		page:pageIndex},
 		success: function(data){
-			if (data.statusCode==0) {
-
-				function createCellContainer(item){
-					return $("<td></td>").html(item);
-				}
-
-				function createRowContainer(){
-					return $("<tr></tr>");
-				}
-
-					// function itemClick(value){
-					// 	return function(){
-					// 		//loadAssetDetails(value);
-					// 	}
-					// }
+			if (data.statusCode===0) {
 					if(data.data.fixedAssets.length){
 						//$("#underName").show();
 						$("#dataSearchDetail").html("");
@@ -390,11 +372,17 @@ function retrieveSearch (pageIndex) {
 						$("#viewTitle").append("查询结果__总数:"+data.data.total.totalCount);
 						for (var i = 0; i < data.data.fixedAssets.length; ++i) {
 							var cellData = data.data.fixedAssets[i];
-							var row = createRowContainer();
-							var cellNum = createCellContainer(cellData.newId);
-							var cellId = createCellContainer(cellData.assetName);
-							var cellName = createCellContainer(cellData.specifications);
-							var cellDetail = createCellContainer(cellData.userId);
+							var row = searchNoUserContainer().createRowContainer();
+							var cellNum = searchNoUserContainer().createCellContainer(cellData.newId);
+							var cellId = searchNoUserContainer().createCellContainer(cellData.assetName);
+							var cellName = searchNoUserContainer().createCellContainer(cellData.specifications);
+							var cellDetail;
+							if(cellData.userId){
+								cellDetail = searchNoUserContainer().createCellContainer(cellData.userId+"("+cellData.userName+")");
+							}else{
+								cellDetail = null;
+							}
+							
 							row.append(cellNum);
 							row.append(cellId);
 							row.append(cellName);
@@ -416,16 +404,19 @@ function retrieveSearch (pageIndex) {
 							}
 						}
 					}else{
+						$('#viewPaginator').hide();
 						$("#dataSearchDetail").html("未查询到相关数据!");
+						$("#viewTitle").html("");
+						$("#viewTitle").append("查询结果");
 					}
-				};
+				}
 			},
 			error: function(){
 				alert("出错");
 			}
 
 
-		})
+		});
 }
 /**
  * load return asset 
@@ -438,12 +429,12 @@ function loadReturnAsset (assetId,userId) {
 			type:"POST",
 			url:"/fixedasset/"+assetId+"/recycle",
 			success:function (data) {
-				if(data.statusCode==0){
+				if(data.statusCode===0){
 					bootbox.alert("资产回收成功!");
 					loadUnderName(userId);
 				}
 			}
-		})
+		});
 		
 	}); 
 
@@ -474,7 +465,7 @@ function updateAssetToUser (assetId,userId,depId) {
 		'faId':assetId},
 		url:"/fixedasset/"+assetId+"/allocation",
 		success:function (data) {
-			if (data.statusCode==0) {
+			if (data.statusCode===0) {
 				bootbox.alert("操作成功！");
 				loadUnderName($("#baseInput").val());
 			}else{
@@ -485,8 +476,8 @@ function updateAssetToUser (assetId,userId,depId) {
 }
 function updateAssetToUser2 (argument) {
 
-	if ($("#assetDepAlloc").val()==0||!$("#assetUserIdAlloc").val()) {
-		bootbox.alert("请选择部门或者输入人员工号后操作!")
+	if ($("#assetDepAlloc").val()==="0"||!$("#assetUserIdAlloc").val()) {
+		bootbox.alert("请选择部门或者输入人员工号后操作!");
 	}else{
 		$('#myModal').modal('hide');
 		updateAssetToUser(
