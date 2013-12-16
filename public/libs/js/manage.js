@@ -404,7 +404,10 @@ function retrieveSearch (pageIndex) {
 							}
 						}
 					}else{
+						$('#viewPaginator').hide();
 						$("#dataSearchDetail").html("未查询到相关数据!");
+						$("#viewTitle").html("");
+						$("#viewTitle").append("查询结果");
 					}
 				}
 			},
