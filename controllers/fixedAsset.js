@@ -36,7 +36,6 @@ var fs          = require("fs");
 var parseXlsx   = require("excel");
 var QRCode      = require("qrcode");
 var PDFDocument = require("pdfkit");
-var ping        = require("net-ping");
 var nodeExcel   = require('excel-export');
 require("../libs/DateUtil");
 
@@ -592,20 +591,7 @@ exports.printService = function (req, res, next) {
             renderData.pageIndex  = pageIndex;
             renderData.total      = totalCount;
             renderData.qrCodeList = qrCodeList;
-            var session = ping.createSession ();
-            session.pingHost ("127.0.0.1", function (error, target) {
-            if (error){
-                renderData.networkCheck = 0;
-                if (error instanceof ping.RequestTimedOutError)
-                    debugCtrller (target + ": Not alive");
-                else
-                    debugCtrller (target + ": " + error.toString ());
-            }else{
-                debugCtrller (target + ": Alive");
-                renderData.networkCheck = 1;
-            }
-        });
-
+            
             res.render('subviews/print.html', 
                 {renderData : renderData});
         });
