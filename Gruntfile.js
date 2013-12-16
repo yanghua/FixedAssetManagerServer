@@ -87,13 +87,28 @@ module.exports = function (grunt) {
                             "public/libs/js/manage.js",
                             "public/libs/js/batchCreate.js"
             ]
+        },
+
+        csslint : {
+            default_cssLint : {
+                options : {
+                    //TODO
+                },
+                src : [
+                        "public/stylesheets/home.css",
+                        "public/stylesheets/layout.css",
+                        "public/stylesheets/login.css",
+                        "public/stylesheets/print.css"
+                ]
+            }
         }
     });
 
     //load tasks
     // grunt.loadNpmTasks("grunt-contrib-uglify");
     grunt.loadNpmTasks("grunt-contrib-jshint");
+    grunt.loadNpmTasks('grunt-contrib-csslint');
 
     //register task as default
-    grunt.registerTask("default", ['jshint']);
+    grunt.registerTask("default", ['jshint', 'csslint']);
 };
