@@ -61,3 +61,11 @@ field name         | field type         | remark
 --------------     | --------------     | ------- 
 giftId             |                    | 礼品编号
 limitNum           |                    | 库存下限数量警告
+
+```
+supply                --供应商
+```
+field name         | field type         | remark 
+--------------     | --------------     | -------
+supplyId           |                    | 供应商编号
+supplyName         |                    | 供应商名称
