@@ -4,6 +4,7 @@
 	<%- Loader("/public/libs/js/create.min.js")
 	.js("/public/libs/js/create.js")
 	.js("/public/libs/js/bootstrap-select.js")
+	.js("/public/libs/js/bootbox.min.js")
 	.done(assets)
 	%>
 	<!-- style -->
@@ -17,77 +18,17 @@
 	$(document).ready(function(){
 		$("li[class='active']").removeAttr("class");
 		$("#add").addClass("active");
-		$.ajax({
-			type:"GET",
-			url:"/fatypes",
-			success:function(data) {
-				if (data.statusCode==0) {
-					for (var i =0 ; i<data.data.length;i++) {
-						var temp = "<option value='"+data.data[i].typeId+"'>"
-						+data.data[i].typeName
-						+"</option>";
-						$("#fatypeSelect").append(temp);
-					};
-					$('#fatypeSelect').selectpicker();
-				};
-				
-			},
-			error:function() {
-				// body...
-			}
-		});
-		$.ajax({
-			type:"GET",
-			url:"/companies",
-			success:function (data) {
-				if (data.statusCode==0) {
-					for (var i = 0; i < data.data.length; i++) {
-						var temp = "<option value='"+data.data[i].companyId+"'>"
-						+data.data[i].companyName
-						+"</option>";
-						$("#conpanySelect").append(temp);
-					};
-					$('#conpanySelect').selectpicker();
-				};
-			}
-		});
+
+		
+		updateCompaniesAndTypes();		
+		var faId = '<%= typeof locals.renderData == "undefined" ?  "" : locals.renderData.faId %> ';
+		if(faId){
+			loadSubmitClickEvent(faId);
+			loadFaInfoFromRenderData(faId);
+		}else{
+			loadSubmitClickEvent();
+		}
 	});
-
-	$(function() {
-		$("button#submit").click(function(){
-			//existence 
-			$.ajax({
-				type:"GET",
-				url:"/fixedasset/"+$("#newId").val()+"/existence",
-				success:function(data) {
-					if(data.data==0){
-						$.ajax({
-							type: "POST",
-							url: "/fixedasset/insertion",
-							data: $('form.contact').serialize(),
-							success: function(msg){
-								if (msg.statusCode==0) {
-									$('#submit').popover('show');
-									setInterval(function(){
-										$('#submit').popover('destroy');
-									},700);
-									
-								};
-							},
-							error: function(){
-								alert("插入失败");
-							}
-						});
-					}else{
-						alert("此编号已存在，请更换");
-					}
-				}
-			})
-			
-		});
-	});
-
-
 </script>
 <div id="main_div" >
 	
@@ -102,7 +43,9 @@
 						<div class="modal-body">
 							<ul class="nav nav-list">
 								<label for="">资产编号</label>
-								<li> <input id="newId"  class="form-control" type="text" name="newId"> </li>
+								<li> <input id="newId"  class="form-control" type="text" name="newId" >  </li>
+								<label>旧编号</label>
+								<li> <input id="oldId" class="form-control" type="text" name="oldId"></li>
 								<label for="">资产类型</label>
 								<li> 
 									<select name="typeId" id="fatypeSelect" class="selectpicker show-tick">
@@ -111,41 +54,41 @@
 									</select>
 								</li>
 								<label for="">资产名称</label>
-								<li> <input  class="form-control" type="text" name="assetName"> </li>
+								<li> <input id="assetName"  class="form-control" type="text" name="assetName"> </li>
 								<label for="">资产归属</label>
-								<li> <input  class="form-control" type="text" name="assetBelong"> </li>
+								<li> <input id="assetBelong" class="form-control" type="text" name="assetBelong"> </li>
+								<label >当前状态</label>
+								<li> <input id="currentStatus"class="form-control" type="text" name="currentStatus"> </li>
 								<label for="">品牌</label>
-								<li> <input  class="form-control" type="text" name="brand"> </li>
+								<li> <input id="brand" class="form-control" type="text" name="brand"> </li>
 								<label for="">型号</label>
-								<li> <input  class="form-control" type="text" name="model"> </li>
+								<li> <input id="model" class="form-control" type="text" name="model"> </li>
 								<label for="">规格</label>
-								<li> <input  class="form-control" type="text" name="specifications"> </li>
+								<li> <input id="specifications" class="form-control" type="text" name="specifications"> </li>
 								<label for="">价格</label>
 								<li> 
 								<div class="input-group">
 									<span class="input-group-addon">$</span>
-									<input type="text" class="form-control" name="price">
+									<input id="price" type="text" class="form-control" name="price">
 									<span class="input-group-addon">.00</span>
 								</div>
 								</li>
 								<label for="">快速服务代码</label>
-								<li> <input  class="form-control" type="text" name="serviceCode"> </li>
+								<li> <input id="serviceCode" class="form-control" type="text" name="serviceCode"> </li>
 								<label for="">Mac地址</label>
-								<li> <input  class="form-control" type="text" name="mac"> </li>
+								<li> <input id="mac" class="form-control" type="text" name="mac"> </li>
 								<label for="">备注1</label>
-								<li> <input  class="form-control" type="text" name="remark1"> </li>
+								<li> <input id="remark1" class="form-control" type="text" name="remark1"> </li>
 								<label for="">备注2</label>
 								<li> <input  class="form-control" type="text" name="remark2"> </li>
 								<div style="display:none">
-								<input  class="form-control" type="text" name="userId">
-								<input  class="form-control" type="text" name="oldId">
-								<input  class="form-control" type="text" name="departmentId">
-								<input  class="form-control" type="text" name="currentStatus">
-								<input  class="form-control" type="text" name="purchaseDate">
-								<input  class="form-control" type="text" name="possessDate">
-								<input  class="form-control" type="text" name="reject">
-								<input  class="form-control" type="text" name="rejectDate">
-								<input  class="form-control" type="text" name="qrcode">
+								<input  id="userId" class="form-control" type="text" name="userId">
+								<input  id="departmentId" class="form-control" type="text" name="departmentId">
+								<input  id="purchaseDate" class="form-control" type="text" name="purchaseDate">
+								<input  id="possessDate" class="form-control" type="text" name="possessDate">
+								<input  id="reject" class="form-control" type="text" name="reject">
+								<input  id="rejectDate" class="form-control" type="text" name="rejectDate">
+								<input  id="qrcode" class="form-control" type="text" name="qrcode">
 								</div>
 							</ul> 
 						</div>
