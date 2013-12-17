@@ -5,87 +5,18 @@
 	.js("/public/libs/js/manage.js")
 	.js("/public/libs/js/bootstrap-select.js")
 	.js("/public/libs/js/bootbox.min.js")
-	.js("/public/libs/js/jquery.magnific-popup.min.js")
 	.done(assets)
 	%>
 	<!-- style -->
 	<%- Loader("/public/stylesheets/manage.min.css")
 	.css("/public/stylesheets/bootstrap-select.css")
+	.css("/public/stylesheets/manage.css")
 	.done(assets)
 	%>
 </head>
 <script type="text/javascript">
 	$(document).ready(function(){
-		$("li[class='active']").removeAttr("class");
-		$("#manage").addClass("active");
-		$("#assetDetails").hide();
-		$("#assetEvent").hide();
-		$("#underName").hide();
-		//$("#noUserAsset").hide();
-		$('#baseType').selectpicker();
-		$.ajax({
-			type: 'GET', 
-			url: '/departments', 
-			success: function (data) { 
-				if(data.statusCode==0){
-					for (var i =0 ; i<data.data.length;i++) {
-						var temp = "<option value='"+data.data[i].departmentId+"'>"
-						+data.data[i].departmentName
-						+"</option>";
-						$("#assetDep").append(temp);
-						$("#assetDep2").append(temp);
-						$("#assetDepAlloc").append(temp);
-						$("#assetDepartSel").append(temp);
-					};
-					$('#assetDep').selectpicker();
-					$('#assetDep2').selectpicker();
-					$('#assetDepAlloc').selectpicker();
-					$("#assetDepartSel").selectpicker();
-				}
-			}
-		})
-		$.ajax({
-			type: 'GET', 
-			url: '/fatypes', 
-			success: function (data) { 
-				if(data.statusCode==0){
-					for (var i =0 ; i<data.data.length;i++) {
-						var temp = "<option value='"+data.data[i].typeId+"'>"
-						+data.data[i].typeName
-						+"</option>";
-						$("#assetTypes").append(temp);
-						$("#assetTypeSel").append(temp);
-						
-					};
-					$('#assetTypes').selectpicker();
-					$('#assetTypeSel').selectpicker();
-				}
-			}
-		})
-		$.ajax({
-			type: "GET",
-			url: "/fixedasset/conditionInfo",
-			success: function (data) {
-				if(data.statusCode==0){
-					for (var i = 0; i < data.data.status.length; i++) {
-						var temp = "<option value='"+data.data.status[i].currentStatus+"'>"
-						+data.data.status[i].currentStatus
-						+"</option>";
-						$("#currentStaSel").append(temp);
-					};
-					for (var i = 0; i < data.data.belong.length; i++) {
-						var temp = "<option value='"+data.data.belong[i].assetBelong+"'>"
-						+data.data.belong[i].assetBelong
-						+"</option>";
-						$("#assetBelongSel").append(temp);
-					};
-					$('#currentStaSel').selectpicker();
-					$('#assetBelongSel').selectpicker();
-				}
-			}
-		});
-
-
+		manageLoad();
 	});
 	// $(document).keyup(function(event){
 	//  	if(event.keyCode ==13){
@@ -93,7 +24,6 @@
 	//     	$("#twoSearch").click();
 	//   	}
 	// });
-
 
 </script>
 
@@ -246,7 +176,7 @@
 												<th>设备名</th>
 												<th>规格</th>
 												<th>领用人</th>
-
+												<th>操作</th>
 											</tr>
 										</thead>
 										<tbody id='dataSearchDetail'>
@@ -274,25 +204,90 @@
 
 	<!-- Modal -->
 	<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-	  <div class="modal-dialog">
-	    <div class="modal-content">
-	      <div class="modal-header">
-	        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-	        <h4 class="modal-title" id="myModalLabel">资产改派</h4>
-	      </div>
-	      <div class="modal-body" id="sentOtherDetails">
-	        <select  id="assetDepAlloc" class="selectpicker show-tick ">
-	        	<option value="0">--选择部门--</option>
-	        </select>
-	        <input type="text" class="form-control" id="assetUserIdAlloc" placeholder="输入用户工号" />
-			<input style="display:none" type="text" class="form-control" id="assetUserId"   />
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title" id="myModalLabel">资产改派</h4>
+				</div>
+				<div class="modal-body" id="sentOtherDetails">
+					<select  id="assetDepAlloc" class="selectpicker show-tick ">
+						<option value="0">--选择部门--</option>
+					</select>
+					<input type="text" class="form-control" id="assetUserIdAlloc" placeholder="输入用户工号" />
+					<input style="display:none" type="text" class="form-control" id="assetUserId"   />
 
-	      </div>
-	      <div class="modal-footer">
-	        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-	        <button type="button" onclick="updateAssetToUser2()" class="btn btn-primary">确定改派</button>
-	      </div>
-	    </div><!-- /.modal-content -->
-	  </div><!-- /.modal-dialog -->
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+					<button type="button" onclick="updateAssetToUser2()" class="btn btn-primary">确定改派</button>
+				</div>
+			</div><!-- /.modal-content -->
+		</div><!-- /.modal-dialog -->
 	</div><!-- /.modal -->
+
+	<!-- Modal -->
+	<div class="modal fade" id="operateModal" tabindex="-1" role="dialog" aria-labelledby="operateModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title" id="myModalLabel">资产操作</h4>
+				</div>
+				<div class="modal-body" id="operateContent">
+					<div style="height:200px;">
+					<!-- the div content is distribution about -->
+					<div style="float:left" id="assetDistribution">
+						<select  id="assetDepUnderSearch" class="selectpicker show-tick ">
+						<option value="0">--选择部门--</option>
+						</select>
+
+						<input type="text" style="width:200px;" class="form-control" id="assetUserIdAllocation" placeholder="输入用户工号" />
+						<input style="display:none;" type="text" class="form-control" id="assetUserId"   />
+						<button type="button" class="btn btn-default" id="assetAlloctionToSomeOne">派发（改派）</button><p/>
+						<button type="button" class="btn btn-default" id="recycleButton">
+						<span class="glyphicon glyphicon-retweet"></span> 回收</button>
+						<button type="button" class="btn btn-default" id="rejectButton">
+						<span class="glyphicon glyphicon-remove"></span> 报废</button>
+						<button type="button" class="btn btn-default" id="editAssetButton">
+						<span class="glyphicon glyphicon-edit"></span> 修改该资产</button>
+
+					</div>
+					<div style="margin-top:10px;float:right">
+						<input type="text" style="width:200px;" class="form-control" id="userNameInput" placeholder="输入用户姓名" />
+						<button type="button" class="btn btn-default" id="checkUserIdByName">查询人员工号</button>
+						<div style="height:100px;">
+						</div>
+					</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<span>请选择对应操作</span>
+				</div>
+			</div><!-- /.modal-content -->
+		</div><!-- /.modal-dialog -->
+	</div><!-- /.modal -->
+
+		<!-- Modal -->
+	<div class="modal fade" id="userInfoModle" tabindex="-1" role="dialog" aria-labelledby="userInfoModleLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title" id="myModalLabel">用户工号选择</h4>
+					请直接点击人员信息,人员工号将自动填写.
+				</div>
+				<div class="modal-body" id="userInfoDetails">
+					
+
+				</div>
+			<!-- 	<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+					<button type="button" onclick="updateAssetToUser2()" class="btn btn-primary">确定改派</button>
+				</div> -->
+			</div><!-- /.modal-content -->
+		</div><!-- /.modal-dialog -->
+	</div><!-- /.modal -->
+
+
 </div>
