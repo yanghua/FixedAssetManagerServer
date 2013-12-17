@@ -18,6 +18,7 @@ brand              |                    | 品牌
 name               |                    | 名称
 unit               |                    | 计量单位
 price              |                    | 单价
+expireDate         |                    | 有效期
 categoryId         |                    | 礼品类别编号
 
 ```
@@ -42,7 +43,17 @@ siId               |                    | 入库流水号
 giftId             |                    | 礼品编号
 num                |                    | 数量
 amount             |                    | 单笔金额
-supplier           |                    | 供应商
+supplierId         |                    | 供应商
+siTypeId           |                    | 入库类型编号
+
+```
+stockInType             --入库类型
+```
+field name         | field type         | remark 
+--------------     | --------------     | ------- 
+sitId              |                    | 入库类型编号
+typeName           |                    | 入库类型名称
+
 
 ```
 inventory             --库存（此表被动态维护，不对外提供操作）
@@ -63,9 +74,9 @@ giftId             |                    | 礼品编号
 limitNum           |                    | 库存下限数量警告
 
 ```
-supply                --供应商
+supplier               --供应商
 ```
 field name         | field type         | remark 
 --------------     | --------------     | -------
-supplyId           |                    | 供应商编号
-supplyName         |                    | 供应商名称
+supplierId         |                    | 供应商编号
+supplierName         |                    | 供应商名称
