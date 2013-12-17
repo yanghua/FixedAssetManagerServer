@@ -43,11 +43,11 @@ siId               |                    | 入库流水号
 giftId             |                    | 礼品编号
 num                |                    | 数量
 amount             |                    | 单笔金额
-supplierId         |                    | 供应商
+supplier           |                    | 供应商
 siTypeId           |                    | 入库类型编号
 
 ```
-stockInType             --入库类型
+stockInType             --入库类型(上交、采购、退回)
 ```
 field name         | field type         | remark 
 --------------     | --------------     | ------- 
@@ -72,11 +72,3 @@ field name         | field type         | remark
 --------------     | --------------     | ------- 
 giftId             |                    | 礼品编号
 limitNum           |                    | 库存下限数量警告
-
-```
-supplier               --供应商
-```
-field name         | field type         | remark 
---------------     | --------------     | -------
-supplierId         |                    | 供应商编号
-supplierName         |                    | 供应商名称
