@@ -646,12 +646,28 @@ exports.edit = function (req, res, next) {
  */
 exports.create = function (req, res, next) {
     debugCtrller("controllers/fixedasset->create");
-
+    var faId = req.params.faId || "";
+    var ep = EventProxy.create();
     if (!req.session || !req.session.user) {
         return res.redirect("/login");
     }
+
+    if(faId){
+        var renderData = {};
+        renderData.faId = faId;
+        res.render('subviews/create', 
+                {renderData : renderData});
+       
+    }else{
+        res.render('subviews/create');
+    }
+
+    //error handler
+    ep.fail(function (err) {
+        res.send(resUtil.generateRes(null, err.statusCode));
+    });
     
-    res.render('subviews/create');
+    
 };
 
 /**
@@ -1029,3 +1045,18 @@ exports.retrieve = function (req, res, next) {
         res.send(resUtil.generateRes(result, config.statusCode.SATUS_OK));
     });
 };
+
+exports.getUserIdByUserName = function (req, res, next) {
+    debugCtrller("controllers/fixedAsset/getUserIdByUserName");
+    var userName = req.params.userName || "";
+    // if (!req.session || !req.session.user) {
+    //     return res.redirect("/login");
+    // }
+    FixedAsset.getUserIdByUserName(userName,function (err, result) {
+        if(err){
+            return res.send(resUtil.generateRes(null, err.statusCode));
+        }
+
+        res.send(resUtil.generateRes(result, config.statusCode.SATUS_OK));
+    })
+}

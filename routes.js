@@ -43,20 +43,20 @@ module.exports = function (app) {
     //views
     // app.get("/", others.index);
     app.get("/", fixedAsset.manage);
-    app.get("/qrtest",fixedAsset.handleQrcode);
+    app.get("/qrtest", fixedAsset.handleQrcode);
     app.get("/apis", others.apis);
     app.get("/login", login.showLogin);
     app.post("/signin", login.signIn);
     app.get("/signout", logout.signOut);
     app.get("/fixedasset/printservice/:pageIndex/:timefrom?/:timeto?", fixedAsset.printService);
-    app.get("/fixedasset/manage",fixedAsset.manage);
-    app.get("/404",others.fourofour);
+    app.get("/fixedasset/manage", fixedAsset.manage);
+    app.get("/404", others.fourofour);
     app.get("/captchaImg", login.captchaImg);
     app.get("/fixedasset/:faId/edit", fixedAsset.edit);
-    app.get("/fixedasset/create", fixedAsset.create);
+    app.get("/fixedasset/create/:faId?", fixedAsset.create);
     app.post("/fixedasset/import/company/:companyId", fixedAsset.importFA);
-    app.get("/fixedasset/batchCreate",fixedAsset.batchCreate);
-    app.get("/fixedasset/excelExport/:companyId",fixedAsset.exportExcel);
+    app.get("/fixedasset/batchCreate", fixedAsset.batchCreate);
+    app.get("/fixedasset/excelExport/:companyId", fixedAsset.exportExcel);
 
     //apis
     app.get("/user/:userId", user.getUserById);
@@ -70,6 +70,7 @@ module.exports = function (app) {
     app.get("/companies", company.companies);
     app.get("/fixedasset/conditionInfo", fixedAsset.conditionInfo);
     app.post("/fixedasset/retrieve", fixedAsset.retrieve);
+    app.get("/fixedasset/getUserId/:userName",fixedAsset.getUserIdByUserName);
     // app.post("/authuser/create", authUser.create);
     // app.get("/authusers", authUser.allUsers);
 
