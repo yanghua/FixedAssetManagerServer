@@ -6,7 +6,7 @@
   "author": "",
   "dependencies": {
     "express": "2.5.11",
-    "mysql": "2.0.0-alpha9",
+    "mysql": "2.0.0-rc2",
     "eventproxy": "0.2.5",
     "validator": "1.5.1",
     "ejs": "0.8.4",
