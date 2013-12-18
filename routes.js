@@ -38,25 +38,27 @@ var logout            = require("./controllers/logout");
 var company           = require("./controllers/company");
 // var authUser          = require("./controllers/authUser");
 
+var giftCategory      = require("./controllers/giftCategory");
+
 module.exports = function (app) {
 
     //views
     // app.get("/", others.index);
     app.get("/", fixedAsset.manage);
-    app.get("/qrtest",fixedAsset.handleQrcode);
+    app.get("/qrtest", fixedAsset.handleQrcode);
     app.get("/apis", others.apis);
     app.get("/login", login.showLogin);
     app.post("/signin", login.signIn);
     app.get("/signout", logout.signOut);
     app.get("/fixedasset/printservice/:pageIndex/:timefrom?/:timeto?", fixedAsset.printService);
-    app.get("/fixedasset/manage",fixedAsset.manage);
-    app.get("/404",others.fourofour);
+    app.get("/fixedasset/manage", fixedAsset.manage);
+    app.get("/404", others.fourofour);
     app.get("/captchaImg", login.captchaImg);
     app.get("/fixedasset/:faId/edit", fixedAsset.edit);
     app.get("/fixedasset/create", fixedAsset.create);
     app.post("/fixedasset/import/company/:companyId", fixedAsset.importFA);
-    app.get("/fixedasset/batchCreate",fixedAsset.batchCreate);
-    app.get("/fixedasset/excelExport/:companyId",fixedAsset.exportExcel);
+    app.get("/fixedasset/batchCreate", fixedAsset.batchCreate);
+    app.get("/fixedasset/excelExport/:companyId", fixedAsset.exportExcel);
 
     //apis
     app.get("/user/:userId", user.getUserById);
@@ -75,7 +77,7 @@ module.exports = function (app) {
 
     //can't mapping router
     app.get("*", others.fourofour);
-    
+
 
     /************************************************************************/
     /*                Resful: URI Represent a Resource!!!                   */
@@ -92,4 +94,8 @@ module.exports = function (app) {
     app.post("/fixedasset/:faId/modification", fixedAsset.modification);
     app.post("/fixedasset/:faId/allocation", fixedAsset.allocation);
 
+    /************************************Gift********************************/
+    app.get("/giftcategories", giftCategory.giftCategories);
+    app.post("/giftcategory/insertion", giftCategory.insertion);
+    app.post("/giftcategory/modification", giftCategory.modification);
 };
