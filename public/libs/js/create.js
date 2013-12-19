@@ -42,7 +42,7 @@ function loadFaInfoFromRenderData (faId) {
 				$("#qrcode").val(faDetail.qrcode);
 			}
 		}
-	})
+	});
 }
 
 /**
@@ -56,16 +56,15 @@ function loadSubmitClickEvent(faId) {
 			type:"GET",
 			url:"/fixedasset/"+$("#newId").val()+"/existence",
 			success:function(data) {
-				if(data.data==0){
+				if(data.data===0){
 					$.ajax({
 						type: "POST",
 						url: "/fixedasset/insertion",
 						data: $('form.contact').serialize(),
 						success: function(msg){
-							if (msg.statusCode==0) {
+							if (msg.statusCode===0) {
 								bootbox.alert("入库成功!");
-								
-							};
+							}
 						},
 						error: function(){
 							bootbox.alert("入库失败!");
@@ -78,9 +77,9 @@ function loadSubmitClickEvent(faId) {
 							url: "/fixedasset/"+faId+"/modification",
 							data: $('form.contact').serialize(),
 							success: function(msg){
-								if (msg.statusCode==0) {
+								if (msg.statusCode===0) {
 									bootbox.alert("更新成功!");
-								};
+								}
 							},
 							error: function(){
 								bootbox.alert("更新失败");
@@ -92,7 +91,7 @@ function loadSubmitClickEvent(faId) {
 					
 				}
 			}
-		})
+		});
 		
 	});
 }
@@ -106,16 +105,15 @@ function updateCompaniesAndTypes () {
 		type:"GET",
 		url:"/fatypes",
 		success:function(data) {
-			if (data.statusCode==0) {
+			if (data.statusCode===0) {
 				for (var i =0 ; i<data.data.length;i++) {
-					var temp = "<option value='"+data.data[i].typeId+"'>"
-					+data.data[i].typeName
-					+"</option>";
+					var temp = "<option value='" + data.data[i].typeId+"'>" + 
+					data.data[i].typeName + "</option>";
 					$("#fatypeSelect").append(temp);
-				};
+				}
 				$('#fatypeSelect').selectpicker();
 				
-			};
+			}
 
 		},
 		error:function() {
@@ -126,15 +124,14 @@ function updateCompaniesAndTypes () {
 		type:"GET",
 		url:"/companies",
 		success:function (data) {
-			if (data.statusCode==0) {
+			if (data.statusCode===0) {
 				for (var i = 0; i < data.data.length; i++) {
-					var temp = "<option value='"+data.data[i].companyId+"'>"
-					+data.data[i].companyName
-					+"</option>";
+					var temp = "<option value='"+data.data[i].companyId+"'>" + 
+					data.data[i].companyName + "</option>";
 					$("#conpanySelect").append(temp);
-				};
+				}
 				$('#conpanySelect').selectpicker();
-			};
+			}
 		}
 	});
 }
