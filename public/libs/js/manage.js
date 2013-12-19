@@ -10,53 +10,48 @@ function manageLoad() {
     type: 'GET',
     url: '/departments',
     success: function(data) {
-      if (data.statusCode == 0) {
+      if (data.statusCode === 0) {
         for (var i = 0; i < data.data.length; i++) {
           var temp = "<option value='" + data.data[i].departmentId + "'>" + data.data[i].departmentName + "</option>";
-          $("#assetDep").append(temp);
-          $("#assetDep2").append(temp);
           $("#assetDepAlloc").append(temp);
           $("#assetDepartSel").append(temp);
           $("#assetDepUnderSearch").append(temp);
-        };
-        $('#assetDep').selectpicker();
-        $('#assetDep2').selectpicker();
+        }
         $('#assetDepAlloc').selectpicker();
         $("#assetDepartSel").selectpicker();
         $('#assetDepUnderSearch').selectpicker();
 
       }
     }
-  })
+  });
   $.ajax({
     type: 'GET',
     url: '/fatypes',
     success: function(data) {
-      if (data.statusCode == 0) {
+      if (data.statusCode === 0) {
         for (var i = 0; i < data.data.length; i++) {
           var temp = "<option value='" + data.data[i].typeId + "'>" + data.data[i].typeName + "</option>";
-          $("#assetTypes").append(temp);
           $("#assetTypeSel").append(temp);
 
-        };
-        $('#assetTypes').selectpicker();
+        }
         $('#assetTypeSel').selectpicker();
       }
     }
-  })
+  });
   $.ajax({
     type: "GET",
     url: "/fixedasset/conditionInfo",
     success: function(data) {
-      if (data.statusCode == 0) {
-        for (var i = 0; i < data.data.status.length; i++) {
-          var temp = "<option value='" + data.data.status[i].currentStatus + "'>" + data.data.status[i].currentStatus + "</option>";
+      if (data.statusCode === 0) {
+        var i , temp;
+        for (i = 0; i < data.data.status.length; i++) {
+          temp = "<option value='" + data.data.status[i].currentStatus + "'>" + data.data.status[i].currentStatus + "</option>";
           $("#currentStaSel").append(temp);
-        };
-        for (var i = 0; i < data.data.belong.length; i++) {
-          var temp = "<option value='" + data.data.belong[i].assetBelong + "'>" + data.data.belong[i].assetBelong + "</option>";
+        }
+        for (i = 0; i < data.data.belong.length; i++) {
+          temp = "<option value='" + data.data.belong[i].assetBelong + "'>" + data.data.belong[i].assetBelong + "</option>";
           $("#assetBelongSel").append(temp);
-        };
+        }
         $('#currentStaSel').selectpicker();
         $('#assetBelongSel').selectpicker();
       }
@@ -242,7 +237,6 @@ function loadUnderName(userId) {
 
         }
 
-
       }
     }
   });
@@ -326,10 +320,10 @@ var searchNoUserContainer = {
       loadAllocToUser(value);
     };
   },
-  userIdClick: function(userId) {
+  userIdClick: function(userId,fromPage) {
     return function() {
-      addUserIdToInput(userId);
-    }
+      addUserIdToInput(userId,fromPage);
+    };
   },
   itemClick2: function(value) {
     return function() {
@@ -362,88 +356,15 @@ var searchNoUserContainer = {
         assetAllocateToSomeOne(assetId);
       });
       $("#checkUserIdByName").click(function() {
-        assetCheckUserIdByUserName();
-      })
-    }
+        assetCheckUserIdByUserName($("#userNameInput").val(),null);
+      });
+     
+    };
   }
 };
 
-/**
- * search asset without user about
- * @param  {string} depId     部门id
- * @param  {string} typeId    资产类型id
- * @param  {string} pageIndex 分页
- * @return {null}
- */
-function searchNoUser(pageIndex) {
-  $.ajax({
-    type: 'GET',
-    url: '/department/' + $("#assetDep").val() + '/idelfixedasset/type/' + $("#assetTypes").val() + '/page/' + pageIndex,
-    success: function(data) {
-      if (data.statusCode === 0) {
 
-        $("#noUserAsset").show();
-        $("#addtrAs").html("");
-        if (data.data.total) {
 
-          for (var i = 0; i < data.data.idelFAList.length; ++i) {
-            var cellData = data.data.idelFAList[i];
-            var row = searchNoUserContainer.createRowContainer();
-            var cellNum = searchNoUserContainer.createCellContainer(i);
-            var cellId = searchNoUserContainer.createCellContainer(cellData.newId);
-            var cellName = searchNoUserContainer.createCellContainer(cellData.assetName);
-            var link = $("<a href='javascript:void(0);'>派发</a>");
-            link.click(searchNoUserContainer.itemClick(cellData.newId));
-            var cellDetail = searchNoUserContainer.createCellContainer(link);
-            row.append(cellNum);
-            row.append(cellId);
-            row.append(cellName);
-            row.append(cellDetail);
-            $("#addtrAs").append(row);
-          }
-        } else {
-          $("#addtrAs").html("");
-        }
-      }
-    }
-  });
-}
-/**
- * alloc asset to user
- * @param  {string} assetId
- * @return {null}
- */
-function loadAllocToUser(assetId) {
-  if ($("#assetDep2").val() != "0") {
-    bootbox.prompt("请输入人员编号：", function(userId) {
-      if (userId === null) {
-
-      } else {
-        if (userId) {
-          $.ajax({
-            type: "POST",
-            data: {
-              'userId': userId,
-              'deptId': $("#assetDep2").val(),
-              'faId': assetId
-            },
-            url: "/fixedasset/" + assetId + "/allocation",
-            success: function(data) {
-              if (data.statusCode === 0) {
-                bootbox.alert("操作成功！");
-              } else {
-                bootbox.alert("操作失败，请联系管理员！");
-              }
-            }
-          });
-        }
-      }
-    });
-  } else {
-    bootbox.alert("请输入设备将被分配至的部门!");
-  }
-
-}
 /**
  * search the retrieve assets
  * @param  {string} pageIndex page
@@ -540,7 +461,7 @@ function loadReturnAsset(assetId, userId) {
           }
         }
       });
-    };
+    }
   });
 }
 
@@ -661,10 +582,10 @@ function assetAllocateToSomeOne(assetId) {
  * check userid by username
  * @return {null}
  */
-function assetCheckUserIdByUserName() {
+function assetCheckUserIdByUserName(inputText,fromPage) {
   $.ajax({
     type: "GET",
-    url: "/fixedasset/getUserId/" + $("#userNameInput").val(),
+    url: "/fixedasset/getUserId/" + inputText,
     success: function(data) {
       if (data.statusCode === 0 && data.data.length > 0) {
         $('#userInfoModle').modal('show');
@@ -673,24 +594,36 @@ function assetCheckUserIdByUserName() {
         for (var i = 0; i < data.data.length; i++) {
           var userInfo = data.data[i];
           var userid = userInfo.userId;
-          var link = $("<a href='javascript:void(0);'>" + userInfo.userName + "(" + userInfo.userId + ") --" + userInfo.department + "</a>");
-          link.click(searchNoUserContainer.userIdClick(userid));
+          var link = $("<a href='javascript:void(0);'>" + userInfo.userName + "(" + userInfo.userId + ")--" + userInfo.department.replace(/@/g," ") + "</a>");
+          link.click(searchNoUserContainer.userIdClick(userid,fromPage));
           var row = searchNoUserContainer.createRowContainer();
           var cka = searchNoUserContainer.createCellContainer(link);
           row.append(cka);
           $("#userInfoDetails").append(row);
-        };
-
+        }
       }
     }
-  })
+  });
 }
 
 /**
  * add selected userid to input box
  * @param {string} userId userId
  */
-function addUserIdToInput(userId) {
+function addUserIdToInput(userId, fromPage) {
   $('#userInfoModle').modal('hide');
-  $("#assetUserIdAllocation").val(userId);
+  if(fromPage){
+    $("#baseInput").val(userId);
+  }else{
+    $("#assetUserIdAllocation").val(userId);
+  }
+ 
+}
+
+/**
+ * check userid by username
+ * @return {null}
+ */
+function assetCheckUserIdByUserName2 () {
+  assetCheckUserIdByUserName($("#userNameInput2").val(),2);
 }
