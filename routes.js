@@ -76,10 +76,6 @@ module.exports = function (app) {
     // app.post("/authuser/create", authUser.create);
     // app.get("/authusers", authUser.allUsers);
 
-    //can't mapping router
-    app.get("*", others.fourofour);
-
-
     /************************************************************************/
     /*                Resful: URI Represent a Resource!!!                   */
     /************************************************************************/
@@ -99,4 +95,7 @@ module.exports = function (app) {
     app.get("/giftcategories", giftCategory.giftCategories);
     app.post("/giftcategory/insertion", giftCategory.insertion);
     app.post("/giftcategory/modification", giftCategory.modification);
+
+    //can't mapping router
+    app.get("*", others.fourofour);
 };
