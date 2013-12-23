@@ -24,5 +24,128 @@
 
 var EventProxy = require("eventproxy");
 var resUtil    = require("../libs/resUtil");
+var config     = require("../config").initConfig();
 var Gift       = require("../proxy/gift");
+var check      = require("validator").check;
+var sanitize   = require("validator").sanitize;
 
+/**
+ * get gifts by query condition
+ * @param  {Object}   req  the instance of request
+ * @param  {Object}   res  the instance of response
+ * @param  {Function} next the next handler
+ * @return {null}        
+ */
+exports.gifts = function (req, res, next) {
+    debugCtrller("/controllers/gift/gifts");
+
+    if (!req.session || !req.session.user) {
+        return res.redirect("/login");
+    }
+
+    var conditionObj = {};
+
+    try {
+
+        if (req.params.giftId) {
+            check(req.params.giftId).notEmpty();
+            req.params.giftId = sanitize(sanitize(req.params.giftId).trim()).xss();
+            conditionObj.giftId = req.params.giftId;
+        }
+
+        if (req.params.categoryId) {
+            check(req.params.categoryId).notEmpty();
+            req.params.categoryId = sanitize(sanitize(req.params.categoryId)).xss();
+            conditionObj.categoryId = req.params.categoryId;
+        }
+
+    } catch (e) {
+        return res.send(resUtil.generateRes(null, config.statusCode.STATUS_INVAILD_PARAMS));
+    }
+
+    Gift.getGiftWithConditiions(conditionObj, function (err, rows) {
+       if (err) {
+            return res.send(resUtil.generateRes(null, err.statusCode));
+       }
+
+       res.send(resUtil.generateRes(rows, config.statusCode.STATUS_OK));
+    });
+};
+
+/**
+ * add a new gift
+ * @param  {Object}   req  the instance of request
+ * @param  {Object}   res  the instance of response
+ * @param  {Function} next the next handler
+ * @return {null}        
+ */
+exports.insertion = function (req, res, next) {
+    debugCtrller("/controllers/gift/insertion");
+
+    if (!req.session || !req.session.user) {
+        return res.redirect("/login");
+    }
+
+    var giftObj = {};
+    try {
+        check(req.body.name).notEmpty();
+        check(req.body.categoryId).notEmpty();
+        giftObj.name       = sanitize(sanitize(req.body.name).trim()).xss();
+        giftObj.categoryId = sanitize(sanitize(req.body.categoryId).trim()).xss();
+        giftObj.brand      = sanitize(sanitize(req.body.brand || "").trim()).xss();
+        giftObj.unit       = sanitize(sanitize(req.body.unit || "").trim()).xss();
+        giftObj.price      = sanitize(sanitize(req.body.price || "").trim()).xss();
+        giftObj.expireDate = sanitize(sanitize(req.body.expireDate || "").trim()).xss();
+        giftObj.categoryId = sanitize(sanitize(req.body.categoryId).trim()).xss();
+    } catch (e) {
+        return res.send(resUtil.generateRes(null, config.statusCode.STATUS_INVAILD_PARAMS));
+    }
+
+    Gift.add(giftObj, function (err, rows) {
+        if (err) {
+            return res.send(resUtil.generateRes(null, err.statusCode));
+        }
+
+        return res.send(resUtil.generateRes(null, config.statusCode.STATUS_OK));
+    });
+};
+
+/**
+ * modify a gift
+ * @param  {Object}   req  the instance of request
+ * @param  {Object}   res  the instance of response
+ * @param  {Function} next the next handler
+ * @return {null}        
+ */
+exports.modification = function (req, res, next) {
+    debugCtrller("/controllers/gift/modification");
+
+    if (!req.session || !req.session.user) {
+        return res.redirect("/login");
+    }
+
+    var giftObj = {};
+    try {
+        check(req.body.giftId).notEmpty();
+        check(req.body.name).notEmpty();
+        check(req.body.categoryId).notEmpty();
+        giftObj.giftId     = sanitize(sanitize(req.body.giftId).trim()).xss();
+        giftObj.name       = sanitize(sanitize(req.body.name).trim()).xss();
+        giftObj.categoryId = sanitize(sanitize(req.body.categoryId).trim()).xss();
+        giftObj.brand      = sanitize(sanitize(req.body.brand || "").trim()).xss();
+        giftObj.unit       = sanitize(sanitize(req.body.unit || "").trim()).xss();
+        giftObj.price      = sanitize(sanitize(req.body.price || "").trim()).xss();
+        giftObj.expireDate = sanitize(sanitize(req.body.expireDate || "").trim()).xss();
+        giftObj.categoryId = sanitize(sanitize(req.body.categoryId).trim()).xss();
+    } catch (e) {
+        return res.send(resUtil.generateRes(null, config.statusCode.STATUS_INVAILD_PARAMS));
+    }
+
+    Gift.modify(giftObj, function (err, rows) {
+        if (err) {
+            return res.send(resUtil.generateRes(null, err.statusCode));
+        }
+
+        return res.send(resUtil.generateRes(null, config.statusCode.STATUS_OK));
+    });
+};

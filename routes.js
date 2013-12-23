@@ -40,6 +40,7 @@ var company           = require("./controllers/company");
 
 var giftCategory      = require("./controllers/giftCategory");
 var stockInType       = require("./controllers/stockInType");
+var gift              = require("./controllers/gift");
 
 module.exports = function (app) {
 
@@ -100,6 +101,10 @@ module.exports = function (app) {
     app.get("/stockintypes", stockInType.stockInTypes);
     app.post("/stockintype/insertion", stockInType.insertion);
     app.post("/stockintype/modification", stockInType.modification);
+
+    app.get("/gifts", gift.gifts);
+    app.post("/gift/insertion", gift.insertion);
+    app.post("/gift/modification", gift.modification);
 
     //can't mapping router
     app.get("*", others.fourofour);
