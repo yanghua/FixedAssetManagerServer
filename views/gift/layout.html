@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- meta -->
+  <meta charset="utf-8" />
+  <meta name='description' content='<%= config.description %>'>
+  <title><%= config.giftname %></title>
+  <%
+  var headers = config.site_headers || [];
+  for (var i = 0, l = headers.length; i < l; i++) {
+   %>
+   <%- headers[i] %>
+   <%  } %>
+   <!-- style -->
+   <%- Loader("/public/stylesheets/layout.min.css")
+   .css("/public/libs/bootstrap/css/bootstrap.css")
+   .css("/public/stylesheets/layout.css")
+   .css("/public/stylesheets/simplePagination.css")
+   .done(assets)
+   %>
+   <!-- script -->
+   <%- Loader("/public/libs/js/layout.min.js")
+   .js('/public/libs/jquery/jquery-1.10.2.min.js')
+   .js('/public/libs/jquery/jquery.simplePagination.js')
+   .js('/public/libs/bootstrap/js/bootstrap.js')
+   .js('/public/libs/js/bootstrap-paginator.js')
+   .done(assets)
+   %>
+</head>
+<body>
+  <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+   <div class="container" id="">
+    <div class="navbar-header">
+     <a class="brand" href="/"><img src="/public/images/wisedu.png" title=""></a>
+     <div id="nav_title"><%= config.giftname %></div>
+  </div>
+  <div class="navbar-collapse collapse">
+     <ul id="w_nav" class="nav navbar-nav">
+      <!-- <li id="home" class="active"><a href="/">首 页</a></li> -->
+      <li id="index"><a href="/gift">出库入库</a></li>
+      <li id="manage"><a href="/gift/manage">礼品管理</a></li>
+      <li id="storage"><a href="/gift/storage">库存查询</a></li>
+      <li id="other"><a href="/gift/other">其他管理</a></li>
+   </ul>
+<!--    <ul class="nav navbar-nav navbar-right">
+      <li><a href="#"><%= current_user.uName %> 你好</a></li>
+      <li><a href="#">设置</a></li>
+      <li><a href="/signout">退出</a></li>
+   </ul> -->
+</div>
+<!--/.nav-collapse -->
+</div>
+</div>
+<div class="container">
+   <div class="row">
+    <%- body %>
+ </div>
+</div>
+<div id="footer">
+   <div class="container">
+    <p class="muted">
+     资产管理
+  </p>
+</div>
+</div>
+</body>
+</html>
