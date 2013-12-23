@@ -22,3 +22,22 @@
   Desc: the proxy of stock in
  */
 
+var mysqlClient = require("../libs/mysqlUtil");
+
+/**
+ * get all stock in type list
+ * @param  {Function} callback the callback func
+ * @return {null}            
+ */
+exports.getAllStockInType = function (callback) {
+    mysqlClient.query({
+        sql     : "SELECT * FROM STOCKINTYPE",
+        params  : null
+    },  function (err, rows) {
+        if (err) {
+            return callback(new DBError(), null);
+        }
+
+        callback(null, rows);
+    });
+};

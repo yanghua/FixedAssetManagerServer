@@ -118,4 +118,4 @@ exports.modification = function (req, res, next) {
 
         res.send(resUtil.generateRes(null, config.statusCode.STATUS_OK));
     });
-}
+};

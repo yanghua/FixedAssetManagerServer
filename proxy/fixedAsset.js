@@ -1035,5 +1035,5 @@ exports.getUserIdByUserName= function(userName, callback) {
             return callback(new ServerError(), null);
         }
         callback(null, rows);
-    })
-}
+    });
+};
