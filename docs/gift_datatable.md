@@ -32,6 +32,7 @@ num                |                    | 数量
 amount             |                    | 单笔金额
 applyUserId        |                    | 申请人
 underDept          |                    | 费用承担部门
+ptId               |                    | 付款状态编号
 
 
 ```
@@ -45,6 +46,7 @@ num                |                    | 数量
 amount             |                    | 单笔金额
 supplier           |                    | 供应商
 siTypeId           |                    | 入库类型编号
+ptId               |                    | 付款状态编号
 
 ```
 stockInType             --入库类型(上交、采购、退回)
@@ -53,6 +55,14 @@ field name         | field type         | remark
 --------------     | --------------     | ------- 
 sitId              |                    | 入库类型编号
 typeName           |                    | 入库类型名称
+
+```
+paymentType            --付款状态（预付、后付）
+```
+field name         | field type         | remark 
+--------------     | --------------     | ------- 
+ptId               |                    | 付款状态编号
+ptName             |                    | 付款状态名称
 
 
 ```
