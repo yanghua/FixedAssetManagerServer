@@ -149,3 +149,64 @@ exports.modification = function (req, res, next) {
         return res.send(resUtil.generateRes(null, config.statusCode.STATUS_OK));
     });
 };
+
+/**
+ * index page of gifts
+ * @param  {Object}   req  the instance of request
+ * @param  {Object}   res  the instance of response
+ * @param  {Function} next the next handler
+ * @return {null}   
+ */
+exports.gift = function (req, res, next) {
+    debugCtrller("controllers/gift/index");
+    if (!req.session || !req.session.user) {
+        return res.redirect("/login");
+    }
+    res.render('gift/subviews/index.html');
+}
+
+/**
+ * manage page of gifts
+ * @param  {Object}   req  the instance of request
+ * @param  {Object}   res  the instance of response
+ * @param  {Function} next the next handler
+ * @return {null}   
+ */
+exports.giftManage = function(req, res, next) {
+    debugCtrller("controllers/gift/manage");
+    if (!req.session || !req.session.user) {
+        return res.redirect("/login");
+    }
+    res.render('gift/subviews/manage.html');
+}
+
+/**
+ * storage page of gifts
+ * @param  {Object}   req  the instance of request
+ * @param  {Object}   res  the instance of response
+ * @param  {Function} next the next handler
+ * @return {null}   
+ */
+exports.storage = function(req, res, next) {
+    debugCtrller("controllers/gift/storage");
+    if (!req.session || !req.session.user) {
+        return res.redirect("/login");
+    }
+    res.render('gift/subviews/storage.html');
+}
+
+/**
+ * other page of gifts
+ * @param  {Object}   req  the instance of request
+ * @param  {Object}   res  the instance of response
+ * @param  {Function} next the next handler
+ * @return {null}   
+ */
+exports.other = function(req, res, next) {
+    debugCtrller("controllers/gift/other");
+    if (!req.session || !req.session.user) {
+        return res.redirect("/login");
+    }
+    res.render('gift/subviews/other.html');
+}
+

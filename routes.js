@@ -62,6 +62,12 @@ module.exports = function (app) {
     app.get("/fixedasset/batchCreate", fixedAsset.batchCreate);
     app.get("/fixedasset/excelExport/:companyId", fixedAsset.exportExcel);
 
+    //gift
+    app.get("/gift", gift.gift);
+    app.get("/gift/manage", gift.giftManage);
+    app.get("/gift/storage", gift.storage);
+    app.get("/gift/other", gift.other);
+
     //apis
     app.get("/user/:userId", user.getUserById);
     app.get("/user/:userId/fixedassets", fixedAsset.getFixedAssetListByUserID);
