@@ -988,19 +988,6 @@ exports.exportExcel = function (req, res, next) {
             fileTitle = "jinzhi_";
         }
 
-        //test mail
-        mailService.sendMail({
-                subject     : "FixedAssetManager_Server[attachment_test]",
-                text        : "Hello",
-                attachments : [
-                    {
-                        fileName : fileTitle + (new Date().Format("yyyy-MM-dd")) + ".xlsx",
-                        contents : result,
-                        contentType : "application/vnd.openxmlformats"
-                    }
-                ]
-        });
-
         res.setHeader('Content-Type', 'application/vnd.openxmlformats');
         res.setHeader("Content-Disposition", "attachment; filename= "+fileTitle + (new Date().Format("yyyy-MM-dd"))+".xlsx");
         res.end(result, 'binary');
@@ -1073,5 +1060,5 @@ exports.getUserIdByUserName = function (req, res, next) {
         }
 
         res.send(resUtil.generateRes(result, config.statusCode.SATUS_OK));
-    })
-}
+    });
+};
