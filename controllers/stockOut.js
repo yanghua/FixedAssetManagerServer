@@ -22,3 +22,131 @@
   Desc: the controller of stock out
  */
 
+var EventProxy = require("eventproxy");
+var resUtil    = require("../libs/resUtil");
+var config     = require("../config").initConfig();
+var StockOut   = require("../proxy/stockOut");
+var check      = require("validator").check;
+var sanitize   = require("validator").sanitize;
+
+/**
+ * get all stockout items
+ * @param  {Object}   req  the instance of request
+ * @param  {Object}   res  the instance of response
+ * @param  {Function} next the next handler
+ * @return {null}        
+ */
+exports.stockouts = function (req, res, next) {
+    debugCtrller("/controllers/stockOut/stockouts");
+
+    if (!req.session || !req.session.user) {
+        return res.redirect("/login");
+    }
+
+    var conditions = {};
+
+    try {
+        if (req.params.giftId) {
+            check(req.params.giftId).notEmpty();
+            conditions.giftId = sanitize(sanitize(req.params.giftId).trim()).xss();
+        }
+    } catch (e) {
+        return res.send(resUtil.generateRes(null, config.statusCode.STATUS_INVAILD_PARAMS));
+    }
+
+    StockOut.getStockOutWithCondition(conditions, function (err, rows) {
+        if (err) {
+            return res.send(resUtil.generateRes(null, err.statusCode));
+        }
+
+        res.send(resUtil.generateRes(rows, config.statusCode.STATUS_OK));
+    });
+};
+
+/**
+ * add a new stock out item
+ * @param  {Object}   req  the instance of request
+ * @param  {Object}   res  the instance of response
+ * @param  {Function} next the next handler
+ * @return {null}  
+ */
+exports.insertion = function (req, res, next) {
+    debugCtrller("/controllers/stockOut/insertion");
+
+    if (!req.session || !req.session.user) {
+        return res.redirect("/login");
+    }
+
+    var stockOutInfo = {};
+
+    try {
+        check(req.body.giftId).notEmpty();
+        check(req.body.num).notEmpty();
+        check(req.body.amount).notEmpty();
+        check(req.body.applyUserId).notEmpty();
+        check(req.body.underDept).notEmpty();
+        check(req.body.ptId).notEmpty();
+
+        stockOutInfo.giftId      = sanitize(sanitize(req.body.giftId).trim()).xss();
+        stockOutInfo.num         = sanitize(sanitize(req.body.num).trim()).xss();
+        stockOutInfo.giftId      = sanitize(sanitize(req.body.amount).trim()).xss();
+        stockOutInfo.applyUserId = sanitize(sanitize(req.body.applyUserId).trim()).xss();
+        stockOutInfo.underDept   = sanitize(sanitize(req.body.underDept).trim()).xss();
+        stockOutInfo.ptId        = sanitize(sanitize(req.body.ptId).trim()).xss();
+    } catch (e) {
+        return res.send(resUtil.generateRes(null, config.statusCode.STATUS_INVAILD_PARAMS));
+    }
+
+    StockOut.add(stockOutInfo, function (err, rows) {
+        if (err) {
+            return res.send(resUtil.generateRes(null, err.statusCode));
+        }
+
+        res.send(resUtil.generateRes(null, config.statusCode.STATUS_OK));
+    });
+};
+
+/**
+ * modify a stock out item
+ * @param  {Object}   req  the instance of request
+ * @param  {Object}   res  the instance of response
+ * @param  {Function} next the next handler
+ * @return {null}  
+ */
+exports.modification = function (req, res, next) {
+    debugCtrller("/controllers/stockOut/modification");
+
+    if (!req.session || !req.session.user) {
+        return res.redirect("/login");
+    }
+
+    var stockOutInfo = {};
+
+    try {
+        check(req.body.soId).notEmpty();
+        check(req.body.giftId).notEmpty();
+        check(req.body.num).notEmpty();
+        check(req.body.amount).notEmpty();
+        check(req.body.applyUserId).notEmpty();
+        check(req.body.underDept).notEmpty();
+        check(req.body.ptId).notEmpty();
+
+        stockOutInfo.soId        = sanitize(sanitize(req.body.soId).trim()).xss();
+        stockOutInfo.giftId      = sanitize(sanitize(req.body.giftId).trim()).xss();
+        stockOutInfo.num         = sanitize(sanitize(req.body.num).trim()).xss();
+        stockOutInfo.giftId      = sanitize(sanitize(req.body.amount).trim()).xss();
+        stockOutInfo.applyUserId = sanitize(sanitize(req.body.applyUserId).trim()).xss();
+        stockOutInfo.underDept   = sanitize(sanitize(req.body.underDept).trim()).xss();
+        stockOutInfo.ptId        = sanitize(sanitize(req.body.ptId).trim()).xss();
+    } catch (e) {
+        return res.send(resUtil.generateRes(null, config.statusCode.STATUS_INVAILD_PARAMS));
+    }
+
+    StockOut.modify(stockOutInfo, function (err, rows) {
+        if (err) {
+            return res.send(resUtil.generateRes(null, err.statusCode));
+        }
+
+        res.send(resUtil.generateRes(null, config.statusCode.STATUS_OK));
+    });
+};

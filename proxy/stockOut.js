@@ -22,3 +22,93 @@
   Desc: the proxy of stock out
  */
 
+var mysqlClient = require("../libs/mysqlUtil");
+var util        = require("../libs/util");
+
+/**
+ * get stock out list with conditions
+ * @param  {Object}   conditions the search conditions
+ * @param  {Function} callback   the callback func
+ * @return {null}              
+ */
+exports.getStockOutWithCondition = function (conditions, callback) {
+    debugProxy("/proxy/stockOut/getStockOutWithCondition");
+    var sql;
+    sql = "SELECT so.* FROM STOCKOUT WHERE 1 = 1";
+
+    if (conditions) {
+        if (conditions.giftId) {
+            sql += "AND so.giftId = :giftId";
+        }
+    }
+
+    mysqlClient.query({
+        sql   : sql,
+        params: conditions
+    },  function (err, rows) {
+        if (err || !rows) {
+            debugProxy(err);
+            return callback(new DBError(), null);
+        }
+
+        callback(null, rows);
+    });
+};
+
+/**
+ * add a stock out info
+ * @param {Object}   stockOutInfo the inserting stock out info
+ * @param {Function} callback     the callback func
+ * @return {null}  
+ */
+exports.add = function (stockOutInfo, callback) {
+    debugProxy("/proxy/stockOut/add");
+    var sql;
+
+    //TODO:handle inventory
+
+    stockOutInfo.soId = util.GUID();
+    sql = "INSERT INTO STOCKOUT VALUES(:soId, :giftId, :num, :amount, :applyUserId, :underDept, :ptId);"
+
+    mysqlClient.query({
+        sql   : sql,
+        params: stockOutInfo
+    },  function (err, rows) {
+        if (err || !rows) {
+            return callback(new DBError(), null);
+        }
+
+        callback(null, null);
+    });
+};
+
+/**
+ * modify a stock out info
+ * @param  {Object}   stockOutInfo the modifying stock out info
+ * @param  {Function} callback     the callback func
+ * @return {null}                
+ */
+exports.modify = function (stockOutInfo, callback) {
+    debugProxy("/proxy/stockOut/modify");
+    var sql;
+
+    sql = "UPDATE STOCKOUT SET giftId = :giftId,            " +
+          "                    num = :num,                  " +
+          "                    amount = :amount,            " +
+          "                    applyUserId = :applyUserId,  " +
+          "                    underDept = :underDept,      " +
+          "                    ptId = :ptId                 " +
+          "WHERE soId = :soId                               ";
+
+    mysqlClient.query({
+        sql   : sql,
+        params: stockOutInfo
+    },  function (err, rows) {
+        if (err || !rows) {
+            return callback(new DBError(), null);
+        }
+
+        callback(null, null);
+    });
+
+};

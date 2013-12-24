@@ -23,15 +23,17 @@
  */
 
 var mysqlClient = require("../libs/mysqlUtil");
+var util        = require("../libs/util");
 
 /**
- * get all stock in type list
+ * get all stock in item list
  * @param  {Function} callback the callback func
  * @return {null}            
  */
-exports.getAllStockInType = function (callback) {
+exports.getAllStockInWithCondition = function (callback) {
+    debugProxy("/proxy/stockIn/getAllStockInWithCondition");
     mysqlClient.query({
-        sql     : "SELECT * FROM STOCKINTYPE",
+        sql     : "SELECT si.* FROM STOCKIN si",
         params  : null
     },  function (err, rows) {
         if (err) {
@@ -39,5 +41,64 @@ exports.getAllStockInType = function (callback) {
         }
 
         callback(null, rows);
+    });
+};
+
+
+/**
+ * added a new stock in item
+ * @param {stockInInfo}   stockInInfo a new instance of stock in
+ * @param {Function} callback    the callback func
+ */
+exports.add = function (stockInInfo, callback) {
+    debugProxy("/proxy/stockIn/add");
+
+    var sql;
+
+    sql = "INSERT INTO STOCKIN VALUES(:siId, :giftId, :num, :amount, :supplier, :siTypeId, :ptId);"
+
+    stockInInfo.siId = util.GUID();
+
+    mysqlClient.query({
+        sql     : sql,
+        params  : stockInInfo
+    },  function (err, rows) {
+        if (err || !rows) {
+            return callback(new DBError(), null);
+        }
+
+        callback(null, null);
+    });
+
+};
+
+/**
+ * modify a stock in item
+ * @param  {Object}   stockInInfo the instance of modifying stock in object
+ * @param  {Function} callback    the callback func
+ * @return {null}               
+ */
+exports.modify = function (stockInInfo, callback) {
+    debugProxy("/proxy/stockIn/modify");
+    var sql;
+
+    sql = "UPDATE STOCKIN SET                       " +
+          "                   giftId = :giftId,     " +
+          "                   num = :num,           " +
+          "                   amount = :amount,     " +
+          "                   supplier = :supplier, " +
+          "                   siTypeId = :siTypeId, " +
+          "                   ptId = :ptId          " +
+          "WHERE siId = :siId                       ";
+
+    mysqlClient.query({
+        sql     : sql,
+        params  : stockInInfo
+    },  function (err, rows) {
+        if (err || !rows) {
+            return callback(new DBError(), null);
+        }
+
+        callback(null, null);
     });
 };
