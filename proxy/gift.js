@@ -33,7 +33,9 @@ var util        = require("../libs/util");
  */
 exports.getGiftWithConditiions = function (conditions, callback) {
     debugProxy("/proxy/gift/getGiftWithConditiions");
-    var sql = "SELECT g.* FROM GIFT g WHERE 1 = 1 ";
+    var sql = "SELECT g.*, gc.name FROM GIFT g " +
+              "LEFT JOIN GIFTCATEGORY gc ON g.categoryId = gc.categoryId " +
+              "WHERE 1 = 1 ";
 
     if (conditions) {
         if (conditions.giftId) {

@@ -27,16 +27,32 @@ var util        = require("../libs/util");
 
 /**
  * get all stock in item list
+ * @param  {Object} conditions the search conditions
  * @param  {Function} callback the callback func
  * @return {null}            
  */
-exports.getAllStockInWithCondition = function (callback) {
+exports.getAllStockInWithCondition = function (conditions, callback) {
     debugProxy("/proxy/stockIn/getAllStockInWithCondition");
+    var sql;
+
+    sql = "SELECT so.*, g.name, u.userName, d.departmentName, pt.ptName FROM STOCKOUT so " +
+          "LEFT JOIN GIFT g ON so.giftId = g.giftId " +
+          "LEFT JOIN STOCKINTYPE sit ON so.siTypeId = sit.sitId " +
+          "LEFT JOIN PAYMENTTYPE pt ON so.ptId = pt.ptId " +
+          "WHERE 1 = 1";
+
+    if (conditions) {
+        if (conditions.giftId) {
+            sql += "AND so.giftId = :giftId";
+        }
+    }
+
     mysqlClient.query({
-        sql     : "SELECT si.* FROM STOCKIN si",
-        params  : null
+        sql     : sql,
+        params  : conditions
     },  function (err, rows) {
-        if (err) {
+        if (err || !rows) {
+            debugProxy(err);
             return callback(new DBError(), null);
         }
 
@@ -64,6 +80,7 @@ exports.add = function (stockInInfo, callback) {
         params  : stockInInfo
     },  function (err, rows) {
         if (err || !rows) {
+            debugProxy(err);
             return callback(new DBError(), null);
         }
 
