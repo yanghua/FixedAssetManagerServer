@@ -89,7 +89,7 @@ exports.insertion = function (req, res, next) {
 
         stockOutInfo.giftId      = sanitize(sanitize(req.body.giftId).trim()).xss();
         stockOutInfo.num         = sanitize(sanitize(req.body.num).trim()).xss();
-        stockOutInfo.giftId      = sanitize(sanitize(req.body.amount).trim()).xss();
+        stockOutInfo.amount      = sanitize(sanitize(req.body.amount).trim()).xss();
         stockOutInfo.applyUserId = sanitize(sanitize(req.body.applyUserId).trim()).xss();
         stockOutInfo.underDept   = sanitize(sanitize(req.body.underDept).trim()).xss();
         stockOutInfo.ptId        = sanitize(sanitize(req.body.ptId).trim()).xss();
