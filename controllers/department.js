@@ -42,6 +42,6 @@ exports.getAllDepartments = function (req, res, next) {
             return res.send(resUtil.generateRes(null, err.statusCode));
         }
 
-        res.send(resUtil.generateRes(deptList, config.statusCode.SATUS_OK));
+        res.send(resUtil.generateRes(deptList, config.statusCode.STATUS_OK));
     });
 };

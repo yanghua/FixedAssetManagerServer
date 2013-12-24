@@ -40,6 +40,6 @@ exports.companies = function (req, res, next) {
             return res.send(resUtil.generateRes(null, err.statusCode));
         }
 
-        return res.send(resUtil.generateRes(companyList, config.statusCode.SATUS_OK));
+        return res.send(resUtil.generateRes(companyList, config.statusCode.STATUS_OK));
     });
 };

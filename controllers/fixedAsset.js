@@ -63,7 +63,7 @@ exports.getFixedAssetByfaID = function (req, res, next) {
         if (err) {
             res.send(resUtil.generateRes(null, err.statusCode));
         } else {
-            res.send(resUtil.generateRes(rows, config.statusCode.SATUS_OK));
+            res.send(resUtil.generateRes(rows, config.statusCode.STATUS_OK));
         }
     });
 };
@@ -107,7 +107,7 @@ exports.inspection = function (req, res, next) {
                 return ep.emitLater("error", err);
             }
 
-            res.send(resUtil.generateRes(faInfo, config.statusCode.SATUS_OK));
+            res.send(resUtil.generateRes(faInfo, config.statusCode.STATUS_OK));
         });
     });
 
@@ -182,7 +182,7 @@ exports.rejection = function (req, res, next) {
     });
 
     ep.once("completed", function() {
-        res.send(resUtil.generateRes(null, config.statusCode.SATUS_OK));
+        res.send(resUtil.generateRes(null, config.statusCode.STATUS_OK));
     });
 
 
@@ -242,7 +242,7 @@ exports.insertion = function (req, res, next) {
     });
 
     ep.once("completed", function() {
-        res.send(resUtil.generateRes(null, config.statusCode.SATUS_OK));
+        res.send(resUtil.generateRes(null, config.statusCode.STATUS_OK));
     });
 
     ep.fail(function (err) {
@@ -311,7 +311,7 @@ exports.recycle = function (req, res, next) {
     });
 
     ep.once("completed", function() {
-        res.send(resUtil.generateRes(null, config.statusCode.SATUS_OK));
+        res.send(resUtil.generateRes(null, config.statusCode.STATUS_OK));
     });
 
     ep.fail(function (err) {
@@ -394,7 +394,7 @@ exports.modification = function (req, res, next) {
     });
 
     ep.once("completed", function() {
-        res.send(resUtil.generateRes(null, config.statusCode.SATUS_OK));
+        res.send(resUtil.generateRes(null, config.statusCode.STATUS_OK));
     });
 
     ep.fail(function (err) {
@@ -427,7 +427,7 @@ exports.getFixedAssetListByUserID = function (req, res, next) {
             return res.send(resUtil.generateRes(null, err.statusCode));
         } 
             
-        res.send(resUtil.generateRes(rows, config.statusCode.SATUS_OK));
+        res.send(resUtil.generateRes(rows, config.statusCode.STATUS_OK));
     });
 };
 
@@ -486,7 +486,7 @@ exports.allocation = function (req, res, next) {
     });
 
     ep.once("completed", function () {
-        res.send(resUtil.generateRes(null, config.statusCode.SATUS_OK));
+        res.send(resUtil.generateRes(null, config.statusCode.STATUS_OK));
     });
 
     ep.fail(function(err) {
@@ -520,9 +520,9 @@ exports.checkExistence = function (req, res, next) {
         }
 
         if (hasFA) {
-            return res.send(resUtil.generateRes(1, config.statusCode.SATUS_OK));
+            return res.send(resUtil.generateRes(1, config.statusCode.STATUS_OK));
         } else {
-            return res.send(resUtil.generateRes(0, config.statusCode.SATUS_OK));
+            return res.send(resUtil.generateRes(0, config.statusCode.STATUS_OK));
         }
     });
 };
@@ -753,7 +753,7 @@ exports.idleFixedAsset = function (req, res, next) {
         data.total      = idelFACount;
         data.idelFAList = idelFAList;
 
-        return res.send(resUtil.generateRes(data, config.statusCode.SATUS_OK));
+        return res.send(resUtil.generateRes(data, config.statusCode.STATUS_OK));
     });
 
 
@@ -824,7 +824,7 @@ exports.importFA = function (req, res, next) {
         excelData.shift();
         FixedAsset.importFixedAssets(companyId, excelData, function () {
             fs.unlinkSync(xlsxPath);
-            return res.send(resUtil.generateRes(null, config.statusCode.SATUS_OK));
+            return res.send(resUtil.generateRes(null, config.statusCode.STATUS_OK));
         });
     });
 
@@ -1020,7 +1020,7 @@ exports.conditionInfo = function (req, res, next) {
             return res.send(resUtil.generateRes(null, err.statusCode));
         }
 
-        res.send(resUtil.generateRes(result, config.statusCode.SATUS_OK));
+        res.send(resUtil.generateRes(result, config.statusCode.STATUS_OK));
     });
 
 };
@@ -1044,7 +1044,7 @@ exports.retrieve = function (req, res, next) {
             return res.send(resUtil.generateRes(null, err.statusCode));
         }
 
-        res.send(resUtil.generateRes(result, config.statusCode.SATUS_OK));
+        res.send(resUtil.generateRes(result, config.statusCode.STATUS_OK));
     });
 };
 
@@ -1059,6 +1059,6 @@ exports.getUserIdByUserName = function (req, res, next) {
             return res.send(resUtil.generateRes(null, err.statusCode));
         }
 
-        res.send(resUtil.generateRes(result, config.statusCode.SATUS_OK));
+        res.send(resUtil.generateRes(result, config.statusCode.STATUS_OK));
     });
 };
