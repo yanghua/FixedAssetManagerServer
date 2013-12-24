@@ -34,7 +34,7 @@ var util        = require("../libs/util");
 exports.getStockOutWithCondition = function (conditions, callback) {
     debugProxy("/proxy/stockOut/getStockOutWithCondition");
     var sql;
-    sql = "SELECT so.* FROM STOCKOUT WHERE 1 = 1";
+    sql = "SELECT so.* FROM STOCKOUT so WHERE 1 = 1";
 
     if (conditions) {
         if (conditions.giftId) {
