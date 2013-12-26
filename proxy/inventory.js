@@ -22,3 +22,37 @@
   Desc: the proxy of inventory
  */
 
+var mysqlClient = require("../libs/mysqlUtil");
+var util        = require("../libs/util");
+
+/**
+ * get inventory with query conditions
+ * @param  {Object}   conditions the instance of query conditions
+ * @param  {Function} callback   the callback func
+ * @return {null}              
+ */
+exports.getInventoryWithConditions = function (conditions, callback) {
+    debugProxy("/proxy/inventory/getInventoryWithConditions");
+    var sql;
+    sql = "SELECT i.*, g.* FROM INVENTORY i " +
+          "LEFT JOIN GIFT g ON i.giftId = g.giftId " +
+          "WHERE 1 = 1 ";
+
+    if (conditions) {
+        if (conditions.giftId) {
+            sql += "AND i.giftId = :giftId";
+        }
+    }
+
+    mysqlClient.query({
+        sql     : sql,
+        params  : conditions
+    },  function (err, rows) {
+        if (err || !rows) {
+            debugProxy(err);
+            return callback(new DBError(), null);
+        }
+
+        callback(null, rows);
+    });
+};

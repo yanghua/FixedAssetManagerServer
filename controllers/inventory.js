@@ -22,3 +22,43 @@
   Desc: the controller of inventory
  */
 
+var EventProxy  = require("eventproxy");
+var resUtil     = require("../libs/resUtil");
+var config      = require("../config").initConfig();
+var check       = require("validator").check;
+var sanitize    = require("validator").sanitize;
+var Inventory   = require("../proxy/inventory");
+
+/**
+ * get inventories
+ * @param  {Object}   req  the instance of request
+ * @param  {Object}   res  the instance of response
+ * @param  {Function} next the next handler
+ * @return {null}        
+ */
+exports.inventories = function (req, res, next) {
+    debugCtrller("/controllers/inventory/inventories");
+
+    if (!req.session || !req.session.user) {
+        return res.redirect("/login");
+    }
+
+    var conditions = {};
+
+    try {
+        if (req.params.giftId) {
+            conditions.giftId = sanitize(sanitize(req.params.giftId).trim()).xss();
+        }
+    } catch (e) {
+        return res.send(resUtil.generateRes(null, config.statusCode.STATUS_INVAILD_PARAMS));
+    }
+
+    Inventory.getInventoryWithConditions(conditions, function (err, rows) {
+        if (err) {
+            return res.send(resUtil.generateRes(null, err.statusCode));
+        }
+
+        res.send(resUtil.generateRes(rows, config.statusCode.STATUS_OK));
+    });
+
+};

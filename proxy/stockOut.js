@@ -70,8 +70,6 @@ exports.add = function (stockOutInfo, callback) {
     debugProxy("/proxy/stockOut/add");
     var sql;
 
-    //TODO:handle inventory
-
     stockOutInfo.soId = util.GUID();
     sql = "INSERT INTO STOCKOUT VALUES(:soId, :giftId, :num, :amount, :applyUserId, :underDept, :ptId);"
 
