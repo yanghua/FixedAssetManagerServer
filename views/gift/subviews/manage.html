@@ -3,26 +3,73 @@
     <!-- script -->
     <%- Loader("/public/libs/js/giftManage.min.js")
     .js("/public/libs/js/bootstrap-select.js")
+    .js("/public/libs/js/bootstrap-datepicker.js")
     .js("/public/libs/js/bootbox.min.js")
+    .js("/public/libs/js/giftManage.js")
     .done(assets)
     %>
     <!-- style -->
     <%- Loader("/public/stylesheets/giftManage.min.css")
     .css("/public/stylesheets/giftManage.css")
     .css("/public/stylesheets/bootstrap-select.css")
+    .css("/public/stylesheets/datepicker.css")
     .done(assets)
     %>
 </head>
 
 <script type="text/javascript">
     $(document).ready(function(){
-        $("li[class='active']").removeAttr("class");
+        $("#w_nav>li[class='active']").removeAttr("class");
         $("#manage").addClass("active");
-        $('#giftCategory').selectpicker();
+        // $('#giftExpireDate').datepicker({
+        //     format: 'yyyy-mm-dd',
+        //     startDate: '-3d'
+        // })
+        var checkin = $('#giftExpireDate').datepicker({
+            format: 'yyyy-mm-dd'
+        }).on('changeDate', function(ev) {
+            checkin.hide();
+        }).data('datepicker');
+
+        loadGifts();
+
     });
-    function giftInOpearteClick (argument) {
-        // body...
+    $.ajax({
+        url:"/giftcategories",
+        type:"GET",
+        success: function (data) {
+            if (data.statusCode === 0) {
+                for (var i = 0; i < data.data.length; i++) {
+                    var temp = "<option value='" + data.data[i].categoryId + "'>" + data.data[i].name + "</option>";
+                    $("#giftCategory").append(temp);
+                };
+                $('#giftCategory').selectpicker();
+            }
+        }
+    })
+    function giftInOpearteClick () {
+        //without check
+        bootbox.alert("this is a test form add new gift");
+        $.ajax({
+            url:'/gift/insertion',
+            type:'POST',
+            data:$('form.giftInOpear').serialize(),
+            success:function (data) {
+                if (data.statusCode === 0) {
+                    bootbox.alert("出库成功!",function () {
+                        // todo
+                    });
+                }else{
+                    bootbox.alert("系统出错 , 请重试 !");
+                }
+            },
+            error:function (err) {
+                bootbox.alert(err);
+            }
+        })
     }
+
+
 </script>
 <div id="main_div" class="panel">
  <div class="row-fluid">
@@ -40,47 +87,45 @@
             </ul>
             <div class="tab-content">
                 <div class="tab-pane active fade in" id="panel-1">
-                    <form class= "form-inline"  role="form">
+                    <form class= "giftInOpear form-inline"  role="form">
                         <div>
                             <div class="form-group">
                                 <legend>礼品管理</legend>
                                 <div class="input-group " >
                                     <label class="lable1">品牌 :</label><input  class="form-control " type="text" id="brand" name = "brand">
                                     <label class="lable1">名&nbsp;&nbsp;&nbsp;&nbsp;称 :</label><input  class="form-control" type="text" id="giftName" name="name">
-                                    <label class="lable1">计量单位 :</label><input  class="form-control" type="text" id="giftUnit" name="name">
+                                    <label class="lable1">计量单位 :</label><input  class="form-control" type="text" id="giftUnit" name="unit">
                                 </div><p>
                                 <div class="input-group" >
-                                    <label class="lable1">单价 :</label><input  class="form-control" type="text" id="giftPrice" name="price">
-                                    <label class="lable1">有效期 :</label><input class="form-control" type="text" id="giftExpireDate" name="expireDate">
+                                    <label class="lable1">单价 :</label><input  class="form-control"  id="giftPrice" name="price" type="number"  min="0" data-bind="value:giftPrice">
+                                    <label class="lable1">有效期 :</label>
+                                    <input type="text" class="form-control" data-date-format="yyyy-mm-dd" value="" id="giftExpireDate" name="expireDate">
                                     <label class="lable1">礼品类别 :</label>
                                     <select  id="giftCategory" name="categoryId"  class="selectpicker show-tick" style="margin-left:20px;">
                                         <option value="0">-- 请选择礼品类别 --</option>
                                     </select>
+
+                                    <button type="button" class="btn btn-primary" style="margin-left:10px" id="giftIn" onclick="giftInOpearteClick()">确定录入</button>
                                 </div><p>
                                 <div class="input-group" >
-                                    <button type="button" class="btn btn-primary" id="giftIn" onclick="giftInOpearteClick()">确定录入</button>
+                                    
                                 </div>
                             </div>
                         </div>
-                        <div class="panel panel-default" id="assetDetails">
-                            <!-- Default panel contents -->
-                            <div class="panel-heading">资产详情</div>
-                            <input id = "the_new_id" style="display: none;">
-                            <ul class="list-group">
 
-                            </ul>
-                        </div>
                         <div class="panel panel-default" id="underName">
-                            <div class="panel-heading" >用户名下</div>
+                            <div class="panel-heading" >现有礼品</div>
                             <table class="table table-striped">
                                 <thead>
                                     <tr>
-                                        <th>#</th>
-                                        <th>设备编号</th>
-                                        <th>设备名</th>
-                                        <th>详情</th>
-                                        <th>回收</th>
-                                        <th>改派</th>
+                                        <th>名称</th>
+                                        <th>品牌</th>
+                                        <th>单位</th>
+                                        <th>单价</th>
+                                        <th>类别</th>
+                                        <th>有效期</th>
+                                        <th>修改</th>
+                                        <th>删除</th>
                                     </tr>
                                 </thead>
                                 <tbody id='addtr'>
@@ -89,12 +134,7 @@
                             </table>
                         </div>
                     </form>
-                    <div class="panel panel-default" id="assetEvent">
-                        <div class="panel-heading" >设备变动记录</div>
-                        <ul class="list-group" id="historyul" >
-                            <li class="list-group-item">waiting</li>
-                        </ul>
-                    </div>
+                 
                 </div>
 
                 <div class="tab-pane" id="panel-3">
