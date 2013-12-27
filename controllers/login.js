@@ -128,7 +128,7 @@ exports.commonProcess = function (req, res, next) {
  */
 exports.captchaImg = function (req, res, next) {
     debugCtrller("controllers/login/captchaImg");
-    var captcha     = captchagen.create();
+    var captcha     = captchagen.create({ text : randomNumberWithBitNum(6) });
     var captchaCode = captcha.text();
 
     debugCtrller(captchaCode);
@@ -142,3 +142,22 @@ exports.captchaImg = function (req, res, next) {
 
     res.send(captcha.buffer());
 };
+
+/**
+ * generate random number with bit num
+ * @param  {Number} bitNum the random number's bit num
+ * @return {String}        the string of random number's set
+ */
+function randomNumberWithBitNum (bitNum) {
+    var bn, num = "";
+    if (typeof bitNum === undefined) {
+        bn = 6;
+    } else {
+        bn = bitNum;
+    }
+
+    for (var i = 0; i < bn; i++) {
+        num += Math.floor(Math.random() * 10);
+    }
+    return num;
+}
