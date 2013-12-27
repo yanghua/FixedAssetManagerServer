@@ -1,7 +1,14 @@
-#baseInput,
+#giftSize,
+#giftSize2,
+#giftAcount2,
 #giftAcount{
 	width:150px;
 	margin-bottom:10px;
 	margin-left:20px;
 	margin-right:20px;
+}
+#outOpearte,
+#inOpearte{
+	margin-left:20px;
+	margin-bottom:10px;
 }
