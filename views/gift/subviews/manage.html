@@ -47,27 +47,7 @@
             }
         }
     })
-    function giftInOpearteClick () {
-        //without check
-        bootbox.alert("this is a test form add new gift");
-        $.ajax({
-            url:'/gift/insertion',
-            type:'POST',
-            data:$('form.giftInOpear').serialize(),
-            success:function (data) {
-                if (data.statusCode === 0) {
-                    bootbox.alert("出库成功!",function () {
-                        // todo
-                    });
-                }else{
-                    bootbox.alert("系统出错 , 请重试 !");
-                }
-            },
-            error:function (err) {
-                bootbox.alert(err);
-            }
-        })
-    }
+    
 
 
 </script>
