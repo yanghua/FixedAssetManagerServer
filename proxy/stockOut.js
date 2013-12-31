@@ -71,7 +71,11 @@ exports.add = function (stockOutInfo, callback) {
     var sql;
 
     stockOutInfo.soId = util.GUID();
-    sql = "INSERT INTO STOCKOUT VALUES(:soId, :giftId, :num, :amount, :applyUserId, :underDept, :ptId);"
+    if (!stockOutInfo.siDate) {
+        stockOutInfo.siDate = new Date().Format("yyyy-MM-dd");
+    }
+
+    sql = "INSERT INTO STOCKOUT VALUES(:soId, :giftId, :num, :amount, :applyUserId, :underDept, :ptId, :soDate);"
 
     mysqlClient.query({
         sql   : sql,
@@ -100,8 +104,13 @@ exports.modify = function (stockOutInfo, callback) {
           "                    amount = :amount,            " +
           "                    applyUserId = :applyUserId,  " +
           "                    underDept = :underDept,      " +
-          "                    ptId = :ptId                 " +
+          "                    ptId = :ptId,                " +
+          "                    soDate = :soDate             " +
           "WHERE soId = :soId                               ";
+
+    if (!stockOutInfo.siDate) {
+        stockOutInfo.siDate = new Date().Format("yyyy-MM-dd");
+    }
 
     mysqlClient.query({
         sql   : sql,

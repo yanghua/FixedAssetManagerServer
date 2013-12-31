@@ -71,9 +71,12 @@ exports.add = function (stockInInfo, callback) {
 
     var sql;
 
-    sql = "INSERT INTO STOCKIN VALUES(:siId, :giftId, :num, :amount, :supplier, :siTypeId, :ptId);"
+    sql = "INSERT INTO STOCKIN VALUES(:siId, :giftId, :num, :amount, :supplier, :siTypeId, :ptId, :siDate);"
 
     stockInInfo.siId = util.GUID();
+    if (!stockInInfo.siDate) {
+        stockInInfo.siDate = new Date().Format("yyyy-MM-dd");
+    }
 
     mysqlClient.query({
         sql     : sql,
@@ -105,8 +108,13 @@ exports.modify = function (stockInInfo, callback) {
           "                   amount = :amount,     " +
           "                   supplier = :supplier, " +
           "                   siTypeId = :siTypeId, " +
-          "                   ptId = :ptId          " +
+          "                   ptId = :ptId,         " +
+          "                   siDate = :siDate      " +
           "WHERE siId = :siId                       ";
+
+    if (!stockInInfo.siDate) {
+        stockInInfo.siDate = new Date().Format("yyyy-MM-dd");
+    }
 
     mysqlClient.query({
         sql     : sql,

@@ -33,6 +33,7 @@ amount             |                    | 单笔金额
 applyUserId        |                    | 申请人
 underDept          |                    | 费用承担部门
 ptId               |                    | 付款状态编号
+soDate             |                    | 出库时间
 
 
 ```
@@ -47,6 +48,7 @@ amount             |                    | 单笔金额
 supplier           |                    | 供应商
 siTypeId           |                    | 入库类型编号
 ptId               |                    | 付款状态编号
+siDate             |                    | 入库时间
 
 ```
 stockInType             --入库类型(上交、采购、退回)
