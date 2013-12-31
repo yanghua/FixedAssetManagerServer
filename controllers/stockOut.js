@@ -84,6 +84,7 @@ exports.insertion = function (req, res, next) {
         check(req.body.num).notEmpty();
         check(req.body.amount).notEmpty();
         check(req.body.applyUserId).notEmpty();
+        check(req.body.applyDeptId).notEmpty();
         check(req.body.underDept).notEmpty();
         check(req.body.ptId).notEmpty();
 
@@ -91,6 +92,7 @@ exports.insertion = function (req, res, next) {
         stockOutInfo.num         = sanitize(sanitize(req.body.num).trim()).xss();
         stockOutInfo.amount      = sanitize(sanitize(req.body.amount).trim()).xss();
         stockOutInfo.applyUserId = sanitize(sanitize(req.body.applyUserId).trim()).xss();
+        stockOutInfo.applyDeptId = sanitize(sanitize(req.body.applyDeptId).trim()).xss();
         stockOutInfo.underDept   = sanitize(sanitize(req.body.underDept).trim()).xss();
         stockOutInfo.ptId        = sanitize(sanitize(req.body.ptId).trim()).xss();
     } catch (e) {
@@ -128,6 +130,7 @@ exports.modification = function (req, res, next) {
         check(req.body.num).notEmpty();
         check(req.body.amount).notEmpty();
         check(req.body.applyUserId).notEmpty();
+        check(req.body.applyDeptId).notEmpty();
         check(req.body.underDept).notEmpty();
         check(req.body.ptId).notEmpty();
 
@@ -136,6 +139,7 @@ exports.modification = function (req, res, next) {
         stockOutInfo.num         = sanitize(sanitize(req.body.num).trim()).xss();
         stockOutInfo.giftId      = sanitize(sanitize(req.body.amount).trim()).xss();
         stockOutInfo.applyUserId = sanitize(sanitize(req.body.applyUserId).trim()).xss();
+        stockOutInfo.applyDeptId = sanitize(sanitize(req.body.applyDeptId).trim()).xss();
         stockOutInfo.underDept   = sanitize(sanitize(req.body.underDept).trim()).xss();
         stockOutInfo.ptId        = sanitize(sanitize(req.body.ptId).trim()).xss();
     } catch (e) {
