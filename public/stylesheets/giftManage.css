@@ -1,7 +1,12 @@
 #brand,
+#editBrand,
 #giftName,
+#editGiftName,
 #giftUnit,
+#editGiftUnit,
 #giftPrice,
+#editGiftPrice,
+#editGiftExpireDate,
 #giftExpireDate{
 	width:150px;
 }
