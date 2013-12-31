@@ -25,15 +25,21 @@
         //     format: 'yyyy-mm-dd',
         //     startDate: '-3d'
         // })
-        var checkin = $('#giftExpireDate').datepicker({
-            format: 'yyyy-mm-dd'
-        }).on('changeDate', function(ev) {
-            checkin.hide();
-        }).data('datepicker');
+    var checkin = $('#giftExpireDate').datepicker({
+        format: 'yyyy-mm-dd'
+    }).on('changeDate', function(ev) {
+        checkin.hide();
+    }).data('datepicker');
 
-        loadGifts();
+    var checkinEdit = $('#editGiftExpireDate').datepicker({
+        format: 'yyyy-mm-dd'
+    }).on('changeDate', function(ev) {
+        checkinEdit.hide();
+    }).data('datepicker');
 
-    });
+    loadGifts();
+
+});
     $.ajax({
         url:"/giftcategories",
         type:"GET",
@@ -42,7 +48,9 @@
                 for (var i = 0; i < data.data.length; i++) {
                     var temp = "<option value='" + data.data[i].categoryId + "'>" + data.data[i].name + "</option>";
                     $("#giftCategory").append(temp);
+                    $("#giftCategoryEdit").append(temp);
                 };
+                $('#giftCategoryEdit').selectpicker();
                 $('#giftCategory').selectpicker();
             }
         }
@@ -88,7 +96,7 @@
                                     <button type="button" class="btn btn-primary" style="margin-left:10px" id="giftIn" onclick="giftInOpearteClick()">确定录入</button>
                                 </div><p>
                                 <div class="input-group" >
-                                    
+
                                 </div>
                             </div>
                         </div>
@@ -114,7 +122,7 @@
                             </table>
                         </div>
                     </form>
-                 
+
                 </div>
 
                 <div class="tab-pane" id="panel-3">
@@ -169,6 +177,48 @@
 
     </div>
 </div>            
+<!-- Modal -->
+<div class="modal fade" id="gitEditModle" tabindex="-1" role="dialog" aria-labelledby="gitEditModleLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalLabel">礼品修改</h4>
+            </div>
+            <div class="modal-body" id="userInfoDetails">
+                <form class= "editGiftInOpear form-inline"  role="form">
+                    <div>
+                        <div class="form-group">
+                            <input  class="form-control" style="display:none" type="text" id="editGiftId" name = "giftId">
+                            <div class="input-group " >
+                                <label class="lable1">品&nbsp;&nbsp;&nbsp;&nbsp;牌 :</label><input  class="form-control" type="text" id="editBrand" name = "brand">
+                                <label class="lable1">名&nbsp;&nbsp;&nbsp;&nbsp;称 :</label><input  class="form-control" type="text" id="editGiftName" name="name">
+                            </div><p>
+                            <div class="input-group " >
+                                <label class="lable1">单&nbsp;&nbsp;&nbsp;&nbsp;位 :</label><input  class="form-control" type="text" id="editGiftUnit" name="unit">
+                                 <label class="lable1">单&nbsp;&nbsp;&nbsp;&nbsp;价 :</label><input  class="form-control"  id="editGiftPrice" name="price" type="number"  min="0" data-bind="value:editGiftPrice">
+                            </div><p>
+                            <div class="input-group" >
+                                <label class="lable1">有效期 :</label>
+                                <input type="text" class="form-control" data-date-format="yyyy-mm-dd" value="" id="editGiftExpireDate" name="expireDate">
+                                <label class="lable1">类&nbsp;&nbsp;&nbsp;&nbsp;别 :</label>
+                                <select  id="giftCategoryEdit" name="categoryId" data-width="150px"  class="selectpicker show-tick" style="margin-left:20px;">
+                                    <option value="0">-- 请选择礼品类别 --</option>
+                                </select>
+
+                               
+                            </div><p>
+                            <div class="input-group" >
+                                 <button type="button" class="btn btn-primary" style="margin-left:10px" id="giftIn" onclick="giftEditOpearteClick()">确定修改</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 
 
 </div>

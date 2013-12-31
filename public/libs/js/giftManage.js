@@ -19,8 +19,30 @@ var tdCont = {
 };
 
 function editGiftFunc(giftId) {
-  bootbox.alert(giftId);
-
+  $('#gitEditModle').modal('show');
+  $.ajax({
+    url:'/gifts',
+    type:'POST',
+    data:{'giftId':giftId},
+    success: function (data) {
+      if(data.statusCode === 0){
+        var tempGift = data.data[0];
+        $("#editGiftId").val(tempGift.giftId);
+        $("#editBrand").val(tempGift.brand);
+        $("#editGiftName").val(tempGift.name);
+        $("#editGiftUnit").val(tempGift.unit);
+        $("#editGiftPrice").val(tempGift.price);
+        var tempDate="";
+        if (tempGift.expireDate.indexOf('0000') == -1) {
+            tempDate = tempGift.expireDate.substring(0, 10)
+          } else {
+            tempDate = "";
+          }
+        $('#giftCategoryEdit').selectpicker('val', tempGift.categoryId);
+        $("#editGiftExpireDate").val(tempDate);
+      }
+    }
+  })
 }
 
 function delGiftFunc(giftId) {
@@ -43,7 +65,7 @@ function delGiftFunc(giftId) {
 function loadGifts() {
   $.ajax({
     url: '/gifts',
-    type: 'GET',
+    type: 'POST',
     success: function(data) {
       if (data.statusCode === 0) {
         for (var i = 0; i < data.data.length; i++) {
@@ -94,7 +116,28 @@ function giftInOpearteClick() {
     data: $('form.giftInOpear').serialize(),
     success: function(data) {
       if (data.statusCode === 0) {
-        bootbox.alert("出库成功!", function() {
+        bootbox.alert("录入成功!", function() {
+          // todo
+        });
+      } else {
+        bootbox.alert("系统出错 , 请重试 !");
+      }
+    },
+    error: function(err) {
+      bootbox.alert(err);
+    }
+  })
+}
+
+function giftEditOpearteClick () {
+  //without check 
+  $.ajax({
+    url: '/gift/modification',
+    type: 'POST',
+    data: $('form.editGiftInOpear').serialize(),
+    success: function(data) {
+      if (data.statusCode === 0) {
+        bootbox.alert("修改成功!", function() {
           // todo
         });
       } else {
