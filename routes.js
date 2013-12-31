@@ -111,7 +111,7 @@ module.exports = function (app) {
     app.post("/stockintype/insertion", stockInType.insertion);
     app.post("/stockintype/modification", stockInType.modification);
 
-    app.get("/gifts", gift.gifts);
+    app.post("/gifts", gift.gifts);
     app.post("/gift/insertion", gift.insertion);
     app.post("/gift/modification", gift.modification);
 
@@ -119,11 +119,11 @@ module.exports = function (app) {
     app.post("/paymenttype/insertion", paymentType.insertion);
     app.post("/paymenttype/modification", paymentType.modification);
 
-    app.get("/stockins", stockIn.stockins);
+    app.post("/stockins", stockIn.stockins);
     app.post("/stockin/insertion", stockIn.insertion);
     app.post("/stockin/modification", stockIn.modification);
 
-    app.get("/stockouts", stockOut.stockouts);
+    app.post("/stockouts", stockOut.stockouts);
     app.post("/stockout/insertion", stockOut.insertion);
     app.post("/stockout/modification", stockOut.modification);
 

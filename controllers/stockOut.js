@@ -46,9 +46,9 @@ exports.stockouts = function (req, res, next) {
     var conditions = {};
 
     try {
-        if (req.params.giftId) {
-            check(req.params.giftId).notEmpty();
-            conditions.giftId = sanitize(sanitize(req.params.giftId).trim()).xss();
+        if (req.body.giftId) {
+            check(req.body.giftId).notEmpty();
+            conditions.giftId = sanitize(sanitize(req.body.giftId).trim()).xss();
         }
     } catch (e) {
         return res.send(resUtil.generateRes(null, config.statusCode.STATUS_INVAILD_PARAMS));

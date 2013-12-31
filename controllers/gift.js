@@ -47,16 +47,16 @@ exports.gifts = function (req, res, next) {
 
     try {
 
-        if (req.params.giftId) {
-            check(req.params.giftId).notEmpty();
-            req.params.giftId = sanitize(sanitize(req.params.giftId).trim()).xss();
-            conditionObj.giftId = req.params.giftId;
+        if (req.body.giftId) {
+            check(req.body.giftId).notEmpty();
+            req.body.giftId = sanitize(sanitize(req.body.giftId).trim()).xss();
+            conditionObj.giftId = req.body.giftId;
         }
 
-        if (req.params.categoryId) {
-            check(req.params.categoryId).notEmpty();
-            req.params.categoryId = sanitize(sanitize(req.params.categoryId)).xss();
-            conditionObj.categoryId = req.params.categoryId;
+        if (req.body.categoryId) {
+            check(req.body.categoryId).notEmpty();
+            req.body.categoryId = sanitize(sanitize(req.body.categoryId)).xss();
+            conditionObj.categoryId = req.body.categoryId;
         }
 
     } catch (e) {
