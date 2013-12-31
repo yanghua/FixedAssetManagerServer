@@ -11,7 +11,11 @@ function loadEditDate (assetId) {
 		});
 	}
 }
-
+/**
+ * load faInfo from Data and show them
+ * @param  {string} faId faId
+ * @return {null}      
+ */
 function loadFaInfoFromRenderData (faId) {
 	$.ajax({
 		type:"GET",
