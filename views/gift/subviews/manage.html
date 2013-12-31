@@ -1,134 +1,174 @@
 <% layout('gift/layout') -%>
+<head>
+    <!-- script -->
+    <%- Loader("/public/libs/js/giftManage.min.js")
+    .js("/public/libs/js/bootstrap-select.js")
+    .js("/public/libs/js/bootstrap-datepicker.js")
+    .js("/public/libs/js/bootbox.min.js")
+    .js("/public/libs/js/giftManage.js")
+    .done(assets)
+    %>
+    <!-- style -->
+    <%- Loader("/public/stylesheets/giftManage.min.css")
+    .css("/public/stylesheets/giftManage.css")
+    .css("/public/stylesheets/bootstrap-select.css")
+    .css("/public/stylesheets/datepicker.css")
+    .done(assets)
+    %>
+</head>
+
 <script type="text/javascript">
     $(document).ready(function(){
-        $("li[class='active']").removeAttr("class");
+        $("#w_nav>li[class='active']").removeAttr("class");
         $("#manage").addClass("active");
+        // $('#giftExpireDate').datepicker({
+        //     format: 'yyyy-mm-dd',
+        //     startDate: '-3d'
+        // })
+        var checkin = $('#giftExpireDate').datepicker({
+            format: 'yyyy-mm-dd'
+        }).on('changeDate', function(ev) {
+            checkin.hide();
+        }).data('datepicker');
+
+        loadGifts();
+
     });
+    $.ajax({
+        url:"/giftcategories",
+        type:"GET",
+        success: function (data) {
+            if (data.statusCode === 0) {
+                for (var i = 0; i < data.data.length; i++) {
+                    var temp = "<option value='" + data.data[i].categoryId + "'>" + data.data[i].name + "</option>";
+                    $("#giftCategory").append(temp);
+                };
+                $('#giftCategory').selectpicker();
+            }
+        }
+    })
+    
+
+
 </script>
 <div id="main_div" class="panel">
  <div class="row-fluid">
-        <div class="span12">
-            <div class="tabbable" id="tabs-410411">
+    <div class="span12">
+        <div class="tabbable" id="tabs-410411">
             <h1>礼品管理</h1>
-                <ul class="nav nav-tabs">
-                    <li class="active">
-                        <a href="#panel-1" data-toggle="tab">礼品管理</a>
-                    </li>
-                    <li>
-                        <a href="#panel-3" data-toggle="tab">礼品类别管理</a>
-                    </li>
+            <ul class="nav nav-tabs">
+                <li class="active">
+                    <a href="#panel-1" data-toggle="tab">礼品管理</a>
+                </li>
+                <li>
+                    <a href="#panel-3" data-toggle="tab">礼品类别管理</a>
+                </li>
 
-                    </ul>
-                    <div class="tab-content">
-                        <div class="tab-pane active fade in" id="panel-1">
-                            <div>
-                                <div class="form-group">
-                                    <legend>礼品管理</legend>
-                                    <div class="input-group" >
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane active fade in" id="panel-1">
+                    <form class= "giftInOpear form-inline"  role="form">
+                        <div>
+                            <div class="form-group">
+                                <legend>礼品管理</legend>
+                                <div class="input-group " >
+                                    <label class="lable1">品牌 :</label><input  class="form-control " type="text" id="brand" name = "brand">
+                                    <label class="lable1">名&nbsp;&nbsp;&nbsp;&nbsp;称 :</label><input  class="form-control" type="text" id="giftName" name="name">
+                                    <label class="lable1">计量单位 :</label><input  class="form-control" type="text" id="giftUnit" name="unit">
+                                </div><p>
+                                <div class="input-group" >
+                                    <label class="lable1">单价 :</label><input  class="form-control"  id="giftPrice" name="price" type="number"  min="0" data-bind="value:giftPrice">
+                                    <label class="lable1">有效期 :</label>
+                                    <input type="text" class="form-control" data-date-format="yyyy-mm-dd" value="" id="giftExpireDate" name="expireDate">
+                                    <label class="lable1">礼品类别 :</label>
+                                    <select  id="giftCategory" name="categoryId"  class="selectpicker show-tick" style="margin-left:20px;">
+                                        <option value="0">-- 请选择礼品类别 --</option>
+                                    </select>
 
-                                        <select  id="baseType"  class="selectpicker show-tick">
-                                            <option value="1">人员工号</option>
-                                            <option value="0">设备编号</option>
-                                        </select>
-
-                                        <input  class="form-control" style="width:220px;margin-bottom:10px;margin-left:20px;margin-right:20px;" type="text" id="baseInput">
-                                        
-                                        <button type="submit" onclick="btnPrintClick()"  style="margin-bottom:10px;"id="twoSearch" class="btn btn-default" data-container="body" data-toggle="popover" data-placement="right" data-content="此编号无数据" data-original-title="" title="">
-                                            搜索
-                                        </button>
-                                        <div style="margin-left:30px;float:right">
-                                            <input type="text" style="width:200px;" class="form-control" id="userNameInput2" placeholder="输入用户姓名" />
-                                            <button type="button" onclick="assetCheckUserIdByUserName2()" class="btn btn-default" id="checkUserIdByName2">查询人员工号</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="panel panel-default" id="assetDetails">
-                                <!-- Default panel contents -->
-                                <div class="panel-heading">资产详情</div>
-                                <input id = "the_new_id" style="display: none;">
-                                <ul class="list-group">
-
-                                </ul>
-                            </div>
-                            <div class="panel panel-default" id="underName">
-                                <div class="panel-heading" >用户名下</div>
-                                <table class="table table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th>#</th>
-                                            <th>设备编号</th>
-                                            <th>设备名</th>
-                                            <th>详情</th>
-                                            <th>回收</th>
-                                            <th>改派</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id='addtr'>
-
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div class="panel panel-default" id="assetEvent">
-                                <div class="panel-heading" >设备变动记录</div>
-                                <ul class="list-group" id="historyul" >
-                                    <li class="list-group-item">waiting</li>
-                                </ul>
-                            </div>
-                        </div>
-
-                        <div class="tab-pane" id="panel-3">
-                            <legend>入库管理</legend> 
-                            <div class="controls controls-row" >
-                                <form class="retrieveInfo">
-                                    <div class="row-fluid btn-group btn-group-justified">
-                                        <select  id="assetDepartSel" name="departmentId" class="selectpicker show-tick " data-width="auto">
-                                            <option value="">--部门--</option>
-                                        </select>
-                                        <select  id="assetTypeSel" name="typeId" class="selectpicker show-tick " data-width="auto">
-                                            <option value="">--资产类型--</option>
-                                        </select>
-                                        <select  id="assetBelongSel" name="assetBelong"  class="selectpicker show-tick " data-width="auto">
-                                            <option value="">--资产归属--</option>
-                                        </select>
-                                        <select  id="currentStaSel"  name="currentStatus" class="selectpicker show-tick " data-width="auto">
-                                            <option value="">--当前状态--</option>
-                                        </select>
-                                        <button  type="button"  onclick="retrieveSearch(1)" style="width:100px;margin-bottom:10px;margin-left:20px;margin-right:20px; " class="btn btn-default" data-container="body" >
-                                            搜索
-                                        </button>
-                                    </div>
-                                </form>
-
-                                
-                                <div class="panel panel-default" id="dataSearchView" >
-
-                                    <div class="panel-heading" id = "viewTitle"></div>
-                                    <table class="table table-striped">
-                                        <thead>
-                                            <tr>
-                                                <th>设备编号</th>
-                                                <th>设备名</th>
-                                                <th>规格</th>
-                                                <th>领用人</th>
-                                                <th>操作</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id='dataSearchDetail'>
-
-                                        </tbody>
-                                    </table>
-                                    <div id='viewPaginator' style="float:left;padding-top:10px" ></div>
+                                    <button type="button" class="btn btn-primary" style="margin-left:10px" id="giftIn" onclick="giftInOpearteClick()">确定录入</button>
+                                </div><p>
+                                <div class="input-group" >
+                                    
                                 </div>
                             </div>
                         </div>
 
+                        <div class="panel panel-default" id="underName">
+                            <div class="panel-heading" >现有礼品</div>
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>名称</th>
+                                        <th>品牌</th>
+                                        <th>单位</th>
+                                        <th>单价</th>
+                                        <th>类别</th>
+                                        <th>有效期</th>
+                                        <th>修改</th>
+                                        <th>删除</th>
+                                    </tr>
+                                </thead>
+                                <tbody id='addtr'>
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </form>
+                 
+                </div>
+
+                <div class="tab-pane" id="panel-3">
+                    <legend>入库管理</legend> 
+                    <div class="controls controls-row" >
+                        <form class="retrieveInfo">
+                            <div class="row-fluid btn-group btn-group-justified">
+                                <select  id="assetDepartSel" name="departmentId" class="selectpicker show-tick " data-width="auto">
+                                    <option value="">--部门--</option>
+                                </select>
+                                <select  id="assetTypeSel" name="typeId" class="selectpicker show-tick " data-width="auto">
+                                    <option value="">--资产类型--</option>
+                                </select>
+                                <select  id="assetBelongSel" name="assetBelong"  class="selectpicker show-tick " data-width="auto">
+                                    <option value="">--资产归属--</option>
+                                </select>
+                                <select  id="currentStaSel"  name="currentStatus" class="selectpicker show-tick " data-width="auto">
+                                    <option value="">--当前状态--</option>
+                                </select>
+                                <button  type="button"  onclick="retrieveSearch(1)" style="width:100px;margin-bottom:10px;margin-left:20px;margin-right:20px; " class="btn btn-default" data-container="body" >
+                                    搜索
+                                </button>
+                            </div>
+                        </form>
+
+
+                        <div class="panel panel-default" id="dataSearchView" >
+
+                            <div class="panel-heading" id = "viewTitle"></div>
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>设备编号</th>
+                                        <th>设备名</th>
+                                        <th>规格</th>
+                                        <th>领用人</th>
+                                        <th>操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody id='dataSearchDetail'>
+
+                                </tbody>
+                            </table>
+                            <div id='viewPaginator' style="float:left;padding-top:10px" ></div>
+                        </div>
+                    </div>
                 </div>
 
             </div>
 
         </div>
-    </div>            
+
+    </div>
+</div>            
 
 
 </div>

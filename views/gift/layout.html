@@ -26,42 +26,46 @@
    .js('/public/libs/js/bootstrap-paginator.js')
    .done(assets)
    %>
-</head>
-<body>
+ </head>
+ <body>
   <div class="navbar navbar-default navbar-fixed-top" role="navigation">
    <div class="container" id="">
     <div class="navbar-header">
      <a class="brand" href="/"><img src="/public/images/wisedu.png" title=""></a>
      <div id="nav_title"><%= config.giftname %></div>
-  </div>
-  <div class="navbar-collapse collapse">
+   </div>
+   <div class="navbar-collapse collapse">
      <ul id="w_nav" class="nav navbar-nav">
       <!-- <li id="home" class="active"><a href="/">首 页</a></li> -->
       <li id="index"><a href="/gift">出库入库</a></li>
       <li id="manage"><a href="/gift/manage">礼品管理</a></li>
       <li id="storage"><a href="/gift/storage">库存查询</a></li>
       <li id="other"><a href="/gift/other">其他管理</a></li>
-   </ul>
-<!--    <ul class="nav navbar-nav navbar-right">
-      <li><a href="#"><%= current_user.uName %> 你好</a></li>
-      <li><a href="#">设置</a></li>
-      <li><a href="/signout">退出</a></li>
-   </ul> -->
-</div>
-<!--/.nav-collapse -->
-</div>
+    </ul>
+  <!--    <ul class="nav navbar-nav navbar-right">
+        <li><a href="#"><%= current_user.uName %> 你好</a></li>
+        <li><a href="#">设置</a></li>
+        <li><a href="/signout">退出</a></li>
+      </ul> -->
+    </div>
+    <!--/.nav-collapse -->
+  </div>
 </div>
 <div class="container">
-   <div class="row">
-    <%- body %>
- </div>
+ <div class="row">
+  <%- body %>
 </div>
+</div>
+
 <div id="footer">
-   <div class="container">
-    <p class="muted">
-     资产管理
-  </p>
-</div>
+  <div style="background:#ededed;height:50px;width:100%;position:fixed;left:auto;right:auto;bottom:0;_position:absolute;_top:e-xpression(document.documentElement.clientHeight + document.documentElement.scrollTop - this.offsetHeight);text-align:center;">
+    <div class="container">
+      <p class="muted">
+       礼品管理
+     </p>
+    </div>
+
+  </div>
 </div>
 </body>
 </html>
