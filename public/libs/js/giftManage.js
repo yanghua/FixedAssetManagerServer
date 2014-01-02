@@ -68,6 +68,7 @@ function loadGifts() {
     type: 'POST',
     success: function(data) {
       if (data.statusCode === 0) {
+        $("#addtr").html("");
         for (var i = 0; i < data.data.length; i++) {
           var cellData = data.data[i];
           var row = tdCont.row();
@@ -137,7 +138,9 @@ function giftEditOpearteClick () {
     data: $('form.editGiftInOpear').serialize(),
     success: function(data) {
       if (data.statusCode === 0) {
+        $('#gitEditModle').modal('hide');
         bootbox.alert("修改成功!", function() {
+          loadGifts();
           // todo
         });
       } else {

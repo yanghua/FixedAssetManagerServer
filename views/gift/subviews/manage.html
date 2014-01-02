@@ -126,43 +126,32 @@
                 </div>
 
                 <div class="tab-pane" id="panel-3">
-                    <legend>入库管理</legend> 
+                    <legend>礼品类别管理</legend> 
                     <div class="controls controls-row" >
-                        <form class="retrieveInfo">
+                        <form class="gitCategoryForm">
                             <div class="row-fluid btn-group btn-group-justified">
-                                <select  id="assetDepartSel" name="departmentId" class="selectpicker show-tick " data-width="auto">
-                                    <option value="">--部门--</option>
-                                </select>
-                                <select  id="assetTypeSel" name="typeId" class="selectpicker show-tick " data-width="auto">
-                                    <option value="">--资产类型--</option>
-                                </select>
-                                <select  id="assetBelongSel" name="assetBelong"  class="selectpicker show-tick " data-width="auto">
-                                    <option value="">--资产归属--</option>
-                                </select>
-                                <select  id="currentStaSel"  name="currentStatus" class="selectpicker show-tick " data-width="auto">
-                                    <option value="">--当前状态--</option>
-                                </select>
-                                <button  type="button"  onclick="retrieveSearch(1)" style="width:100px;margin-bottom:10px;margin-left:20px;margin-right:20px; " class="btn btn-default" data-container="body" >
-                                    搜索
+                                <div class="input-group " style="margin-bottom:10px;">
+                                <label class="lable1">请出入礼品类别 :</label><input  class="form-control " type="text" id="brand" name = "brand">
+                                <button  type="button"  onclick="retrieveSearch(1)" style="width:100px;margin-left:20px; " class="btn btn-default" data-container="body" >
+                                    添加
                                 </button>
+                                </div>
                             </div>
                         </form>
 
 
                         <div class="panel panel-default" id="dataSearchView" >
 
-                            <div class="panel-heading" id = "viewTitle"></div>
+                            <div class="panel-heading" id = "viewTitle">现有礼品类别</div>
                             <table class="table table-striped">
                                 <thead>
                                     <tr>
-                                        <th>设备编号</th>
-                                        <th>设备名</th>
-                                        <th>规格</th>
-                                        <th>领用人</th>
-                                        <th>操作</th>
+                                        <th>类别名</th>
+                                        <th>修改</th>
+                                        <th>删除</th>
                                     </tr>
                                 </thead>
-                                <tbody id='dataSearchDetail'>
+                                <tbody id='giftCategoryAttr'>
 
                                 </tbody>
                             </table>
