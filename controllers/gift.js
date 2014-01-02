@@ -151,6 +151,38 @@ exports.modification = function (req, res, next) {
 };
 
 /**
+ * delete a gift with giftId
+ * @param  {Object}   req  the instance of request
+ * @param  {Object}   res  the instance of response
+ * @param  {Function} next the next handler
+ * @return {null}   
+ */
+exports.deletion = function (req, res, next) {
+    debugCtrller("/controllers/gift/deletion");
+
+    if (!req.session || !req.session.user) {
+        return res.redirect("/login");
+    }
+
+    var giftId;
+
+    try {
+        giftId = check(req.body.giftId);
+        giftId = sanitize(sanitize(giftId).trim()).xss();
+    } catch (e) {
+        return res.send(resUtil.generateRes(null, config.statusCode.STATUS_INVAILD_PARAMS));
+    }
+
+    Gift.removeWithGiftId(giftId, function (err, rows) {
+        if (err) {
+            return res.send(resUtil.generateRes(null, err.statusCode));
+        }
+
+        res.send(resUtil.generateRes(null, config.statusCode.STATUS_OK));
+    })
+}
+
+/**
  * index page of gifts
  * @param  {Object}   req  the instance of request
  * @param  {Object}   res  the instance of response
@@ -163,7 +195,7 @@ exports.gift = function (req, res, next) {
         return res.redirect("/login");
     }
     res.render('gift/subviews/index.html');
-}
+};
 
 /**
  * manage page of gifts
@@ -178,7 +210,7 @@ exports.giftManage = function(req, res, next) {
         return res.redirect("/login");
     }
     res.render('gift/subviews/manage.html');
-}
+};
 
 /**
  * storage page of gifts
@@ -193,7 +225,7 @@ exports.storage = function(req, res, next) {
         return res.redirect("/login");
     }
     res.render('gift/subviews/storage.html');
-}
+};
 
 /**
  * other page of gifts
@@ -208,5 +240,5 @@ exports.other = function(req, res, next) {
         return res.redirect("/login");
     }
     res.render('gift/subviews/other.html');
-}
+};
 

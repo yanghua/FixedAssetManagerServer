@@ -116,6 +116,7 @@ module.exports = function (app) {
     app.post("/gifts", gift.gifts);
     app.post("/gift/insertion", gift.insertion);
     app.post("/gift/modification", gift.modification);
+    app.post("/gift/deletion", gift.deletion);
 
     app.get("/paymenttypes", paymentType.paymentTypes);
     app.post("/paymenttype/insertion", paymentType.insertion);

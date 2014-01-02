@@ -149,3 +149,27 @@ exports.remove = function (soId, callback) {
         callback(null, null);
     });
 };
+
+/**
+ * remove items with gift id
+ * @param  {String}   giftId   the gift id
+ * @param  {Function} callback the cb func
+ * @return {null}            
+ */
+exports.removeWithGiftId = function (giftId, callback) {
+    debugProxy("/proxy/stockOut/removeWithGiftId");
+
+    var sql = "DELETE FROM STOCKOUT WHERE giftId = :giftId";
+
+    mysqlClient.query({
+        sql   : sql,
+        params: { giftId : giftId }
+    },  function (err, rows) {
+        if (err || !rows) {
+            debugProxy(err);
+            return callback(new DBError(), null);
+        }
+
+        callback(null, null);
+    });
+};

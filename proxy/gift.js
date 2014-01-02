@@ -24,6 +24,10 @@
 
 var mysqlClient = require("../libs/mysqlUtil");
 var util        = require("../libs/util");
+var EventProxy  = require("eventproxy");
+var StockIn     = require("stockIn");
+var StockOut    = require("stockOut");
+var Inventory   = require("inventory");
 
 /**
  * get gift with condition list
@@ -108,5 +112,69 @@ exports.modify = function (giftInfo, callback) {
         }
 
         callback(null, null);
+    });
+};
+
+/**
+ * remove items with gift id
+ * @param  {String}   giftId   the gift id
+ * @param  {Function} callback the cb func
+ * @return {null}            
+ */
+exports.removeWithGiftId = function (giftId, callback) {
+    debugProxy("/proxy/stockIn/removeWithGiftId");
+
+    var sql = "DELETE FROM GIFT WHERE giftId = :giftId";
+
+    var ep = EventProxy.create();
+
+    StockIn.removeWithGiftId(giftId, function (err, rows) {
+        if (err) {
+            return ep.emitLater("error", err);
+        }
+
+        ep.emitLater("after_deletedStockInItems");
+    });
+
+    ep.once("after_deletedStockInItems", function () {
+        StockOut.removeWithGiftId(giftId, function (err, rows) {
+            if (err) {
+                return ep.emitLater("error", err);
+            }
+
+            ep.emitLater("after_deletedStockOutItems");
+        });
+    });
+
+    ep.once("after_deletedStockOutItems", function () {
+        Inventory.removeWithGiftId(giftId, function (err, rows) {
+            if (err) {
+                return ep.emitLater("error", err);
+            }
+
+            ep.emitLater("after_deletedInventoryItems");
+        });
+    });
+
+    ep.once("after_deletedInventoryItems", function () {
+        mysqlClient.query({
+            sql   : sql,
+            params: { giftId : giftId }
+        },  function (err, rows) {
+                if (err || !rows) {
+                    debugProxy(err);
+                    return ep.emitLater("error", new DBError());
+                }
+
+                ep.emitLater("after_deletedGiftItems");
+            });
+        });
+
+    ep.once("after_deletedGiftItems", function () {
+        return callback(null, null);
+    });
+
+    ep.fail(function (err) {
+        return callback(new DBError(), null);
     });
 };
