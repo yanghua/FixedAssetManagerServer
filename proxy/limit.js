@@ -22,3 +22,79 @@
   Desc: the proxy of limit
  */
 
+var mysqlClient = require("../libs/mysqlUtil");
+var util        = require("../libs/util");
+
+/**
+ * get all limit list
+ * @param  {Function} callback the callback func
+ * @return {null}            
+ */
+exports.getAllLimits = function (callback) {
+    debugProxy("/proxy/limit/getAllLimits");
+    var sql;
+
+    sql = "SELECT l.*, g.* FROM LIMIT l " +
+          "LEFT JOIN GIFT g ON l.giftId = g.giftId ";
+
+    mysqlClient.query({
+        sql   : sql,
+        params: null
+    },  function (err, rows) {
+        if (err || !rows) {
+            debugProxy(err);
+            return callback(new DBError(), null);
+        }
+
+        callback(null, rows);
+    });
+
+};
+
+/**
+ * add a new limit 
+ * @param {Object}   limitInfo the creating limit info
+ * @param {Function} callback  the callback func
+ */
+exports.add = function (limitInfo, callback) {
+    debugProxy("/proxy/limit/add");
+    var sql;
+
+    sql = "INSERT INTO LIMIT VALUES(:giftId, :limitNum)";
+
+    mysqlClient.query({
+        sql   : sql,
+        params: limitInfo
+    },  function (err, rows) {
+        if (err || !rows) {
+            debugProxy(err);
+            return callback(new DBError(), null);
+        }
+
+        callback(null, null);
+    });
+};
+
+/**
+ * modify a limit item
+ * @param  {Object}   limitInfo the instance of limit
+ * @param  {Function} callback  the cb func
+ * @return {null}             
+ */
+exports.modify = function (limitInfo, callback) {
+    debugProxy("/proxy/limit/modify");
+
+    var sql = "UPDATE LIMIT SET limitNum = :limitNum WHERE giftId = :giftId";
+
+    mysqlClient.query({
+        sql     : sql,
+        params  : limitInfo
+    },  function (err, rows) {
+        if (err || !rows) {
+            debugProxy(err);
+            return callback(new DBError(), null);
+        }
+
+        callback(null, null);
+    });
+};

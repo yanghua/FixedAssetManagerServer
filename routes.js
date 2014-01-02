@@ -45,6 +45,8 @@ var paymentType       = require("./controllers/paymentType");
 var stockIn           = require("./controllers/stockIn");
 var stockOut          = require("./controllers/stockOut");
 var inventory         = require("./controllers/inventory");
+var limit             = require("./controllers/limit");
+
 module.exports = function (app) {
 
     //views
@@ -126,6 +128,10 @@ module.exports = function (app) {
     app.post("/stockouts", stockOut.stockouts);
     app.post("/stockout/insertion", stockOut.insertion);
     app.post("/stockout/modification", stockOut.modification);
+
+    app.get("/limitations", limit.limitations);
+    app.post("/limit/insertion", limit.insertion);
+    app.post("/limit/modification", limit.modification);
 
     app.get("/inventories", inventory.inventories);
 
