@@ -120,3 +120,35 @@ exports.modification = function (req, res, next) {
         return res.send(resUtil.generateRes(null, config.statusCode.STATUS_OK));
     });
 };
+
+/**
+ * delete a limit
+ * @param  {Object}   req  the instance of request
+ * @param  {Object}   res  the instance of response
+ * @param  {Function} next the next handler
+ * @return {null}        
+ */
+exports.deletion = function (req, res, next) {
+    debugCtrller("/controllers/limit/deletion");
+
+    if (!req.session || !req.session.user) {
+        return res.redirect("/login");
+    }
+
+    var giftId;
+
+    try {
+        giftId = check(req.body.giftId);
+        giftId = sanitize(sanitize(giftId).trim()).xss();
+    } catch (e) {
+        return res.send(resUtil.generateRes(null, config.statusCode.STATUS_INVAILD_PARAMS));
+    }
+
+    Limit.remove(giftId, function (err, rows) {
+        if (err) {
+            return res.send(resUtil.generateRes(null, err.statusCode));
+        }
+
+        res.send(resUtil.generateRes(null, config.statusCode.STATUS_OK));
+    });
+};

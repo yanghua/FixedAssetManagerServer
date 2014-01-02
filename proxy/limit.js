@@ -98,3 +98,28 @@ exports.modify = function (limitInfo, callback) {
         callback(null, null);
     });
 };
+
+/**
+ * remove a limit item
+ * @param  {String}   giftId   the gift id
+ * @param  {Function} callback the cb func
+ * @return {null}            
+ */
+exports.remove = function (giftId, callback) {
+    debugProxy("/proxy/limit/remove");
+
+    var sql = "DELETE FROM LIMIT WHERE giftId = :giftId";
+
+    mysqlClient.query({
+        sql     : sql,
+        params  : giftId
+    },  function (err, rows) {
+        if (err || !rows) {
+            debugProxy(err);
+            return callback(new DBError(), null);
+        }
+
+        callback(null, null);
+    });
+
+};

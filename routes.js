@@ -132,6 +132,7 @@ module.exports = function (app) {
     app.get("/limitations", limit.limitations);
     app.post("/limit/insertion", limit.insertion);
     app.post("/limit/modification", limit.modification);
+    app.post("/limit/deletion", limit.deletion);
 
     app.get("/inventories", inventory.inventories);
 
