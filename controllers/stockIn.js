@@ -29,7 +29,6 @@ var StockIn    = require("../proxy/stockIn");
 var check      = require("validator").check;
 var sanitize   = require("validator").sanitize;
 var parseXlsx  = require("excel");
-var Import     = require("../proxy/import");
 var Inventory  = require("../proxy/inventory");
 
 /**
