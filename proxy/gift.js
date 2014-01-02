@@ -25,9 +25,9 @@
 var mysqlClient = require("../libs/mysqlUtil");
 var util        = require("../libs/util");
 var EventProxy  = require("eventproxy");
-var StockIn     = require("stockIn");
-var StockOut    = require("stockOut");
-var Inventory   = require("inventory");
+var StockIn     = require("./stockIn");
+var StockOut    = require("./stockOut");
+var Inventory   = require("./inventory");
 
 /**
  * get gift with condition list
