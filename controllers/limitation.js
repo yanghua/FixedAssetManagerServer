@@ -22,7 +22,7 @@
   Desc: the controller of limit
  */
 
-var Limit    = require("../proxy/limit");
+var Limitation    = require("../proxy/limitation");
 var resUtil  = require("../libs/resUtil");
 var config   = require("../config").initConfig();
 var check    = require("validator").check;
@@ -42,7 +42,7 @@ exports.limitations = function (req, res, next) {
         return res.redirect("/login");
     }
 
-    Limit.getAllLimits(function (err, rows) {
+    Limitation.getAllLimits(function (err, rows) {
         if (err) {
             return res.send(resUtil.generateRes(rows, err.statusCode));
         }
@@ -77,7 +77,7 @@ exports.insertion = function (req, res, next) {
         return res.send(resUtil.generateRes(null, config.statusCode.STATUS_INVAILD_PARAMS));
     }
 
-    Limit.add(limitInfo, function (err, rows) {
+    Limitation.add(limitInfo, function (err, rows) {
         if (err) {
             return res.send(resUtil.generateRes(null, err.statusCode));
         }
@@ -112,7 +112,7 @@ exports.modification = function (req, res, next) {
         return res.send(resUtil.generateRes(null, config.statusCode.STATUS_INVAILD_PARAMS));
     }
 
-    Limit.modify(limitInfo, function (err, rows) {
+    Limitation.modify(limitInfo, function (err, rows) {
         if (err) {
             return res.send(resUtil.generateRes(null, err.statusCode));
         }
@@ -144,7 +144,7 @@ exports.deletion = function (req, res, next) {
         return res.send(resUtil.generateRes(null, config.statusCode.STATUS_INVAILD_PARAMS));
     }
 
-    Limit.remove(giftId, function (err, rows) {
+    Limitation.remove(giftId, function (err, rows) {
         if (err) {
             return res.send(resUtil.generateRes(null, err.statusCode));
         }

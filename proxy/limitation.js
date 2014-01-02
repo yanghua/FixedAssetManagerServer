@@ -34,7 +34,7 @@ exports.getAllLimits = function (callback) {
     debugProxy("/proxy/limit/getAllLimits");
     var sql;
 
-    sql = "SELECT l.*, g.* FROM LIMIT l " +
+    sql = "SELECT l.*, g.* FROM LIMITATION l " +
           "LEFT JOIN GIFT g ON l.giftId = g.giftId ";
 
     mysqlClient.query({
@@ -60,7 +60,7 @@ exports.add = function (limitInfo, callback) {
     debugProxy("/proxy/limit/add");
     var sql;
 
-    sql = "INSERT INTO LIMIT VALUES(:giftId, :limitNum)";
+    sql = "INSERT INTO LIMITATION VALUES(:giftId, :limitNum)";
 
     mysqlClient.query({
         sql   : sql,
@@ -84,7 +84,7 @@ exports.add = function (limitInfo, callback) {
 exports.modify = function (limitInfo, callback) {
     debugProxy("/proxy/limit/modify");
 
-    var sql = "UPDATE LIMIT SET limitNum = :limitNum WHERE giftId = :giftId";
+    var sql = "UPDATE LIMITATION SET limitNum = :limitNum WHERE giftId = :giftId";
 
     mysqlClient.query({
         sql     : sql,
@@ -108,7 +108,7 @@ exports.modify = function (limitInfo, callback) {
 exports.remove = function (giftId, callback) {
     debugProxy("/proxy/limit/remove");
 
-    var sql = "DELETE FROM LIMIT WHERE giftId = :giftId";
+    var sql = "DELETE FROM LIMITATION WHERE giftId = :giftId";
 
     mysqlClient.query({
         sql     : sql,
