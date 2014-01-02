@@ -25,36 +25,23 @@
         //     format: 'yyyy-mm-dd',
         //     startDate: '-3d'
         // })
-    var checkin = $('#giftExpireDate').datepicker({
-        format: 'yyyy-mm-dd'
-    }).on('changeDate', function(ev) {
-        checkin.hide();
-    }).data('datepicker');
+        var checkin = $('#giftExpireDate').datepicker({
+            format: 'yyyy-mm-dd'
+        }).on('changeDate', function(ev) {
+            checkin.hide();
+        }).data('datepicker');
 
-    var checkinEdit = $('#editGiftExpireDate').datepicker({
-        format: 'yyyy-mm-dd'
-    }).on('changeDate', function(ev) {
-        checkinEdit.hide();
-    }).data('datepicker');
-
-    loadGifts();
-
-});
-    $.ajax({
-        url:"/giftcategories",
-        type:"GET",
-        success: function (data) {
-            if (data.statusCode === 0) {
-                for (var i = 0; i < data.data.length; i++) {
-                    var temp = "<option value='" + data.data[i].categoryId + "'>" + data.data[i].name + "</option>";
-                    $("#giftCategory").append(temp);
-                    $("#giftCategoryEdit").append(temp);
-                };
-                $('#giftCategoryEdit').selectpicker();
-                $('#giftCategory').selectpicker();
-            }
-        }
-    })
+        var checkinEdit = $('#editGiftExpireDate').datepicker({
+            format: 'yyyy-mm-dd'
+        }).on('changeDate', function(ev) {
+            checkinEdit.hide();
+        }).data('datepicker');
+        loadGiftCategorysIndex();
+        loadGifts();
+        loadGiftCategorys();
+        $('#giftCategoryBtnEdit').hide();
+    });
+        
     
 
 
@@ -131,9 +118,12 @@
                         <form class="gitCategoryForm">
                             <div class="row-fluid btn-group btn-group-justified">
                                 <div class="input-group " style="margin-bottom:10px;">
-                                <label class="lable1">请出入礼品类别 :</label><input  class="form-control " type="text" id="brand" name = "brand">
-                                <button  type="button"  onclick="retrieveSearch(1)" style="width:100px;margin-left:20px; " class="btn btn-default" data-container="body" >
+                                <label class="lable1">请出入礼品类别 :</label><input  class="form-control " type="text" id="giftCategoryName" >
+                                <button  type="button" id="giftCategoryBtn"  onclick="addGiftCategory()" style="width:100px;margin-left:20px; " class="btn btn-default" >
                                     添加
+                                </button>
+                                <button  type="button" id="giftCategoryBtnEdit" style="width:100px;margin-left:20px; " class="btn btn-default" >
+                                    修改
                                 </button>
                                 </div>
                             </div>

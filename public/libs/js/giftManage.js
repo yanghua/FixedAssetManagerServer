@@ -15,9 +15,24 @@ var tdCont = {
     return function() {
       delGiftFunc(giftId);
     }
+  },
+  editCategory: function (categoryId, name) {
+    return function () {
+      editCategoryFunc(categoryId, name);
+    }
+  },
+  delCategory: function (categoryId) {
+    return function () {
+      delCategoryFunc(categoryId);
+    }
   }
 };
 
+/**
+ * edit gift and load the data 
+ * @param  {string} giftId the id of gift
+ * @return {null}        
+ */
 function editGiftFunc(giftId) {
   $('#gitEditModle').modal('show');
   $.ajax({
@@ -151,4 +166,86 @@ function giftEditOpearteClick () {
       bootbox.alert(err);
     }
   })
+}
+
+function loadGiftCategorys () {
+  $.ajax({
+    type:'GET',
+    url:'/giftcategories',
+    success:function (data) {
+      if(data.statusCode === 0){
+        $("#giftCategoryAttr").html("");
+        for (var i = 0; i < data.data.length; i++) {
+          var cellData = data.data[i];
+          var row = tdCont.row();
+          var cellName = tdCont.cell(cellData.name);
+          var linkEdit = tdCont.cell($("<a href='javascript:void(0);'>修改</a>"));
+          linkEdit.click(tdCont.editCategory(cellData.categoryId,cellData.name));
+          var linkDel = tdCont.cell($("<a href='javascript:void(0);'>删除</a>"));
+          linkDel.click(tdCont.delCategory(cellData.categoryId));
+          row.append(cellName);
+          row.append(linkEdit);
+          row.append(linkDel);
+          $("#giftCategoryAttr").append(row);
+        };
+      }
+    }
+  })
+}
+
+function loadGiftCategorysIndex () {
+  $.ajax({
+        url:"/giftcategories",
+        type:"GET",
+        success: function (data) {
+            if (data.statusCode === 0) {
+                for (var i = 0; i < data.data.length; i++) {
+                    var temp = "<option value='" + data.data[i].categoryId + "'>" + data.data[i].name + "</option>";
+                    $("#giftCategory").append(temp);
+                    $("#giftCategoryEdit").append(temp);
+                };
+                $('#giftCategoryEdit').selectpicker();
+                $('#giftCategory').selectpicker();
+            }
+        }
+    })
+}
+
+function addGiftCategory () {
+  //with check
+  $.ajax({
+    type:'POST',
+    url:'/giftCategory/insertion',
+    data:{'name':$('#giftCategoryName').val()},
+    success:function (data) {
+      if(data.statusCode === 0){
+        bootbox.alert("添加成功!");
+        $('#giftCategoryName').val("");
+        loadGiftCategorys();
+      }
+    }
+  })
+}
+
+function editCategoryFunc (categoryId, name) {
+  $('#giftCategoryName').val(name);
+  $('#giftCategoryBtn').hide();
+  $('#giftCategoryBtnEdit').show();
+  $('#giftCategoryBtnEdit').click(function () {
+    $.ajax({
+      url:'/giftcategory/modification',
+      type:'POST',
+      data:{'categoryId':categoryId,
+            'name':$('#giftCategoryName').val()},
+      success: function (data) {
+        if(data.statusCode === 0){
+          bootbox.alert("修改成功");
+          
+          $("#giftCategoryBtnEdit").unbind();  
+          loadGiftCategorys();
+        }
+      }
+
+    })
+  });
 }
