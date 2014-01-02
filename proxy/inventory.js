@@ -56,3 +56,26 @@ exports.getInventoryWithConditions = function (conditions, callback) {
         callback(null, rows);
     });
 };
+
+/**
+ * remove useless (the item which num equals 0) items
+ * @param  {Function} callback the cb func
+ * @return {null}            
+ */
+exports.removeUselessItem = function (callback) {
+    debugProxy("/proxy/inventory/removeUselessItem");
+
+    var sql = "DELETE FROM INVENTORY WHERE num = 0";
+
+    mysqlClient.query({
+        sql     : sql,
+        params  : null
+    },  function (err, rows) {
+        if (err || !rows) {
+            debugProxy(err);
+            return callback(new DBError(), null);
+        }
+
+        callback(null, null);
+    });
+};

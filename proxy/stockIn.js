@@ -71,7 +71,7 @@ exports.add = function (stockInInfo, callback) {
 
     var sql;
 
-    sql = "INSERT INTO STOCKIN VALUES(:siId, :giftId, :num, :amount, :supplier, :siTypeId, :ptId, :siDate);"
+    sql = "INSERT INTO STOCKIN VALUES(:siId, :giftId, :num, :amount, :supplier, :siTypeId, :ptId, :siDate);";
 
     stockInInfo.siId = util.GUID();
     if (!stockInInfo.siDate) {
@@ -128,3 +128,26 @@ exports.modify = function (stockInInfo, callback) {
     });
 };
 
+/**
+ * remove a stock in item
+ * @param  {String}   siId     the stock in id
+ * @param  {Function} callback the cb func
+ * @return {null}            
+ */
+exports.remove = function (siId, callback) {
+    debugProxy("/proxy/stockIn/remove");
+
+    var sql = "DELETE FROM STOCKIN WHERE siId = :siId";
+
+    mysqlClient.query({
+        sql   : sql,
+        params: siId
+    },  function (err, rows) {
+        if (err || !rows) {
+            debugProxy(err);
+            return callback(new DBError(), null);
+        }
+
+        callback(null, null);
+    });
+};

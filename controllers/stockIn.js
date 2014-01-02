@@ -28,6 +28,9 @@ var config     = require("../config").initConfig();
 var StockIn    = require("../proxy/stockIn");
 var check      = require("validator").check;
 var sanitize   = require("validator").sanitize;
+var parseXlsx  = require("excel");
+var Import     = require("../proxy/import");
+var Inventory  = require("../proxy/inventory");
 
 /**
  * get stock in by conditions
@@ -151,3 +154,162 @@ exports.modification = function (req, res, next) {
         res.send(generateRes(null, config.statusCode.STATUS_OK));
     });
 };
+
+/**
+ * delete a stock in item
+ * @param  {Object}   req  the instance of request
+ * @param  {Object}   res  the instance of response
+ * @param  {Function} next the next handler
+ * @return {null}        
+ */
+exports.deletion = function (req, res, next) {
+    debugCtrller("/controllers/stockIn/deletion");
+
+    if (!req.session || !req.session.user) {
+        return res.redirect("/login");
+    }
+
+    var siId;
+
+    try {
+        siId = check(req.body.siId);
+        siId = sanitize(sanitize(siId).trim()).xss();
+    } catch (e) {
+        return res.send(resUtil.generateRes(null, config.statusCode.STATUS_INVAILD_PARAMS));
+    }
+
+    var ep = new EventProxy();
+
+    StockIn.remove(siId, function (err, rows) {
+        if (err) {
+            return ep.emitLater("error", err);
+        }
+
+        ep.emitLater("after_removedstockin");
+    });
+
+    ep.once("after_removedstockin", function () {
+        Inventory.removeUselessItem(function (err, rows) {
+            if (err) {
+                return ep.emitLater("error", err);
+            }
+
+            ep.emitLater("completed");
+        });
+    });
+
+    ep.once("completed", function () {
+        return res.send(resUtil.generateRes(null, config.statusCode.STATUS_OK));
+    })
+
+    ep.fail(function (err) {
+        return res.send(resUtil.generateRes(null, err.statusCode));
+    });
+};
+
+/**
+ * import stock in data
+ * @param  {Object}   req  the instance of request
+ * @param  {Object}   res  the instance of response
+ * @param  {Function} next the next handler
+ * @return {null}        
+ */
+// exports.importSI = function (req, res, next) {
+//     debugCtrller("/controllers/stockIn/importSI");
+
+//     if (!req.session || !req.session.user) {
+//         return res.redirect("/login");
+//     }
+
+//     var fileName  = req.files.file_source.name || "";
+//     var tmp_path  = req.files.file_source.path || "";
+
+//     try {
+//         check(fileName).notEmpty();
+//         check(tmp_path).notEmpty();
+//         fileName = sanitize(sanitize(fileName).trim()).xss();
+//         if (path.extname(fileName).indexOf("xls") === -1) {
+//             throw new InvalidParamError();
+//         }
+//     } catch (e) {
+//         return res.send(resUtil.generateRes(null, config.statusCode.STATUS_INVAILD_PARAMS));
+//     }
+
+//     var xlsxPath = path.resolve(__dirname, "../uploads/", fileName);
+
+//     var ep = EventProxy.create();
+
+//     fs.rename(tmp_path, xlsxPath, function (err) {
+//         if (err) {
+//             return ep.emitLater("error", new ServerError());
+//         }
+        
+//         ep.emitLater("renamed_file");
+//     });
+
+//     ep.once("renamed_file", function () {
+//         ep.emitLater("after_deletedTmpFile");
+//     });
+
+//     ep.once("after_deletedTmpFile", function () {
+//         parseXlsx(xlsxPath, function (err, data) {
+//             if (err || !data) {
+//                 return ep.emitLater("error", new ServerError());
+//             }
+
+//             return ep.emitLater("after_parsedExcelData", data);
+//         });
+//     });
+
+//     ep.once("after_parsedExcelData", function (excelData) {
+//         debugCtrller(excelData[0].length);
+//         if (excelData[0].length != 20) {
+//             return ep.emitLater("error", new InvalidParamError());
+//         }
+
+//         //remove first title array
+//         excelData.shift();
+
+//         Import.importTmpStockIn(excelData, function (err, rows) {
+//             fs.unlinkSync(xlsxPath);
+//             ep.emitLater("after_importedIntoTmpTable");
+//         });
+//     });
+
+//     ep.once("after_importedIntoTmpTable", function () {
+//         Import.insertGiftCategory(function (err, rows) {
+//             ep.emitLater("after_importedGiftCategory");
+//         });
+//     });
+
+//     ep.once("after_importedGiftCategory", function () {
+//         Import.insertPaymentType(function (err, rows) {
+//             ep.emitLater("after_importPaymentType");
+//         });
+//     });
+
+//     ep.once("after_importPaymentType", function () {
+         
+//     });
+
+//     ep.fail(function (err) {
+//         fs.unlinkSync(xlsxPath);
+//         return res.send(resUtil.generateRes(null, err.statusCode));
+//     });
+// };
+
+/**
+ * export stock in data with excel
+ * @param  {Object}   req  the instance of request
+ * @param  {Object}   res  the instance of response
+ * @param  {Function} next the next handler
+ * @return {null}        
+ */
+// exports.exportSI = function (req, res, next) {
+//     debugCtrller("/controllers/stockIn/exportSI");
+
+//     if (!req.session || !req.session.user) {
+//         return res.redirect("/login");
+//     }
+
+// };

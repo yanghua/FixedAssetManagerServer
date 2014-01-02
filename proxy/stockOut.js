@@ -75,7 +75,7 @@ exports.add = function (stockOutInfo, callback) {
         stockOutInfo.siDate = new Date().Format("yyyy-MM-dd");
     }
 
-    sql = "INSERT INTO STOCKOUT VALUES(:soId, :giftId, :num, :amount, :applyUserId, :applyDeptId, :underDept, :ptId, :soDate);"
+    sql = "INSERT INTO STOCKOUT VALUES(:soId, :giftId, :num, :amount, :applyUserId, :applyDeptId, :underDept, :ptId, :soDate);";
 
     mysqlClient.query({
         sql   : sql,
@@ -124,4 +124,28 @@ exports.modify = function (stockOutInfo, callback) {
         callback(null, null);
     });
 
+};
+
+/**
+ * remove a stock out item
+ * @param  {String}   soId     the stock out id
+ * @param  {Function} callback the cb func
+ * @return {null}            
+ */
+exports.remove = function (soId, callback) {
+    debugProxy("/proxy/stockOut/remove");
+
+    var sql = "DELETE FROM STOCKOUT WHERE soId = :soId";
+
+    mysqlClient.query({
+        sql   : sql,
+        params: soId
+    },  function (err, rows) {
+        if (err || !rows) {
+            debugProxy(err);
+            return callback(new DBError(), null);
+        }
+
+        callback(null, null);
+    });
 };

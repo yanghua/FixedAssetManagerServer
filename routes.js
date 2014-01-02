@@ -124,10 +124,12 @@ module.exports = function (app) {
     app.post("/stockins", stockIn.stockins);
     app.post("/stockin/insertion", stockIn.insertion);
     app.post("/stockin/modification", stockIn.modification);
+    app.post("/stockin/deletion", stockIn.deletion);
 
     app.post("/stockouts", stockOut.stockouts);
     app.post("/stockout/insertion", stockOut.insertion);
     app.post("/stockout/modification", stockOut.modification);
+    app.post("/stockout/deletion", stockOut.deletion);
 
     app.get("/limitations", limit.limitations);
     app.post("/limit/insertion", limit.insertion);

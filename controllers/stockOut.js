@@ -154,3 +154,35 @@ exports.modification = function (req, res, next) {
         res.send(resUtil.generateRes(null, config.statusCode.STATUS_OK));
     });
 };
+
+/**
+ * delete a stock in item
+ * @param  {Object}   req  the instance of request
+ * @param  {Object}   res  the instance of response
+ * @param  {Function} next the next handler
+ * @return {null}        
+ */
+exports.deletion = function (req, res, next) {
+    debugCtrller("/controllers/stockOut/deletion");
+
+    if (!req.session || !req.session.user) {
+        return res.redirect("/login");
+    }
+
+    var soId;
+
+    try {
+        soId = check(req.body.soId);
+        soId = sanitize(sanitize(soId).trim()).xss();
+    } catch (e) {
+        return res.send(resUtil.generateRes(null, config.statusCode.STATUS_INVAILD_PARAMS));
+    }
+
+    StockOut.remove(soId, function (err, rows) {
+        if (err) {
+            return res.send(resUtil.generateRes(null, err.statusCode));
+        }
+
+        res.send(resUtil.generateRes(null, config.statusCode.STATUS_OK));
+    });
+};
