@@ -138,7 +138,8 @@ exports.deletion = function (req, res, next) {
     var giftId;
 
     try {
-        giftId = check(req.body.giftId);
+        check(req.body.giftId).notEmpty();
+        giftId = req.body.giftId;
         giftId = sanitize(sanitize(giftId).trim()).xss();
     } catch (e) {
         return res.send(resUtil.generateRes(null, config.statusCode.STATUS_INVAILD_PARAMS));

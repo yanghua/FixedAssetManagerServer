@@ -172,7 +172,8 @@ exports.deletion = function (req, res, next) {
     var siId;
 
     try {
-        siId = check(req.body.siId);
+        check(req.body.siId).notEmpty();
+        siId = req.body.siId;
         siId = sanitize(sanitize(siId).trim()).xss();
     } catch (e) {
         return res.send(resUtil.generateRes(null, config.statusCode.STATUS_INVAILD_PARAMS));
