@@ -23,9 +23,6 @@
   Desc: define app config info
  */
 
-//mode
-"use strict";
-
 var path = require("path");
 
 exports.config = {
@@ -58,6 +55,13 @@ exports.config = {
         "huayang@wisedu.com",
         "zcliu@wisedu.com"
     ],
-    networkIsOk:1
+
+    networkIsOk         : 1,
+
+    //five field: ss mm hh dd MM day-of-week
+    // * - match all
+    // / - pre field
+    // eg : "00 00 9 */7 *" means run once every 7 days at 9:00 am
+    cronPattern         : "00 00 10 * * 1-5"
 
 };
