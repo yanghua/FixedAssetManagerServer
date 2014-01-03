@@ -155,7 +155,7 @@ exports.modification = function (req, res, next) {
             return res.send(resUtil.generateRes(null, err.statusCode));
         }
 
-        res.send(generateRes(null, config.statusCode.STATUS_OK));
+        res.send(resUtil.generateRes(null, config.statusCode.STATUS_OK));
     });
 };
 

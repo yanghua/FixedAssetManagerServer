@@ -145,7 +145,7 @@ exports.remove = function (siId, callback) {
 
     mysqlClient.query({
         sql   : sql,
-        params: siId
+        params: {"siId" : siId }
     },  function (err, rows) {
         if (err || !rows) {
             debugProxy(err);

@@ -75,8 +75,8 @@ exports.add = function (stockOutInfo, callback) {
     var sql;
 
     stockOutInfo.soId = util.GUID();
-    if (!stockOutInfo.siDate) {
-        stockOutInfo.siDate = new Date().Format("yyyy-MM-dd");
+    if (!stockOutInfo.soDate) {
+        stockOutInfo.soDate = new Date().Format("yyyy-MM-dd");
     }
 
     sql = "INSERT INTO STOCKOUT VALUES(:soId, :giftId, :num, :amount, :applyUserId, :applyDeptId, :underDept, :ptId, :soDate);";
@@ -143,7 +143,7 @@ exports.remove = function (soId, callback) {
 
     mysqlClient.query({
         sql   : sql,
-        params: soId
+        params: { "soId" : soId }
     },  function (err, rows) {
         if (err || !rows) {
             debugProxy(err);
