@@ -47,7 +47,7 @@ exports.inventories = function (req, res, next) {
 
     try {
         if (req.body.giftId) {
-            conditions.giftId = sanitize(sanitize(req.params.giftId).trim()).xss();
+            conditions.giftId = sanitize(sanitize(req.body.giftId).trim()).xss();
         }
     } catch (e) {
         return res.send(resUtil.generateRes(null, config.statusCode.STATUS_INVAILD_PARAMS));
