@@ -52,6 +52,11 @@ exports.stockins = function (req, res, next) {
             check(req.body.giftId).notEmpty();
             conditions.giftId = sanitize(sanitize(req.body.giftId).trim()).xss();
         }
+
+        if (req.body.siId) {
+            check(req.body.siId).notEmpty();
+            conditions.siId = sanitize(sanitize(req.body.siId).trim()).xss();
+        }
     } catch (e) {
         return res.send(resUtil.generateRes(null, config.statusCode.STATUS_INVAILD_PARAMS));
     }

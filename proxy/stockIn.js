@@ -35,15 +35,19 @@ exports.getAllStockInWithCondition = function (conditions, callback) {
     debugProxy("/proxy/stockIn/getAllStockInWithCondition");
     var sql;
 
-    sql = "SELECT so.*, g.name, u.userName, d.departmentName, pt.ptName FROM STOCKOUT so " +
-          "LEFT JOIN GIFT g ON so.giftId = g.giftId " +
-          "LEFT JOIN STOCKINTYPE sit ON so.siTypeId = sit.sitId " +
-          "LEFT JOIN PAYMENTTYPE pt ON so.ptId = pt.ptId " +
-          "WHERE 1 = 1";
+    sql = "SELECT si.*, g.name, sit.typeName, pt.ptName FROM STOCKIN si " +
+          "LEFT JOIN GIFT g ON si.giftId = g.giftId " +
+          "LEFT JOIN STOCKINTYPE sit ON si.siTypeId = sit.sitId " +
+          "LEFT JOIN PAYMENTTYPE pt ON si.ptId = pt.ptId " +
+          "WHERE 1 = 1 ";
 
     if (conditions) {
         if (conditions.giftId) {
-            sql += "AND so.giftId = :giftId";
+            sql += " AND si.giftId = :giftId ";
+        }
+
+        if (conditions.siId) {
+            sql += " AND si.siId = :siId ";
         }
     }
 

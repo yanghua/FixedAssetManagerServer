@@ -50,6 +50,11 @@ exports.stockouts = function (req, res, next) {
             check(req.body.giftId).notEmpty();
             conditions.giftId = sanitize(sanitize(req.body.giftId).trim()).xss();
         }
+
+        if (req.body.soId) {
+            check(req.body.soId).notEmpty();
+            conditions.soId = sanitize(sanitize(req.body.soId).trim()).xss();
+        }
     } catch (e) {
         return res.send(resUtil.generateRes(null, config.statusCode.STATUS_INVAILD_PARAMS));
     }

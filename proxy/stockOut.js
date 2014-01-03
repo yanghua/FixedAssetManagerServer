@@ -45,6 +45,10 @@ exports.getStockOutWithCondition = function (conditions, callback) {
         if (conditions.giftId) {
             sql += "AND so.giftId = :giftId";
         }
+
+        if (conditions.soId) {
+            sql += "AND so.soId = :soId";
+        }
     }
 
     mysqlClient.query({
