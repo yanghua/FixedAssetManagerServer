@@ -38,7 +38,7 @@ exports.config = {
     ],
 
     site_static_host    : "",
-    mini_assets         : true,
+    mini_assets         : false,
 
     session_secret      : "Fixed_Asset_0987654321",
 
