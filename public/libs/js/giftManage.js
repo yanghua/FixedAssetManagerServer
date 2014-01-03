@@ -16,43 +16,50 @@ var tdCont = {
       delGiftFunc(giftId);
     }
   },
-  editCategory: function (categoryId, name) {
-    return function () {
+  editCategory: function(categoryId, name) {
+    return function() {
       editCategoryFunc(categoryId, name);
     }
   },
-  delCategory: function (categoryId) {
-    return function () {
+  delCategory: function(categoryId) {
+    return function() {
       delCategoryFunc(categoryId);
     }
   }
 };
 
 /**
- * edit gift and load the data 
+ * edit gift and load the data
  * @param  {string} giftId the id of gift
- * @return {null}        
+ * @return {null}
  */
 function editGiftFunc(giftId) {
   $('#gitEditModle').modal('show');
   $.ajax({
-    url:'/gifts',
-    type:'POST',
-    data:{'giftId':giftId},
-    success: function (data) {
-      if(data.statusCode === 0){
+    url: '/gifts',
+    type: 'POST',
+    data: {
+      'giftId': giftId
+    },
+    success: function(data) {
+      if (data.statusCode === 0) {
         var tempGift = data.data[0];
         $("#editGiftId").val(tempGift.giftId);
         $("#editBrand").val(tempGift.brand);
         $("#editGiftName").val(tempGift.name);
         $("#editGiftUnit").val(tempGift.unit);
         $("#editGiftPrice").val(tempGift.price);
-        var tempDate="";
-        if (tempGift.expireDate.indexOf('0000') == -1) {
+        var tempDate = "";
+        if (tempGift.expireDate) {
+          if (tempGift.expireDate.indexOf('0000') == -1) {
             tempDate = tempGift.expireDate.substring(0, 10)
           } else {
             tempDate = "";
           }
+        } else {
+          tempDate = "";
+        }
+
         $('#giftCategoryEdit').selectpicker('val', tempGift.categoryId);
         $("#editGiftExpireDate").val(tempDate);
       }
@@ -63,11 +70,20 @@ function editGiftFunc(giftId) {
 function delGiftFunc(giftId) {
   bootbox.confirm("确定删除此礼品吗?", function(result) {
     if (result) {
-      // $.ajax({
-      // 	url:'',
-      // 	type:''
-      // })
-      bootbox.alert("yes");
+      $.ajax({
+        url: '/gift/deletion',
+        type: 'POST',
+        data: {
+          'giftId': giftId
+        },
+        success: function(data) {
+          if (data.statusCode === 0) {
+            bootbox.alert("删除成功!");
+            loadGifts();
+          }
+        }
+      })
+
     }
   });
 }
@@ -145,7 +161,7 @@ function giftInOpearteClick() {
   })
 }
 
-function giftEditOpearteClick () {
+function giftEditOpearteClick() {
   //without check 
   $.ajax({
     url: '/gift/modification',
@@ -168,19 +184,19 @@ function giftEditOpearteClick () {
   })
 }
 
-function loadGiftCategorys () {
+function loadGiftCategorys() {
   $.ajax({
-    type:'GET',
-    url:'/giftcategories',
-    success:function (data) {
-      if(data.statusCode === 0){
+    type: 'GET',
+    url: '/giftcategories',
+    success: function(data) {
+      if (data.statusCode === 0) {
         $("#giftCategoryAttr").html("");
         for (var i = 0; i < data.data.length; i++) {
           var cellData = data.data[i];
           var row = tdCont.row();
           var cellName = tdCont.cell(cellData.name);
           var linkEdit = tdCont.cell($("<a href='javascript:void(0);'>修改</a>"));
-          linkEdit.click(tdCont.editCategory(cellData.categoryId,cellData.name));
+          linkEdit.click(tdCont.editCategory(cellData.categoryId, cellData.name));
           var linkDel = tdCont.cell($("<a href='javascript:void(0);'>删除</a>"));
           linkDel.click(tdCont.delCategory(cellData.categoryId));
           row.append(cellName);
@@ -193,32 +209,34 @@ function loadGiftCategorys () {
   })
 }
 
-function loadGiftCategorysIndex () {
+function loadGiftCategorysIndex() {
   $.ajax({
-        url:"/giftcategories",
-        type:"GET",
-        success: function (data) {
-            if (data.statusCode === 0) {
-                for (var i = 0; i < data.data.length; i++) {
-                    var temp = "<option value='" + data.data[i].categoryId + "'>" + data.data[i].name + "</option>";
-                    $("#giftCategory").append(temp);
-                    $("#giftCategoryEdit").append(temp);
-                };
-                $('#giftCategoryEdit').selectpicker();
-                $('#giftCategory').selectpicker();
-            }
-        }
-    })
+    url: "/giftcategories",
+    type: "GET",
+    success: function(data) {
+      if (data.statusCode === 0) {
+        for (var i = 0; i < data.data.length; i++) {
+          var temp = "<option value='" + data.data[i].categoryId + "'>" + data.data[i].name + "</option>";
+          $("#giftCategory").append(temp);
+          $("#giftCategoryEdit").append(temp);
+        };
+        $('#giftCategoryEdit').selectpicker();
+        $('#giftCategory').selectpicker();
+      }
+    }
+  })
 }
 
-function addGiftCategory () {
+function addGiftCategory() {
   //with check
   $.ajax({
-    type:'POST',
-    url:'/giftCategory/insertion',
-    data:{'name':$('#giftCategoryName').val()},
-    success:function (data) {
-      if(data.statusCode === 0){
+    type: 'POST',
+    url: '/giftCategory/insertion',
+    data: {
+      'name': $('#giftCategoryName').val()
+    },
+    success: function(data) {
+      if (data.statusCode === 0) {
         bootbox.alert("添加成功!");
         $('#giftCategoryName').val("");
         loadGiftCategorys();
@@ -227,21 +245,23 @@ function addGiftCategory () {
   })
 }
 
-function editCategoryFunc (categoryId, name) {
+function editCategoryFunc(categoryId, name) {
   $('#giftCategoryName').val(name);
   $('#giftCategoryBtn').hide();
   $('#giftCategoryBtnEdit').show();
-  $('#giftCategoryBtnEdit').click(function () {
+  $('#giftCategoryBtnEdit').click(function() {
     $.ajax({
-      url:'/giftcategory/modification',
-      type:'POST',
-      data:{'categoryId':categoryId,
-            'name':$('#giftCategoryName').val()},
-      success: function (data) {
-        if(data.statusCode === 0){
+      url: '/giftcategory/modification',
+      type: 'POST',
+      data: {
+        'categoryId': categoryId,
+        'name': $('#giftCategoryName').val()
+      },
+      success: function(data) {
+        if (data.statusCode === 0) {
           bootbox.alert("修改成功");
-          
-          $("#giftCategoryBtnEdit").unbind();  
+
+          $("#giftCategoryBtnEdit").unbind();
           loadGiftCategorys();
         }
       }
