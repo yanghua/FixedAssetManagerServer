@@ -43,7 +43,7 @@ function manageLoad() {
     url: "/fixedasset/conditionInfo",
     success: function(data) {
       if (data.statusCode === 0) {
-        var i , temp;
+        var i, temp;
         for (i = 0; i < data.data.status.length; i++) {
           temp = "<option value='" + data.data.status[i].currentStatus + "'>" + data.data.status[i].currentStatus + "</option>";
           $("#currentStaSel").append(temp);
@@ -320,9 +320,9 @@ var searchNoUserContainer = {
       loadAllocToUser(value);
     };
   },
-  userIdClick: function(userId,fromPage) {
+  userIdClick: function(userId, fromPage) {
     return function() {
-      addUserIdToInput(userId,fromPage);
+      addUserIdToInput(userId, fromPage);
     };
   },
   itemClick2: function(value) {
@@ -356,9 +356,9 @@ var searchNoUserContainer = {
         assetAllocateToSomeOne(assetId);
       });
       $("#checkUserIdByName").click(function() {
-        assetCheckUserIdByUserName($("#userNameInput").val(),null);
+        assetCheckUserIdByUserName($("#userNameInput").val(), null);
       });
-     
+
     };
   }
 };
@@ -582,7 +582,7 @@ function assetAllocateToSomeOne(assetId) {
  * check userid by username
  * @return {null}
  */
-function assetCheckUserIdByUserName(inputText,fromPage) {
+function assetCheckUserIdByUserName(inputText, fromPage) {
   $.ajax({
     type: "GET",
     url: "/fixedasset/getUserId/" + inputText,
@@ -594,8 +594,8 @@ function assetCheckUserIdByUserName(inputText,fromPage) {
         for (var i = 0; i < data.data.length; i++) {
           var userInfo = data.data[i];
           var userid = userInfo.userId;
-          var link = $("<a href='javascript:void(0);'>" + userInfo.userName + "(" + userInfo.userId + ")--" + userInfo.department.replace(/@/g," ") + "</a>");
-          link.click(searchNoUserContainer.userIdClick(userid,fromPage));
+          var link = $("<a href='javascript:void(0);'>" + userInfo.userName + "(" + userInfo.userId + ")--" + userInfo.department.replace(/@/g, " ") + "</a>");
+          link.click(searchNoUserContainer.userIdClick(userid, fromPage));
           var row = searchNoUserContainer.createRowContainer();
           var cka = searchNoUserContainer.createCellContainer(link);
           row.append(cka);
@@ -612,18 +612,18 @@ function assetCheckUserIdByUserName(inputText,fromPage) {
  */
 function addUserIdToInput(userId, fromPage) {
   $('#userInfoModle').modal('hide');
-  if(fromPage){
+  if (fromPage) {
     $("#baseInput").val(userId);
-  }else{
+  } else {
     $("#assetUserIdAllocation").val(userId);
   }
- 
+
 }
 
 /**
  * check userid by username
  * @return {null}
  */
-function assetCheckUserIdByUserName2 () {
-  assetCheckUserIdByUserName($("#userNameInput2").val(),2);
+function assetCheckUserIdByUserName2() {
+  assetCheckUserIdByUserName($("#userNameInput2").val(), 2);
 }
