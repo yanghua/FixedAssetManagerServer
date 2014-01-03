@@ -113,8 +113,8 @@ exports.modify = function (stockOutInfo, callback) {
           "                    soDate = :soDate             " +
           "WHERE soId = :soId                               ";
 
-    if (!stockOutInfo.siDate) {
-        stockOutInfo.siDate = new Date().Format("yyyy-MM-dd");
+    if (!stockOutInfo.soDate) {
+        stockOutInfo.soDate = new Date().Format("yyyy-MM-dd");
     }
 
     mysqlClient.query({
