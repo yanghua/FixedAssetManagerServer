@@ -28,12 +28,14 @@ var debug4Proxy     = require("debug")("proxy");
 var debug4Lib       = require("debug")("lib");
 var debug4Test      = require("debug")("test");
 var debug4Other     = require("debug")("other");
+var debug4Service   = require("debug")("service");
 
 global.debugCtrller = debug4Ctrller;
 global.debugProxy   = debug4Proxy;
 global.debugLib     = debug4Lib;
 global.debugTest    = debug4Test;
 global.debugOther   = debug4Other;
+global.debugService = debug4Service;
 
 /**
  * generate guid
