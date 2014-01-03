@@ -34,15 +34,20 @@ var util        = require("../libs/util");
 exports.getInventoryWithConditions = function (conditions, callback) {
     debugProxy("/proxy/inventory/getInventoryWithConditions");
     var sql;
-    sql = "SELECT i.*, g.* FROM INVENTORY i " +
-          "LEFT JOIN GIFT g ON i.giftId = g.giftId " +
-          "WHERE 1 = 1 ";
+
+    sql = "SELECT gc.name gcName, gi.* FROM ( ";
+
+    sql +=  " SELECT i.num, g.* FROM INVENTORY i " +
+            " LEFT JOIN GIFT g ON i.giftId = g.giftId " +
+            " WHERE 1 = 1 ";
 
     if (conditions) {
         if (conditions.giftId) {
             sql += "AND i.giftId = :giftId";
         }
     }
+
+    sql += " ) gi LEFT JOIN GIFTCATEGORY gc ON gi.categoryId = gc.categoryId ";
 
     mysqlClient.query({
         sql     : sql,

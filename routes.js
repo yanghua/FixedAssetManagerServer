@@ -137,7 +137,7 @@ module.exports = function (app) {
     app.post("/limitation/modification", limitation.modification);
     app.post("/limitation/deletion", limitation.deletion);
 
-    app.get("/inventories", inventory.inventories);
+    app.post("/inventories", inventory.inventories);
 
     //can't mapping router
     app.get("*", others.fourofour);

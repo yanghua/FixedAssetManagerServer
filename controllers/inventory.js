@@ -46,7 +46,7 @@ exports.inventories = function (req, res, next) {
     var conditions = {};
 
     try {
-        if (req.params.giftId) {
+        if (req.body.giftId) {
             conditions.giftId = sanitize(sanitize(req.params.giftId).trim()).xss();
         }
     } catch (e) {

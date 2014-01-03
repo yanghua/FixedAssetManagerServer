@@ -92,8 +92,6 @@ function generateGiftLimitationExcel (callback) {
             callback(buffer);
         }
     });
-
-    
 }
 
 
