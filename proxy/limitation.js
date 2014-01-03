@@ -123,3 +123,29 @@ exports.remove = function (giftId, callback) {
     });
 
 };
+
+/**
+ * get gifts that under limatation line
+ * @param  {Function} callback the cb 
+ * @return {[type]}            [description]
+ */
+exports.getUnderLimatationGifts = function (callback) {
+    debugProxy("/proxy/inventory/getUnderLimatationGifts");
+
+    var sql = "SELECT g.name, g.brand, g.price, i.num, l.limitNum FROM LIMITATION l " +
+              "  LEFT JOIN INVENTORY i " +
+              "    ON l.giftId = i.giftId and l.limitNum >= i.num " +
+              "  LEFT JOIN GIFT g ON g.giftId = l.giftId";
+
+    mysqlClient.query({
+        sql     : sql,
+        params  : null
+    },  function (err, rows) {
+        if (err || !rows) {
+            debugProxy(err);
+            return callback(new DBError(), null);
+        }
+
+        callback(null, rows);
+    });
+}
