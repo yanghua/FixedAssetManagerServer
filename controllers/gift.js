@@ -180,8 +180,8 @@ exports.deletion = function (req, res, next) {
         }
 
         res.send(resUtil.generateRes(null, config.statusCode.STATUS_OK));
-    })
-}
+    });
+};
 
 /**
  * index page of gifts

@@ -205,7 +205,7 @@ exports.deletion = function (req, res, next) {
 
     ep.once("completed", function () {
         return res.send(resUtil.generateRes(null, config.statusCode.STATUS_OK));
-    })
+    });
 
     ep.fail(function (err) {
         return res.send(resUtil.generateRes(null, err.statusCode));
