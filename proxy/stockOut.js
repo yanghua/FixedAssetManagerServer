@@ -39,15 +39,15 @@ exports.getStockOutWithCondition = function (conditions, callback) {
           "LEFT JOIN USER u ON so.applyUserId = u.userId " +
           "LEFT JOIN DEPARTMENT d ON so.underDept = d.departmentId " +
           "LEFT JOIN PAYMENTTYPE pt ON so.ptId = pt.ptId " +
-          "WHERE 1 = 1";
+          "WHERE 1 = 1 ";
 
     if (conditions) {
         if (conditions.giftId) {
-            sql += "AND so.giftId = :giftId";
+            sql += " AND so.giftId = :giftId ";
         }
 
         if (conditions.soId) {
-            sql += "AND so.soId = :soId";
+            sql += " AND so.soId = :soId ";
         }
     }
 
