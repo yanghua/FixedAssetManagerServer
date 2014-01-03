@@ -41,7 +41,7 @@ var transport = mailer.createTransport("SMTP", appConfig.mail_opts);
  * @return {null}         
  */
 exports.sendMail = function (mailObj) {
-
+    debugService("/services/mail/sendMail");
     if (!mailObj.hasOwnProperty("from")) {
         mailObj.from = appConfig.mail_opts.auth.user;
     }
@@ -51,7 +51,7 @@ exports.sendMail = function (mailObj) {
         mailObj.to = appConfig.mailDefault_TO.join(",");
     }
 
-    console.log("sending mail .....");
+    debugService("sending mail .....");
 
     transport.sendMail(mailObj, function (err) {
         if (err) {
