@@ -28,7 +28,12 @@ var tdCont = {
   }
 };
 
-function editStockOutFunc(soId) {
+/**
+ * eidt stock out
+ * @param  {string} soId stockId
+ * @return {null}      
+ */
+ function editStockOutFunc(soId) {
   $.ajax({
     url: '/stockouts',
     type: 'POST',
@@ -53,7 +58,12 @@ function editStockOutFunc(soId) {
   })
 }
 
-function delStockOutFunc(soId) {
+/**
+ * delete stock out record
+ * @param  {string} soId stock out Id
+ * @return {null}      
+ */
+ function delStockOutFunc(soId) {
   bootbox.confirm("确定删除吗?", function(result) {
     if (result) {
       $.ajax({
@@ -73,7 +83,12 @@ function delStockOutFunc(soId) {
   });
 }
 
-function delStockInFunc(siId) {
+/**
+ * delete stockIn record
+ * @param  {null} siId stockIn Id
+ * @return {null}      
+ */
+ function delStockInFunc(siId) {
   bootbox.confirm("确定删除吗?", function(result) {
     if (result) {
       $.ajax({
@@ -93,7 +108,12 @@ function delStockInFunc(siId) {
   });
 }
 
-function editStockInFunc(siId) {
+/**
+ * edit stock in 
+ * @param  {string} siId stock in Id
+ * @return {null}      
+ */
+ function editStockInFunc(siId) {
   $.ajax({
     url: '/stockins',
     type: 'POST',
@@ -117,8 +137,37 @@ function editStockInFunc(siId) {
   })
 }
 
-function outOpearteClick(edit) {
-  //without check
+/**
+ * add stock out opearte 
+ * @param  {string} edit edit or add
+ * @return {null}      
+ */
+ function outOpearteClick(edit) {
+  if($('#giftType').val() == '0'){
+    bootbox.alert("请选择礼品!");
+    return ;
+  }
+  if($('#giftSize').val() <= 0 || !$('#giftSize').val() ){
+    bootbox.alert("请输入正确的个数!");
+    return ;
+  }
+  if(!$('#applyUserId').val() ){
+    bootbox.alert("请输入申请人信息!");
+    return ;
+  }
+  if($('#giftApplyDepart').val() == '0'){
+    bootbox.alert("请选择申请部门!");
+    return ;
+  }
+  if($('#giftSendDepart').val() == '0'){
+    bootbox.alert("请选择费用承担部门!");
+    return ;
+  }
+  if($('#payStatus').val() == '0'){
+    bootbox.alert("请选择付款状态!");
+    return ;
+  }
+
   var alertString, outUrl;
   if (edit) {
     alertString = "修改成功!";
@@ -151,8 +200,27 @@ function outOpearteClick(edit) {
 
 
 function inOpearteClick(edit) {
-  //without check 
-  
+  if($('#giftTypeIn').val() == '0'){
+    bootbox.alert("请选择礼品!");
+    return ;
+  }
+  if($('#giftSize2').val() <= 0 || !$('#giftSize2').val() ){
+    bootbox.alert("请输入正确的个数!");
+    return ;
+  }
+  if(!$('#supplierName').val() ){
+    bootbox.alert("请输入供应商信息!");
+    return ;
+  }
+  if($('#siTypeIdSelect').val() == '0'){
+    bootbox.alert("请选择入库类型!");
+    return ;
+  }
+  if($('#payStatusIn').val() == '0'){
+    bootbox.alert("请选择付款状态!");
+    return ;
+  }
+
   var alertString, inUrl;
   if (edit) {
     alertString = "修改成功!";
