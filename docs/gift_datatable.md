@@ -31,10 +31,11 @@ giftId             |                    | 礼品编号
 num                |                    | 数量
 amount             |                    | 单笔金额
 applyUserId        |                    | 申请人
-applyDeptId        |                    | 申请部门编号
-underDept          |                    | 费用承担部门
+underDeptId        |                    | 费用承担部门
 ptId               |                    | 付款状态编号
 soDate             |                    | 出库时间
+remark             |                    | 备注
+other              |                    | 其他
 
 
 ```
@@ -50,6 +51,8 @@ supplier           |                    | 供应商
 siTypeId           |                    | 入库类型编号
 ptId               |                    | 付款状态编号
 siDate             |                    | 入库时间
+remark             |                    | 备注
+other              |                    | 其他
 
 ```
 stockInType             --入库类型(上交、采购、退回)
