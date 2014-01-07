@@ -37,7 +37,7 @@ exports.getStockOutWithCondition = function (conditions, callback) {
     sql = "SELECT so.*, g.name, u.userName, d.departmentName, pt.ptName FROM STOCKOUT so " +
           "LEFT JOIN GIFT g ON so.giftId = g.giftId " +
           "LEFT JOIN USER u ON so.applyUserId = u.userId " +
-          "LEFT JOIN DEPARTMENT d ON so.underDept = d.departmentId " +
+          "LEFT JOIN DEPARTMENT d ON so.underDeptId = d.departmentId " +
           "LEFT JOIN PAYMENTTYPE pt ON so.ptId = pt.ptId " +
           "WHERE 1 = 1 ";
 
