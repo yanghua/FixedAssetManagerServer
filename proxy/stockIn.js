@@ -23,23 +23,23 @@
  */
 
 var mysqlClient = require("../libs/mysqlUtil");
-var util        = require("../libs/util");
+var util = require("../libs/util");
 
 /**
  * get all stock in item list
  * @param  {Object} conditions the search conditions
  * @param  {Function} callback the callback func
- * @return {null}            
+ * @return {null}
  */
-exports.getAllStockInWithCondition = function (conditions, callback) {
+exports.getAllStockInWithCondition = function(conditions, callback) {
     debugProxy("/proxy/stockIn/getAllStockInWithCondition");
     var sql;
 
     sql = "SELECT si.*, g.name, sit.typeName, pt.ptName FROM STOCKIN si " +
-          "LEFT JOIN GIFT g ON si.giftId = g.giftId " +
-          "LEFT JOIN STOCKINTYPE sit ON si.siTypeId = sit.sitId " +
-          "LEFT JOIN PAYMENTTYPE pt ON si.ptId = pt.ptId " +
-          "WHERE 1 = 1 ";
+        "LEFT JOIN GIFT g ON si.giftId = g.giftId                       " +
+        "LEFT JOIN STOCKINTYPE sit ON si.siTypeId = sit.sitId           " +
+        "LEFT JOIN PAYMENTTYPE pt ON si.ptId = pt.ptId                  " +
+        "WHERE 1 = 1                                                    ";
 
     if (conditions) {
         if (conditions.giftId) {
@@ -52,9 +52,9 @@ exports.getAllStockInWithCondition = function (conditions, callback) {
     }
 
     mysqlClient.query({
-        sql     : sql,
-        params  : conditions
-    },  function (err, rows) {
+        sql: sql,
+        params: conditions
+    }, function(err, rows) {
         if (err || !rows) {
             debugProxy(err);
             return callback(new DBError(), null);
@@ -70,12 +70,22 @@ exports.getAllStockInWithCondition = function (conditions, callback) {
  * @param {stockInInfo}   stockInInfo a new instance of stock in
  * @param {Function} callback    the callback func
  */
-exports.add = function (stockInInfo, callback) {
+exports.add = function(stockInInfo, callback) {
     debugProxy("/proxy/stockIn/add");
 
     var sql;
 
-    sql = "INSERT INTO STOCKIN VALUES(:siId, :giftId, :num, :amount, :supplier, :siTypeId, :ptId, :siDate);";
+    sql = "INSERT INTO STOCKIN VALUES(:siId,            " +
+          "                           :giftId,          " +
+          "                           :num,             " +
+          "                           :amount,          " +
+          "                           :supplier,        " +
+          "                           :siTypeId,        " +
+          "                           :ptId,            " +
+          "                           :siDate,          " +
+          "                           :remark,          " +
+          "                           :other            " +
+          "                          );                 ";
 
     stockInInfo.siId = util.GUID();
     if (!stockInInfo.siDate) {
@@ -83,9 +93,9 @@ exports.add = function (stockInInfo, callback) {
     }
 
     mysqlClient.query({
-        sql     : sql,
-        params  : stockInInfo
-    },  function (err, rows) {
+        sql: sql,
+        params: stockInInfo
+    }, function(err, rows) {
         if (err || !rows) {
             debugProxy(err);
             return callback(new DBError(), null);
@@ -100,30 +110,32 @@ exports.add = function (stockInInfo, callback) {
  * modify a stock in item
  * @param  {Object}   stockInInfo the instance of modifying stock in object
  * @param  {Function} callback    the callback func
- * @return {null}               
+ * @return {null}
  */
-exports.modify = function (stockInInfo, callback) {
+exports.modify = function(stockInInfo, callback) {
     debugProxy("/proxy/stockIn/modify");
     var sql;
 
-    sql = "UPDATE STOCKIN SET                       " +
-          "                   giftId = :giftId,     " +
-          "                   num = :num,           " +
-          "                   amount = :amount,     " +
-          "                   supplier = :supplier, " +
-          "                   siTypeId = :siTypeId, " +
-          "                   ptId = :ptId,         " +
-          "                   siDate = :siDate      " +
-          "WHERE siId = :siId                       ";
+    sql = "UPDATE STOCKIN SET                     " +
+        "                   giftId = :giftId,     " +
+        "                   num = :num,           " +
+        "                   amount = :amount,     " +
+        "                   supplier = :supplier, " +
+        "                   siTypeId = :siTypeId, " +
+        "                   ptId = :ptId,         " +
+        "                   siDate = :siDate,     " +
+        "                   remark = :remark,     " +
+        "                   other = :other        " +
+        "WHERE siId = :siId                       ";
 
     if (!stockInInfo.siDate) {
         stockInInfo.siDate = new Date().Format("yyyy-MM-dd");
     }
 
     mysqlClient.query({
-        sql     : sql,
-        params  : stockInInfo
-    },  function (err, rows) {
+        sql: sql,
+        params: stockInInfo
+    }, function(err, rows) {
         if (err || !rows) {
             return callback(new DBError(), null);
         }
@@ -136,17 +148,19 @@ exports.modify = function (stockInInfo, callback) {
  * remove a stock in item
  * @param  {String}   siId     the stock in id
  * @param  {Function} callback the cb func
- * @return {null}            
+ * @return {null}
  */
-exports.remove = function (siId, callback) {
+exports.remove = function(siId, callback) {
     debugProxy("/proxy/stockIn/remove");
 
     var sql = "DELETE FROM STOCKIN WHERE siId = :siId";
 
     mysqlClient.query({
-        sql   : sql,
-        params: {"siId" : siId }
-    },  function (err, rows) {
+        sql: sql,
+        params: {
+            "siId": siId
+        }
+    }, function(err, rows) {
         if (err || !rows) {
             debugProxy(err);
             return callback(new DBError(), null);
@@ -160,17 +174,19 @@ exports.remove = function (siId, callback) {
  * remove items with gift id
  * @param  {String}   giftId   the gift id
  * @param  {Function} callback the cb func
- * @return {null}            
+ * @return {null}
  */
-exports.removeWithGiftId = function (giftId, callback) {
+exports.removeWithGiftId = function(giftId, callback) {
     debugProxy("/proxy/stockIn/removeWithGiftId");
 
     var sql = "DELETE FROM STOCKIN WHERE giftId = :giftId";
 
     mysqlClient.query({
-        sql   : sql,
-        params: { giftId : giftId }
-    },  function (err, rows) {
+        sql: sql,
+        params: {
+            giftId: giftId
+        }
+    }, function(err, rows) {
         if (err || !rows) {
             debugProxy(err);
             return callback(new DBError(), null);

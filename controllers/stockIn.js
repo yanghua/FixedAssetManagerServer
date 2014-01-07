@@ -23,22 +23,22 @@
  */
 
 var EventProxy = require("eventproxy");
-var resUtil    = require("../libs/resUtil");
-var config     = require("../config").initConfig();
-var StockIn    = require("../proxy/stockIn");
-var check      = require("validator").check;
-var sanitize   = require("validator").sanitize;
-var parseXlsx  = require("excel");
-var Inventory  = require("../proxy/inventory");
+var resUtil = require("../libs/resUtil");
+var config = require("../config").initConfig();
+var StockIn = require("../proxy/stockIn");
+var check = require("validator").check;
+var sanitize = require("validator").sanitize;
+var parseXlsx = require("excel");
+var Inventory = require("../proxy/inventory");
 
 /**
  * get stock in by conditions
  * @param  {Object}   req  the instance of request
  * @param  {Object}   res  the instance of response
  * @param  {Function} next the next handler
- * @return {null}        
+ * @return {null}
  */
-exports.stockins = function (req, res, next) {
+exports.stockins = function(req, res, next) {
     debugCtrller("/controllers/stockIn/stockins");
 
     if (!req.session || !req.session.user) {
@@ -61,7 +61,7 @@ exports.stockins = function (req, res, next) {
         return res.send(resUtil.generateRes(null, config.statusCode.STATUS_INVAILD_PARAMS));
     }
 
-    StockIn.getAllStockInWithCondition(conditions, function (err, rows) {
+    StockIn.getAllStockInWithCondition(conditions, function(err, rows) {
         if (err) {
             return res.send(resUtil.generateRes(null, err.statusCode));
         }
@@ -75,9 +75,9 @@ exports.stockins = function (req, res, next) {
  * @param  {Object}   req  the instance of request
  * @param  {Object}   res  the instance of response
  * @param  {Function} next the next handler
- * @return {null}       
+ * @return {null}
  */
-exports.insertion = function (req, res, next) {
+exports.insertion = function(req, res, next) {
     debugCtrller("/controllers/stockIn/insertion");
 
     if (!req.session || !req.session.user) {
@@ -100,11 +100,13 @@ exports.insertion = function (req, res, next) {
         stockInInfo.supplier = sanitize(sanitize(req.body.supplier).trim()).xss();
         stockInInfo.siTypeId = sanitize(sanitize(req.body.siTypeId).trim()).xss();
         stockInInfo.ptId     = sanitize(sanitize(req.body.ptId).trim()).xss();
+        stockInInfo.remark   = sanitize(sanitize(req.body.remark).trim()).xss();
+        stockInInfo.other    = sanitize(sanitize(req.body.other).trim()).xss();
     } catch (e) {
         return res.send(resUtil.generateRes(null, config.statusCode.STATUS_INVAILD_PARAMS));
     }
 
-    StockIn.add(stockInInfo, function (err, rows) {
+    StockIn.add(stockInInfo, function(err, rows) {
         if (err) {
             return res.send(resUtil.generateRes(null, err.statusCode));
         }
@@ -119,9 +121,9 @@ exports.insertion = function (req, res, next) {
  * @param  {Object}   req  the instance of request
  * @param  {Object}   res  the instance of response
  * @param  {Function} next the next handler
- * @return {null}   
+ * @return {null}
  */
-exports.modification = function (req, res, next) {
+exports.modification = function(req, res, next) {
     debugCtrller("/controllers/stockIn/modification");
 
     if (!req.session || !req.session.user) {
@@ -139,18 +141,19 @@ exports.modification = function (req, res, next) {
         check(req.body.siTypeId).notEmpty();
         check(req.body.ptId).notEmpty();
 
-        stockInInfo.siId     = sanitize(sanitize(req.body.siId).trim()).xss();
-        stockInInfo.giftId   = sanitize(sanitize(req.body.giftId).trim()).xss();
-        stockInInfo.num      = sanitize(sanitize(req.body.num).trim()).xss();
-        stockInInfo.amount   = sanitize(sanitize(req.body.amount).trim()).xss();
+        stockInInfo.siId = sanitize(sanitize(req.body.siId).trim()).xss();
+        stockInInfo.giftId = sanitize(sanitize(req.body.giftId).trim()).xss();
+        stockInInfo.num = sanitize(sanitize(req.body.num).trim()).xss();
+        stockInInfo.amount = sanitize(sanitize(req.body.amount).trim()).xss();
         stockInInfo.supplier = sanitize(sanitize(req.body.supplier).trim()).xss();
         stockInInfo.siTypeId = sanitize(sanitize(req.body.siTypeId).trim()).xss();
-        stockInInfo.ptId     = sanitize(sanitize(req.body.ptId).trim()).xss();
+        stockInInfo.ptId = sanitize(sanitize(req.body.ptId).trim()).xss();
+        stockInInfo.remark = sanitize(sanitize(req.body.remark).trim()).xss();
     } catch (e) {
         return res.send(resUtil.generateRes(null, config.statusCode.STATUS_INVAILD_PARAMS));
     }
 
-    StockIn.modify(stockInInfo, function (err, rows) {
+    StockIn.modify(stockInInfo, function(err, rows) {
         if (err) {
             return res.send(resUtil.generateRes(null, err.statusCode));
         }
@@ -164,9 +167,9 @@ exports.modification = function (req, res, next) {
  * @param  {Object}   req  the instance of request
  * @param  {Object}   res  the instance of response
  * @param  {Function} next the next handler
- * @return {null}        
+ * @return {null}
  */
-exports.deletion = function (req, res, next) {
+exports.deletion = function(req, res, next) {
     debugCtrller("/controllers/stockIn/deletion");
 
     if (!req.session || !req.session.user) {
@@ -185,7 +188,7 @@ exports.deletion = function (req, res, next) {
 
     var ep = new EventProxy();
 
-    StockIn.remove(siId, function (err, rows) {
+    StockIn.remove(siId, function(err, rows) {
         if (err) {
             return ep.emitLater("error", err);
         }
@@ -193,8 +196,8 @@ exports.deletion = function (req, res, next) {
         ep.emitLater("after_removedstockin");
     });
 
-    ep.once("after_removedstockin", function () {
-        Inventory.removeUselessItem(function (err, rows) {
+    ep.once("after_removedstockin", function() {
+        Inventory.removeUselessItem(function(err, rows) {
             if (err) {
                 return ep.emitLater("error", err);
             }
@@ -203,11 +206,11 @@ exports.deletion = function (req, res, next) {
         });
     });
 
-    ep.once("completed", function () {
+    ep.once("completed", function() {
         return res.send(resUtil.generateRes(null, config.statusCode.STATUS_OK));
     });
 
-    ep.fail(function (err) {
+    ep.fail(function(err) {
         return res.send(resUtil.generateRes(null, err.statusCode));
     });
 };
@@ -217,7 +220,7 @@ exports.deletion = function (req, res, next) {
  * @param  {Object}   req  the instance of request
  * @param  {Object}   res  the instance of response
  * @param  {Function} next the next handler
- * @return {null}        
+ * @return {null}
  */
 // exports.importSI = function (req, res, next) {
 //     debugCtrller("/controllers/stockIn/importSI");
@@ -248,7 +251,7 @@ exports.deletion = function (req, res, next) {
 //         if (err) {
 //             return ep.emitLater("error", new ServerError());
 //         }
-        
+
 //         ep.emitLater("renamed_file");
 //     });
 
@@ -294,7 +297,7 @@ exports.deletion = function (req, res, next) {
 //     });
 
 //     ep.once("after_importPaymentType", function () {
-         
+
 //     });
 
 //     ep.fail(function (err) {
@@ -308,7 +311,7 @@ exports.deletion = function (req, res, next) {
  * @param  {Object}   req  the instance of request
  * @param  {Object}   res  the instance of response
  * @param  {Function} next the next handler
- * @return {null}        
+ * @return {null}
  */
 // exports.exportSI = function (req, res, next) {
 //     debugCtrller("/controllers/stockIn/exportSI");

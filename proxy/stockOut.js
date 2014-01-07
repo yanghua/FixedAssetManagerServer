@@ -34,12 +34,12 @@ var util        = require("../libs/util");
 exports.getStockOutWithCondition = function (conditions, callback) {
     debugProxy("/proxy/stockOut/getStockOutWithCondition");
     var sql;
-    sql = "SELECT so.*, g.name, u.userName, d.departmentName, pt.ptName FROM STOCKOUT so " +
-          "LEFT JOIN GIFT g ON so.giftId = g.giftId " +
-          "LEFT JOIN USER u ON so.applyUserId = u.userId " +
-          "LEFT JOIN DEPARTMENT d ON so.underDept = d.departmentId " +
-          "LEFT JOIN PAYMENTTYPE pt ON so.ptId = pt.ptId " +
-          "WHERE 1 = 1 ";
+    sql = "SELECT so.*, g.name, u.userName, d.departmentName, pt.ptName FROM STOCKOUT so  " +
+          "LEFT JOIN GIFT g ON so.giftId = g.giftId                                       " +
+          "LEFT JOIN USER u ON so.applyUserId = u.userId                                  " +
+          "LEFT JOIN DEPARTMENT d ON so.underDeptId = d.departmentId                      " +
+          "LEFT JOIN PAYMENTTYPE pt ON so.ptId = pt.ptId                                  " +
+          "WHERE 1 = 1                                                                    ";
 
     if (conditions) {
         if (conditions.giftId) {
@@ -79,7 +79,17 @@ exports.add = function (stockOutInfo, callback) {
         stockOutInfo.soDate = new Date().Format("yyyy-MM-dd");
     }
 
-    sql = "INSERT INTO STOCKOUT VALUES(:soId, :giftId, :num, :amount, :applyUserId, :applyDeptId, :underDept, :ptId, :soDate);";
+    sql = "INSERT INTO STOCKOUT VALUES(:soId,         " +
+          "                            :giftId,       " +
+          "                            :num,          " +
+          "                            :amount,       " +
+          "                            :applyUserId,  " +
+          "                            :underDeptId,  " +
+          "                            :ptId,         " +
+          "                            :soDate,       " +
+          "                            :remark,       " +
+          "                            :other         " +
+          "                           );";
 
     mysqlClient.query({
         sql   : sql,
@@ -107,10 +117,11 @@ exports.modify = function (stockOutInfo, callback) {
           "                    num = :num,                  " +
           "                    amount = :amount,            " +
           "                    applyUserId = :applyUserId,  " +
-          "                    applyDeptId = :applyDeptId,  " +
-          "                    underDept = :underDept,      " +
+          "                    underDeptId = :underDeptId,  " +
           "                    ptId = :ptId,                " +
-          "                    soDate = :soDate             " +
+          "                    soDate = :soDate,            " +
+          "                    remark = :remark,            " +
+          "                    other = :other               " +
           "WHERE soId = :soId                               ";
 
     if (!stockOutInfo.soDate) {
