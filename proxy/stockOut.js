@@ -35,10 +35,9 @@ exports.getStockOutWithCondition = function (conditions, callback) {
     debugProxy("/proxy/stockOut/getStockOutWithCondition");
     var sql;
 
-    sql = "SELECT so.*, g.name, u.userName, d.departmentName, pt.ptName FROM STOCKOUT so " +
+    sql = "SELECT so.*, g.name, u.userName, pt.ptName FROM STOCKOUT so " +
           "LEFT JOIN GIFT g ON so.giftId = g.giftId " +
           "LEFT JOIN USER u ON so.applyUserId = u.userId " +
-          "LEFT JOIN DEPARTMENT d ON so.underDeptId = d.departmentId " +
           "LEFT JOIN PAYMENTTYPE pt ON so.ptId = pt.ptId " +
           "WHERE 1 = 1 ";
 
@@ -85,7 +84,7 @@ exports.add = function (stockOutInfo, callback) {
           "                            :num,          " +
           "                            :amount,       " +
           "                            :applyUserId,  " +
-          "                            :underDeptId,  " +
+          "                            :underDept,    " +
           "                            :ptId,         " +
           "                            :soDate,       " +
           "                            :remark,       " +
@@ -118,7 +117,7 @@ exports.modify = function (stockOutInfo, callback) {
           "                    num = :num,                  " +
           "                    amount = :amount,            " +
           "                    applyUserId = :applyUserId,  " +
-          "                    underDeptId = :underDeptId,  " +
+          "                    underDept = :underDept,      " +
           "                    ptId = :ptId,                " +
           "                    soDate = :soDate,            " +
           "                    remark = :remark,            " +
