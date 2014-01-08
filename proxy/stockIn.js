@@ -182,7 +182,7 @@ exports.removeWithGiftId = function(giftId, callback) {
     var sql = "DELETE FROM STOCKIN WHERE giftId = :giftId";
 
     mysqlClient.query({
-        sql: sql,
+        sql   : sql,
         params: {
             giftId: giftId
         }
@@ -195,3 +195,40 @@ exports.removeWithGiftId = function(giftId, callback) {
         callback(null, null);
     });
 };
+
+/**
+ * get all suppliers
+ * @param  {Function} callback the cb func
+ * @return {null}            
+ */
+exports.getAllSuppliers = function (callback) {
+    debugProxy("/proxy/stockIn/getAllSuppliers");
+    var sql;
+
+    sql = "SELECT DISTINCT(supplier) FROM STOCKIN;";
+
+    mysqlClient.query({
+        sql   : sql,
+        params: {}
+    },  function (err, rows) {
+        if (err || !rows) {
+            debugProxy(err);
+            return callback(new DBError(), null);
+        }
+
+        callback(null, processSupplierFromKVToStr(rows));
+    });
+};
+
+/**
+ * process supplier from key-value pair to str
+ * @param  {Array} suppliers the array of supplier
+ * @return {Array}           the processed arr
+ */
+function processSupplierFromKVToStr (suppliers) {
+    debugProxy("/proxy/stockIn/processSupplierFromKVToStr");
+
+    return suppliers.map(function (item) {
+        return item.supplier;
+    });
+}

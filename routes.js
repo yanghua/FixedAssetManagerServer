@@ -148,6 +148,8 @@ module.exports = function (app) {
 
     app.get("/manualinputdepts", department.allManualInputDepts);
 
+    app.get("/suppliers", stockIn.suppliers);
+
     //can't mapping router
     app.get("*", others.fourofour);
 };
