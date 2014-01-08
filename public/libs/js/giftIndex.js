@@ -283,7 +283,7 @@ function getStockOutRecord() {
           }
 
           var cellExpireDate = tdCont.cell(tempDate);
-          var cellDepartmentName = tdCont.cell(cellData.departmentName);
+          var cellDepartmentName = tdCont.cell(cellData.underDept);
           var cellPtName = tdCont.cell(cellData.ptName);
           var linkEdit = tdCont.cell($("<a href='javascript:void(0);'>修改</a>"));
           linkEdit.click(tdCont.editStockOut(cellData.soId));
