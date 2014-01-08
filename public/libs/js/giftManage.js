@@ -223,7 +223,6 @@ function giftEditOpearteClick() {
         $('#gitEditModle').modal('hide');
         bootbox.alert("修改成功!", function() {
           loadGifts();
-          // todo
         });
       } else {
         bootbox.alert("系统出错 , 请重试 !");
@@ -235,6 +234,10 @@ function giftEditOpearteClick() {
   })
 }
 
+/**
+ * load gift category
+ * @return {null} 
+ */
 function loadGiftCategorys() {
   $.ajax({
     type: 'GET',
@@ -259,7 +262,10 @@ function loadGiftCategorys() {
     }
   })
 }
-
+/**
+ * load giftCategoty
+ * @return {null} 
+ */
 function loadGiftCategorysIndex() {
   $.ajax({
     url: "/giftcategories",
@@ -278,8 +284,10 @@ function loadGiftCategorysIndex() {
   })
 }
 
+/**
+ * add gift category
+ */
 function addGiftCategory() {
-  //with check
   if(!$("#giftCategoryName").val()){
     bootbox.alert("名称不能为空!");
     return;
@@ -299,7 +307,12 @@ function addGiftCategory() {
     }
   })
 }
-
+/**
+ * editCategory
+ * @param  {string} categoryId categoryId
+ * @param  {string} name       the name category
+ * @return {null}            
+ */
 function editCategoryFunc(categoryId, name) {
   $("#giftCategoryBtnEdit").unbind();
   $('#giftCategoryName').val(name);
