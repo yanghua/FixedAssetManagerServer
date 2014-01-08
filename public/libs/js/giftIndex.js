@@ -415,11 +415,11 @@ function loadDepartments() {
       if (data.statusCode === 0) {
         for (var i = 0; i < data.data.length; i++) {
           var temp = "<option value='" + data.data[i].departmentId + "'>" + data.data[i].departmentName + "</option>";
-          $("#giftSendDepart").append(temp);
+          //$("#giftSendDepart").append(temp);
           //$("#giftApplyDepart").append(temp);
         }
         //$('#giftApplyDepart').selectpicker();
-        $('#giftSendDepart').selectpicker();
+        //$('#giftSendDepart').selectpicker();
 
       }
     }
