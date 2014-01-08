@@ -49,7 +49,15 @@ var limitation        = require("./controllers/limitation");
 
 module.exports = function (app) {
 
-    //views
+    /************************************************************************/
+    /*                Resful: URI Represent a Resource!!!                   */
+    /************************************************************************/
+
+    /********************************fixed asset*****************************/
+
+    //html page
+    
+
     // app.get("/", others.index);
     app.get("/", fixedAsset.manage);
     app.get("/qrtest", fixedAsset.handleQrcode);
@@ -89,22 +97,21 @@ module.exports = function (app) {
     // app.post("/authuser/create", authUser.create);
     // app.get("/authusers", authUser.allUsers);
 
-    /************************************************************************/
-    /*                Resful: URI Represent a Resource!!!                   */
-    /************************************************************************/
-    //params:qrCode
+
     app.post("/fixedasset/inspection", fixedAsset.inspection);
 
-    //params:faId / reject
     app.post("/fixedasset/rejection", fixedAsset.rejection);
 
-    //params:faType / ...(the field's key and value pair)
     app.post("/fixedasset/insertion", fixedAsset.insertion);
     app.post("/fixedasset/:faId/recycle", fixedAsset.recycle);
     app.post("/fixedasset/:faId/modification", fixedAsset.modification);
     app.post("/fixedasset/:faId/allocation", fixedAsset.allocation);
 
     /************************************Gift********************************/
+
+    //html page
+    
+
     app.get("/giftcategories", giftCategory.giftCategories);
     app.post("/giftcategory/insertion", giftCategory.insertion);
     app.post("/giftcategory/modification", giftCategory.modification);
