@@ -28,7 +28,12 @@ var tdCont = {
   }
 };
 
-function editStockOutFunc(soId) {
+/**
+ * eidt stock out
+ * @param  {string} soId stockId
+ * @return {null}      
+ */
+ function editStockOutFunc(soId) {
   $.ajax({
     url: '/stockouts',
     type: 'POST',
@@ -46,14 +51,21 @@ function editStockOutFunc(soId) {
         $("#giftAcount").val(cellData.amount);
         $("#applyUserId").val(cellData.applyUserId);
         $('#giftSendDepart').selectpicker('val', cellData.underDept);
-        $('#giftApplyDepart').selectpicker('val', cellData.applyDeptId);
+        //$('#giftApplyDepart').selectpicker('val', cellData.applyDeptId);
         $('#payStatus').selectpicker('val', cellData.ptId);
+        $('#remark').val(cellData.remark);
+        $('#other').val(cellData.other);
       }
     }
   })
 }
 
-function delStockOutFunc(soId) {
+/**
+ * delete stock out record
+ * @param  {string} soId stock out Id
+ * @return {null}      
+ */
+ function delStockOutFunc(soId) {
   bootbox.confirm("确定删除吗?", function(result) {
     if (result) {
       $.ajax({
@@ -73,7 +85,12 @@ function delStockOutFunc(soId) {
   });
 }
 
-function delStockInFunc(siId) {
+/**
+ * delete stockIn record
+ * @param  {null} siId stockIn Id
+ * @return {null}      
+ */
+ function delStockInFunc(siId) {
   bootbox.confirm("确定删除吗?", function(result) {
     if (result) {
       $.ajax({
@@ -93,7 +110,12 @@ function delStockInFunc(siId) {
   });
 }
 
-function editStockInFunc(siId) {
+/**
+ * edit stock in 
+ * @param  {string} siId stock in Id
+ * @return {null}      
+ */
+ function editStockInFunc(siId) {
   $.ajax({
     url: '/stockins',
     type: 'POST',
@@ -117,8 +139,37 @@ function editStockInFunc(siId) {
   })
 }
 
-function outOpearteClick(edit) {
-  //without check
+/**
+ * add stock out opearte 
+ * @param  {string} edit edit or add
+ * @return {null}      
+ */
+ function outOpearteClick(edit) {
+  if($('#giftType').val() == '0'){
+    bootbox.alert("请选择礼品!");
+    return ;
+  }
+  if($('#giftSize').val() <= 0 || !$('#giftSize').val() ){
+    bootbox.alert("请输入正确的个数!");
+    return ;
+  }
+  if(!$('#applyUserId').val() ){
+    bootbox.alert("请输入申请人信息!");
+    return ;
+  }
+  // if($('#giftApplyDepart').val() == '0'){
+  //   bootbox.alert("请选择申请部门!");
+  //   return ;
+  // }
+  if($('#giftSendDepart').val() == '0'){
+    bootbox.alert("请选择费用承担部门!");
+    return ;
+  }
+  if($('#payStatus').val() == '0'){
+    bootbox.alert("请选择付款状态!");
+    return ;
+  }
+
   var alertString, outUrl;
   if (edit) {
     alertString = "修改成功!";
@@ -149,10 +200,33 @@ function outOpearteClick(edit) {
   })
 }
 
-
+/**
+ * the stock in opearte
+ * @param  {string} edit editId
+ * @return {null}      
+ */
 function inOpearteClick(edit) {
-  //without check 
-  
+  if($('#giftTypeIn').val() == '0'){
+    bootbox.alert("请选择礼品!");
+    return ;
+  }
+  if($('#giftSize2').val() <= 0 || !$('#giftSize2').val() ){
+    bootbox.alert("请输入正确的个数!");
+    return ;
+  }
+  if(!$('#supplierName').val() ){
+    bootbox.alert("请输入供应商信息!");
+    return ;
+  }
+  if($('#siTypeIdSelect').val() == '0'){
+    bootbox.alert("请选择入库类型!");
+    return ;
+  }
+  if($('#payStatusIn').val() == '0'){
+    bootbox.alert("请选择付款状态!");
+    return ;
+  }
+
   var alertString, inUrl;
   if (edit) {
     alertString = "修改成功!";
@@ -179,13 +253,16 @@ function inOpearteClick(edit) {
   })
 }
 
+/**
+ * get stockout record
+ * @return {null} 
+ */
 function getStockOutRecord() {
   $.ajax({
     url: '/stockouts',
     type: 'POST',
     success: function(data) {
       if (data.statusCode === 0) {
-        //bootbox.alert(data.data[0].soId);
         $("#stockOutRecodes").html("");
         for (var i = 0; i < data.data.length; i++) {
           var cellData = data.data[i];
@@ -207,7 +284,6 @@ function getStockOutRecord() {
 
           var cellExpireDate = tdCont.cell(tempDate);
           var cellDepartmentName = tdCont.cell(cellData.departmentName);
-          //var cellApplyDept = tdCont.cell(cellData.)
           var cellPtName = tdCont.cell(cellData.ptName);
           var linkEdit = tdCont.cell($("<a href='javascript:void(0);'>修改</a>"));
           linkEdit.click(tdCont.editStockOut(cellData.soId));
@@ -230,13 +306,16 @@ function getStockOutRecord() {
   })
 }
 
+/**
+ * get stock in record
+ * @return {null} 
+ */
 function getStockInRecord() {
   $.ajax({
     url: '/stockins',
     type: 'POST',
     success: function(data) {
       if (data.statusCode === 0) {
-        //bootbox.alert(data.data[0].soId);
         $("#stockInRecodes").html("");
         for (var i = 0; i < data.data.length; i++) {
           var cellData = data.data[i];
@@ -257,7 +336,6 @@ function getStockInRecord() {
           }
 
           var cellExpireDate = tdCont.cell(tempDate);
-          //var cellApplyDept = tdCont.cell(cellData.)
           var cellPtName = tdCont.cell(cellData.ptName);
           var linkEdit = tdCont.cell($("<a href='javascript:void(0);'>修改</a>"));
           linkEdit.click(tdCont.editStockIn(cellData.siId));
@@ -280,8 +358,11 @@ function getStockInRecord() {
 }
 
 
-
-function loadPaumenttypes() {
+/**
+ * load payment type
+ * @return {null} 
+ */
+function loadPaymenttypes() {
   $.ajax({
     type: 'GET',
     url: '/paymenttypes',
@@ -299,6 +380,10 @@ function loadPaumenttypes() {
   });
 }
 
+/**
+ * load departments
+ * @return {null} 
+ */
 function loadDepartments() {
   $.ajax({
     type: 'GET',
@@ -308,9 +393,9 @@ function loadDepartments() {
         for (var i = 0; i < data.data.length; i++) {
           var temp = "<option value='" + data.data[i].departmentId + "'>" + data.data[i].departmentName + "</option>";
           $("#giftSendDepart").append(temp);
-          $("#giftApplyDepart").append(temp);
+          //$("#giftApplyDepart").append(temp);
         }
-        $('#giftApplyDepart').selectpicker();
+        //$('#giftApplyDepart').selectpicker();
         $('#giftSendDepart').selectpicker();
 
       }
@@ -318,7 +403,10 @@ function loadDepartments() {
   });
 }
 
-
+/**
+ * load gifts
+ * @return {null} 
+ */
 function loadGifts() {
   $.ajax({
     type: 'POST',
@@ -349,6 +437,10 @@ function loadGifts() {
   });
 }
 
+/**
+ * load stock in types
+ * @return {null} 
+ */
 function loadStockintypes() {
   $.ajax({
     type: 'GET',

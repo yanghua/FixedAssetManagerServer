@@ -22,11 +22,11 @@
   Desc: the controller of limit
  */
 
-var Limitation    = require("../proxy/limitation");
-var resUtil  = require("../libs/resUtil");
-var config   = require("../config").initConfig();
-var check    = require("validator").check;
-var sanitize = require("validator").sanitize;
+var Limitation = require("../proxy/limitation");
+var resUtil    = require("../libs/resUtil");
+var config     = require("../config").initConfig();
+var check      = require("validator").check;
+var sanitize   = require("validator").sanitize;
 
 /**
  * get all limit list
