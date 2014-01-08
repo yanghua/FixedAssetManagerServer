@@ -127,6 +127,8 @@ module.exports = function (app) {
     app.post("/stockin/insertion", stockIn.insertion);
     app.post("/stockin/modification", stockIn.modification);
     app.post("/stockin/deletion", stockIn.deletion);
+    app.post("/stockin/import", stockIn.importSI);
+    app.post("/stockin/export", stockIn.exportSI);
 
     app.post("/stockouts", stockOut.stockouts);
     app.post("/stockout/insertion", stockOut.insertion);
@@ -143,8 +145,6 @@ module.exports = function (app) {
     app.get("/manualinputdepts", department.allManualInputDepts);
     app.get("/suppliers", stockIn.suppliers);
 
-    app.post("/stockin/import", stockIn.importSI);
-    app.post("/stockin/export", stockIn.exportSI);
 
     //can't mapping router
     app.get("*", others.fourofour);
