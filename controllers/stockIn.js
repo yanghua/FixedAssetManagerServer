@@ -149,6 +149,7 @@ exports.modification = function(req, res, next) {
         stockInInfo.siTypeId = sanitize(sanitize(req.body.siTypeId).trim()).xss();
         stockInInfo.ptId = sanitize(sanitize(req.body.ptId).trim()).xss();
         stockInInfo.remark = sanitize(sanitize(req.body.remark).trim()).xss();
+        stockInInfo.other = sanitize(sanitize(req.body.other).trim()).xss();
     } catch (e) {
         return res.send(resUtil.generateRes(null, config.statusCode.STATUS_INVAILD_PARAMS));
     }
