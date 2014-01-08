@@ -67,12 +67,13 @@
                             <div class="form-group">
                                 <legend>礼品管理</legend>
                                 <div class="input-group " >
-                                    <label class="lable1">品牌 :</label><input  class="form-control " type="text" id="brand" name = "brand">
+                                    <!-- <label class="lable1">品牌 :</label> --><input  class="form-control " type="text" id="brand" name = "brand" style="display:none;">
                                     <label class="lable1">名&nbsp;&nbsp;&nbsp;&nbsp;称 :</label><input  class="form-control" type="text" id="giftName" name="name">
                                     <label class="lable1">计量单位 :</label><input  class="form-control" type="text" id="giftUnit" name="unit">
+                                    <label class="lable1">单价 :</label><input  class="form-control"  id="giftPrice" name="price" type="number"  min="0" data-bind="value:giftPrice">
                                 </div><p>
                                 <div class="input-group" >
-                                    <label class="lable1">单价 :</label><input  class="form-control"  id="giftPrice" name="price" type="number"  min="0" data-bind="value:giftPrice">
+                                   
                                     <label class="lable1">有效期 :</label>
                                     <input type="text" class="form-control" data-date-format="yyyy-mm-dd" value="" id="giftExpireDate" name="expireDate">
                                     <label class="lable1">礼品类别 :</label>
@@ -94,7 +95,7 @@
                                 <thead>
                                     <tr>
                                         <th>名称</th>
-                                        <th>品牌</th>
+                                        <!-- <th>品牌</th>-->
                                         <th>单位</th>
                                         <th>单价</th>
                                         <th>类别</th>
@@ -118,7 +119,7 @@
                         <form class="gitCategoryForm">
                             <div class="row-fluid btn-group btn-group-justified">
                                 <div class="input-group " style="margin-bottom:10px;">
-                                <label class="lable1">请出入礼品类别 :</label><input  class="form-control " type="text" id="giftCategoryName" >
+                                <label class="lable1">请输入礼品类别 :</label><input  class="form-control " type="text" id="giftCategoryName" >
                                 <button  type="button" id="giftCategoryBtn"  onclick="addGiftCategory()" style="width:100px;margin-left:20px; " class="btn btn-default" >
                                     添加
                                 </button>
@@ -170,25 +171,27 @@
                         <div class="form-group">
                             <input  class="form-control" style="display:none" type="text" id="editGiftId" name = "giftId">
                             <div class="input-group " >
-                                <label class="lable1">品&nbsp;&nbsp;&nbsp;&nbsp;牌 :</label><input  class="form-control" type="text" id="editBrand" name = "brand">
+                                <!-- <label class="lable1">品&nbsp;&nbsp;&nbsp;&nbsp;牌 :</label> --><input  class="form-control" type="text" id="editBrand" name = "brand" style="display:none;">
                                 <label class="lable1">名&nbsp;&nbsp;&nbsp;&nbsp;称 :</label><input  class="form-control" type="text" id="editGiftName" name="name">
+                                 <label class="lable1">单&nbsp;&nbsp;&nbsp;&nbsp;位 :</label><input  class="form-control" type="text" id="editGiftUnit" name="unit">
                             </div><p>
                             <div class="input-group " >
-                                <label class="lable1">单&nbsp;&nbsp;&nbsp;&nbsp;位 :</label><input  class="form-control" type="text" id="editGiftUnit" name="unit">
-                                 <label class="lable1">单&nbsp;&nbsp;&nbsp;&nbsp;价 :</label><input  class="form-control"  id="editGiftPrice" name="price" type="number"  min="0" data-bind="value:editGiftPrice">
-                            </div><p>
-                            <div class="input-group" >
+                                <label class="lable1">单&nbsp;&nbsp;&nbsp;&nbsp;价 :</label><input  class="form-control"  id="editGiftPrice" name="price" type="number"  min="0" data-bind="value:editGiftPrice">
                                 <label class="lable1">有效期 :</label>
                                 <input type="text" class="form-control" data-date-format="yyyy-mm-dd" value="" id="editGiftExpireDate" name="expireDate">
+                            </div><p>
+                            <div class="input-group" >
+                                
                                 <label class="lable1">类&nbsp;&nbsp;&nbsp;&nbsp;别 :</label>
                                 <select  id="giftCategoryEdit" name="categoryId" data-width="150px"  class="selectpicker show-tick" style="margin-left:20px;">
                                     <option value="0">-- 请选择礼品类别 --</option>
                                 </select>
+                                 <button type="button" class="btn btn-primary" style="margin-left:10px" id="giftIn" onclick="giftEditOpearteClick()">确定修改</button>
 
                                
                             </div><p>
                             <div class="input-group" >
-                                 <button type="button" class="btn btn-primary" style="margin-left:10px" id="giftIn" onclick="giftEditOpearteClick()">确定修改</button>
+                                
                             </div>
                         </div>
                     </div>

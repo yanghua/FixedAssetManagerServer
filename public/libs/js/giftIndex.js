@@ -172,7 +172,7 @@ function loadAutoFillDepart() {
     bootbox.alert("请选择礼品!");
     return ;
   }
-  if($('#giftSize').val() <= 0 || !$('#giftSize').val() ){
+  if($('#giftSize').val() <= 0 || !$('#giftSize').val() || !isDigit($('#giftSize').val()) ){
     bootbox.alert("请输入正确的个数!");
     return ;
   }
@@ -224,6 +224,19 @@ function loadAutoFillDepart() {
 }
 
 /**
+ * isDigit 
+ * @param  {string}  value value
+ * @return {Boolean}       
+ */
+function isDigit(value) {
+    var patrn = /^[0-9]*$/;
+    if (patrn.exec(value) == null || value == "") {
+        return false;
+    } else {
+        return true;
+    }
+}
+/**
  * the stock in opearte
  * @param  {string} edit editId
  * @return {null}      
@@ -233,7 +246,7 @@ function inOpearteClick(edit) {
     bootbox.alert("请选择礼品!");
     return ;
   }
-  if($('#giftSize2').val() <= 0 || !$('#giftSize2').val() ){
+  if($('#giftSize2').val() <= 0 || !$('#giftSize2').val() || !isDigit($('#giftSize2').val()) ){
     bootbox.alert("请输入正确的个数!");
     return ;
   }

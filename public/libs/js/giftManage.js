@@ -67,6 +67,11 @@ function editGiftFunc(giftId) {
   })
 }
 
+/**
+ * delete gift
+ * @param  {string} giftId gift id
+ * @return {null}        
+ */
 function delGiftFunc(giftId) {
   bootbox.confirm("确定删除此礼品吗?", function(result) {
     if (result) {
@@ -122,7 +127,7 @@ function loadGifts() {
           linkDel.click(tdCont.delGift(cellData.giftId));
           //row.append(cellId);
           row.append(cellName);
-          row.append(cellBrand);
+          //row.append(cellBrand);
           row.append(cellUnit);
           row.append(cellPrice);
           row.append(cellCategoryId);
@@ -137,20 +142,47 @@ function loadGifts() {
   })
 }
 /**
+ * isDigit 
+ * @param  {string}  value value
+ * @return {Boolean}       
+ */
+function isDigit(value) {
+    var patrn = /^[0-9]*$/;
+    if (patrn.exec(value) == null || value == "") {
+        return false;
+    } else {
+        return true;
+    }
+}
+/**
  * gift insert click
  * @return {null}
  */
 function giftInOpearteClick() {
-  //without check
+  if(!$("#giftName").val()){
+    bootbox.alert("请输入礼品名称!");
+    return;
+  }
+  if(!$("#giftUnit").val()){
+    bootbox.alert("请输入计量单位!");
+    return;
+  }
+  if($('#giftPrice').val() <= 0 || !$("#giftPrice").val()|| !isDigit($('#giftPrice').val()) ){
+    bootbox.alert("请输入正确的礼品单价!");
+    return;
+  }
+  if($("#giftCategory").val() == '0' ){
+    bootbox.alert("请选择礼品类别!");
+    return;
+  }
   $.ajax({
     url: '/gift/insertion',
     type: 'POST',
     data: $('form.giftInOpear').serialize(),
     success: function(data) {
       if (data.statusCode === 0) {
-        bootbox.alert("录入成功!", function() {
-          // todo
-        });
+        bootbox.alert("录入成功!");
+        loadGifts();
       } else {
         bootbox.alert("系统出错 , 请重试 !");
       }
@@ -161,8 +193,27 @@ function giftInOpearteClick() {
   })
 }
 
+/**
+ * edit gidt
+ * @return {null} 
+ */
 function giftEditOpearteClick() {
-  //without check 
+  if(!$("#editGiftName").val()){
+    bootbox.alert("请输入礼品名称!");
+    return;
+  }
+  if(!$("#editGiftUnit").val()){
+    bootbox.alert("请输入计量单位!");
+    return;
+  }
+  if($('#editGiftPrice').val() <= 0 || !$("#editGiftPrice").val() | !isDigit($('#editGiftPrice').val())){
+    bootbox.alert("请输入正确的礼品单价!");
+    return;
+  }
+  if($("#giftCategoryEdit").val() == '0' ){
+    bootbox.alert("请选择礼品类别!");
+    return;
+  }
   $.ajax({
     url: '/gift/modification',
     type: 'POST',
@@ -229,6 +280,10 @@ function loadGiftCategorysIndex() {
 
 function addGiftCategory() {
   //with check
+  if(!$("#giftCategoryName").val()){
+    bootbox.alert("名称不能为空!");
+    return;
+  }
   $.ajax({
     type: 'POST',
     url: '/giftCategory/insertion',
@@ -246,6 +301,7 @@ function addGiftCategory() {
 }
 
 function editCategoryFunc(categoryId, name) {
+  $("#giftCategoryBtnEdit").unbind();
   $('#giftCategoryName').val(name);
   $('#giftCategoryBtn').hide();
   $('#giftCategoryBtnEdit').show();
@@ -260,8 +316,8 @@ function editCategoryFunc(categoryId, name) {
       success: function(data) {
         if (data.statusCode === 0) {
           bootbox.alert("修改成功");
-
-          $("#giftCategoryBtnEdit").unbind();
+          $('#giftCategoryBtn').show();
+          $('#giftCategoryBtnEdit').hide();
           loadGiftCategorys();
         }
       }
