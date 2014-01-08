@@ -57,7 +57,6 @@ module.exports = function (app) {
 
     //html page
     
-
     // app.get("/", others.index);
     app.get("/", fixedAsset.manage);
     app.get("/qrtest", fixedAsset.handleQrcode);
@@ -75,11 +74,7 @@ module.exports = function (app) {
     app.get("/fixedasset/batchCreate", fixedAsset.batchCreate);
     app.get("/fixedasset/excelExport/:companyId", fixedAsset.exportExcel);
 
-    //gift
-    app.get("/gift", gift.gift);
-    app.get("/gift/manage", gift.giftManage);
-    app.get("/gift/storage", gift.storage);
-    app.get("/gift/other", gift.other);
+
 
     //apis
     app.get("/user/:userId", user.getUserById);
@@ -99,9 +94,7 @@ module.exports = function (app) {
 
 
     app.post("/fixedasset/inspection", fixedAsset.inspection);
-
     app.post("/fixedasset/rejection", fixedAsset.rejection);
-
     app.post("/fixedasset/insertion", fixedAsset.insertion);
     app.post("/fixedasset/:faId/recycle", fixedAsset.recycle);
     app.post("/fixedasset/:faId/modification", fixedAsset.modification);
@@ -109,8 +102,11 @@ module.exports = function (app) {
 
     /************************************Gift********************************/
 
-    //html page
-    
+    //gift html page
+    app.get("/gift", gift.gift);
+    app.get("/gift/manage", gift.giftManage);
+    app.get("/gift/storage", gift.storage);
+    app.get("/gift/other", gift.other);
 
     app.get("/giftcategories", giftCategory.giftCategories);
     app.post("/giftcategory/insertion", giftCategory.insertion);
@@ -120,7 +116,7 @@ module.exports = function (app) {
     app.post("/stockintype/insertion", stockInType.insertion);
     app.post("/stockintype/modification", stockInType.modification);
 
-    app.post("/gifts", gift.gifts);
+    
     app.post("/gift/insertion", gift.insertion);
     app.post("/gift/modification", gift.modification);
     app.post("/gift/deletion", gift.deletion);
@@ -145,9 +141,10 @@ module.exports = function (app) {
     app.post("/limitation/deletion", limitation.deletion);
 
     app.post("/inventories", inventory.inventories);
-
+    
+    //API
+    app.post("/gifts", gift.gifts);
     app.get("/manualinputdepts", department.allManualInputDepts);
-
     app.get("/suppliers", stockIn.suppliers);
 
     //can't mapping router
