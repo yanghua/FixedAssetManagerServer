@@ -28,6 +28,29 @@ var tdCont = {
   }
 };
 
+
+function loadAutoFillDepart() {
+  $.ajax({
+    url: '/manualinputdepts',
+    type: 'GET',
+    success: function(data) {
+      if (data.statusCode === 0) {
+        var departInfo = $.map(data.data, function(value) {
+          return {
+            value: value
+          };
+        });
+        $('#giftSendDepart').autocomplete({
+          lookup: departInfo,
+          minChars: 0,
+          onSelect: function(suggestion) {
+            //$('#selection').html('You selected: ' + suggestion.value + ', ' + suggestion.data);
+          }
+        });
+      }
+    }
+  });
+}
 /**
  * eidt stock out
  * @param  {string} soId stockId
@@ -50,7 +73,7 @@ var tdCont = {
         $("#giftSize").val(cellData.num);
         $("#giftAcount").val(cellData.amount);
         $("#applyUserId").val(cellData.applyUserId);
-        $('#giftSendDepart').selectpicker('val', cellData.underDept);
+        $('#giftSendDepart').val(cellData.underDept);
         //$('#giftApplyDepart').selectpicker('val', cellData.applyDeptId);
         $('#payStatus').selectpicker('val', cellData.ptId);
         $('#remark').val(cellData.remark);
@@ -161,8 +184,8 @@ var tdCont = {
   //   bootbox.alert("请选择申请部门!");
   //   return ;
   // }
-  if($('#giftSendDepart').val() == '0'){
-    bootbox.alert("请选择费用承担部门!");
+  if(!$('#giftSendDepart').val() ){
+    bootbox.alert("请输入费用承担部门!");
     return ;
   }
   if($('#payStatus').val() == '0'){

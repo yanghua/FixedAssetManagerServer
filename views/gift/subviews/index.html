@@ -31,10 +31,11 @@
         loadStockintypes();
         getStockOutRecord();
         getStockInRecord();
+        loadAutoFillDepart();
 
-    });
+        });
 
-    
+
 
 
 </script>
@@ -42,8 +43,8 @@
     <div class="row-fluid">
         <div class="span12">
             <div class="tabbable" id="tabs-410411">
-             <h1>出库入库</h1>
-             <ul class="nav nav-tabs">
+               <h1>出库入库</h1>
+               <ul class="nav nav-tabs">
                 <li class="active">
                     <a href="#panel-1" data-toggle="tab">出库管理</a>
                 </li>
@@ -78,18 +79,18 @@
                                     <option value="0">--付款类型--</option>
                                 </select>
                                 备注: <input  class="form-control" type="text" id="remark" name="remark" >
-                                <input type="text" id="other" style="display:none">
+                                <input type="text" id="other" style="display:none" name="other">
                                 <button type="button" class="btn btn-primary" id="outOpearte" onclick="outOpearteClick()">确定出库</button>
                                 <button type="button" class="btn btn-primary" id="outOpearteOne" onclick="outOpearteClick(1)">确认修改</button>
                             </div>
                             
                         </div>
                         <div class="form-group">
-                         <legend>出库查询</legend>
-                     </div>
+                           <legend>出库查询</legend>
+                       </div>
 
 
-                     <div class="panel panel-default" id="underName">
+                       <div class="panel panel-default" id="underName">
                         <div class="panel-heading" >出库记录</div>
                         <table class="table table-striped">
                             <thead>
@@ -118,7 +119,7 @@
             <div class="tab-pane" id="panel-3">
                 <div class="controls controls-row" >
                     <form class="inStorage">
-                       <div class="form-group">
+                     <div class="form-group">
                         <legend>入库管理</legend>
                         <div class="input-group" >
                             <input id="siId" name="siId" style="display:none">
@@ -137,10 +138,14 @@
                             <select  id="siTypeIdSelect" class="selectpicker show-tick" name="siTypeId">
                                 <option value="0">--入库类型--</option>
                             </select>
+                        </div>
+                        <div class="input-group" >
                             付款状态: 
                             <select  id="payStatusIn" class="selectpicker show-tick " name="ptId">
                                 <option value="0">--付款类型--</option>
                             </select>
+                             备注: <input  class="form-control" type="text" id="remark" name="remark" >
+                             <input type="text" id="other" style="display:none" name="other">
                             <button type="button" class="btn btn-primary" id="inOpearte" onclick="inOpearteClick()">确定入库</button>
                             <button type="button" class="btn btn-primary" id="inOpearteOne" onclick="inOpearteClick(1)">确定修改</button>
                         </div>
