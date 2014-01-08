@@ -56,7 +56,6 @@ module.exports = function (app) {
     /********************************fixed asset*****************************/
 
     //html page
-    
     // app.get("/", others.index);
     app.get("/", fixedAsset.manage);
     app.get("/qrtest", fixedAsset.handleQrcode);
@@ -73,7 +72,6 @@ module.exports = function (app) {
     app.post("/fixedasset/import/company/:companyId", fixedAsset.importFA);
     app.get("/fixedasset/batchCreate", fixedAsset.batchCreate);
     app.get("/fixedasset/excelExport/:companyId", fixedAsset.exportExcel);
-
 
 
     //apis
@@ -116,7 +114,7 @@ module.exports = function (app) {
     app.post("/stockintype/insertion", stockInType.insertion);
     app.post("/stockintype/modification", stockInType.modification);
 
-    
+    app.post("/gifts", gift.gifts);
     app.post("/gift/insertion", gift.insertion);
     app.post("/gift/modification", gift.modification);
     app.post("/gift/deletion", gift.deletion);
@@ -142,10 +140,11 @@ module.exports = function (app) {
 
     app.post("/inventories", inventory.inventories);
     
-    //API
-    app.post("/gifts", gift.gifts);
     app.get("/manualinputdepts", department.allManualInputDepts);
     app.get("/suppliers", stockIn.suppliers);
+
+    app.post("/stockin/import", stockIn.importSI);
+    app.post("/stockin/export", stockIn.exportSI);
 
     //can't mapping router
     app.get("*", others.fourofour);

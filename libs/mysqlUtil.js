@@ -78,3 +78,33 @@ exports.query = function (sqlReq, callback) {
         });
     });
 };
+
+/**
+ * get mysql-connection for transaction
+ * @param  {Function} callback the cb func
+ * @return {null}            
+ */
+exports.processTransaction = function (callback) {
+    if (!mysqlPool) {
+        initMysqlPool();
+    }
+
+    mysqlPool.getConnection(function (err, connection) {
+
+        if (err) {
+            throw err;
+        }
+
+        connection.config.queryFormat = function (query, values) {
+            if (!values) return query;
+            return query.replace(/\:(\w+)/g, function (txt, key) {
+              if (values.hasOwnProperty(key)) {
+                return this.escape(values[key]);
+              }
+              return txt;
+            }.bind(this));
+        };
+
+        return callback(connection);
+    });
+};

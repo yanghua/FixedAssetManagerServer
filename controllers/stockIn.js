@@ -242,89 +242,87 @@ exports.suppliers = function (req, res, next) {
  * @param  {Function} next the next handler
  * @return {null}
  */
-// exports.importSI = function (req, res, next) {
-//     debugCtrller("/controllers/stockIn/importSI");
+exports.importSI = function (req, res, next) {
+    debugCtrller("/controllers/stockIn/importSI");
 
-//     if (!req.session || !req.session.user) {
-//         return res.redirect("/login");
-//     }
+    if (!req.session || !req.session.user) {
+        return res.redirect("/login");
+    }
 
-//     var fileName  = req.files.file_source.name || "";
-//     var tmp_path  = req.files.file_source.path || "";
+    var fileName  = req.files.file_source.name || "";
+    var tmp_path  = req.files.file_source.path || "";
 
-//     try {
-//         check(fileName).notEmpty();
-//         check(tmp_path).notEmpty();
-//         fileName = sanitize(sanitize(fileName).trim()).xss();
-//         if (path.extname(fileName).indexOf("xls") === -1) {
-//             throw new InvalidParamError();
-//         }
-//     } catch (e) {
-//         return res.send(resUtil.generateRes(null, config.statusCode.STATUS_INVAILD_PARAMS));
-//     }
+    try {
+        check(fileName).notEmpty();
+        check(tmp_path).notEmpty();
+        fileName = sanitize(sanitize(fileName).trim()).xss();
+        if (path.extname(fileName).indexOf("xls") === -1) {
+            throw new InvalidParamError();
+        }
+    } catch (e) {
+        return res.send(resUtil.generateRes(null, config.statusCode.STATUS_INVAILD_PARAMS));
+    }
 
-//     var xlsxPath = path.resolve(__dirname, "../uploads/", fileName);
+    var xlsxPath = path.resolve(__dirname, "../uploads/", fileName);
 
-//     var ep = EventProxy.create();
+    var ep = EventProxy.create();
 
-//     fs.rename(tmp_path, xlsxPath, function (err) {
-//         if (err) {
-//             return ep.emitLater("error", new ServerError());
-//         }
+    fs.rename(tmp_path, xlsxPath, function (err) {
+        if (err) {
+            return ep.emitLater("error", new ServerError());
+        }
 
-//         ep.emitLater("renamed_file");
-//     });
+        ep.emitLater("renamed_file");
+    });
 
-//     ep.once("renamed_file", function () {
-//         ep.emitLater("after_deletedTmpFile");
-//     });
+    ep.once("renamed_file", function () {
+        ep.emitLater("after_deletedTmpFile");
+    });
 
-//     ep.once("after_deletedTmpFile", function () {
-//         parseXlsx(xlsxPath, function (err, data) {
-//             if (err || !data) {
-//                 return ep.emitLater("error", new ServerError());
-//             }
+    ep.once("after_deletedTmpFile", function () {
+        parseXlsx(xlsxPath, function (err, data) {
+            if (err || !data) {
+                return ep.emitLater("error", new ServerError());
+            }
 
-//             return ep.emitLater("after_parsedExcelData", data);
-//         });
-//     });
+            return ep.emitLater("after_parsedExcelData", data);
+        });
+    });
 
-//     ep.once("after_parsedExcelData", function (excelData) {
-//         debugCtrller(excelData[0].length);
-//         if (excelData[0].length != 20) {
-//             return ep.emitLater("error", new InvalidParamError());
-//         }
+    ep.once("after_parsedExcelData", function (excelData) {
+        debugCtrller(excelData[0].length);
+        if (excelData[0].length != 20) {
+            return ep.emitLater("error", new InvalidParamError());
+        }
 
-//         //remove first title array
-//         excelData.shift();
+        //remove first title array
+        excelData.shift();
 
-//         Import.importTmpStockIn(excelData, function (err, rows) {
-//             fs.unlinkSync(xlsxPath);
-//             ep.emitLater("after_importedIntoTmpTable");
-//         });
-//     });
+        Import.importTmpStockIn(excelData, function (err, rows) {
+            fs.unlinkSync(xlsxPath);
+            ep.emitLater("after_importedIntoTmpTable");
+        });
+    });
 
-//     ep.once("after_importedIntoTmpTable", function () {
-//         Import.insertGiftCategory(function (err, rows) {
-//             ep.emitLater("after_importedGiftCategory");
-//         });
-//     });
+    ep.once("after_importedIntoTmpTable", function () {
+        Import.realImport(function (err, rows) {
+            if (err) {
+                return ep.emitLater("error", err);
+            }
 
-//     ep.once("after_importedGiftCategory", function () {
-//         Import.insertPaymentType(function (err, rows) {
-//             ep.emitLater("after_importPaymentType");
-//         });
-//     });
+            ep.emitLater("completed");
+        });
+    });
 
-//     ep.once("after_importPaymentType", function () {
+    ep.once("completed", function () {
+        return res.send(resUtil.generateRes(null, config.statusCode.STATUS_OK));
+    })
 
-//     });
-
-//     ep.fail(function (err) {
-//         fs.unlinkSync(xlsxPath);
-//         return res.send(resUtil.generateRes(null, err.statusCode));
-//     });
-// };
+    ep.fail(function (err) {
+        fs.unlinkSync(xlsxPath);
+        return res.send(resUtil.generateRes(null, err.statusCode));
+    });
+};
 
 /**
  * export stock in data with excel
@@ -333,11 +331,12 @@ exports.suppliers = function (req, res, next) {
  * @param  {Function} next the next handler
  * @return {null}
  */
-// exports.exportSI = function (req, res, next) {
-//     debugCtrller("/controllers/stockIn/exportSI");
+exports.exportSI = function (req, res, next) {
+    debugCtrller("/controllers/stockIn/exportSI");
 
-//     if (!req.session || !req.session.user) {
-//         return res.redirect("/login");
-//     }
+    if (!req.session || !req.session.user) {
+        return res.redirect("/login");
+    }
 
-// };
+    //TODO
+};
