@@ -217,6 +217,25 @@ exports.deletion = function(req, res, next) {
 };
 
 /**
+ * get all suppliers
+ * @param  {Object}   req  the instance of request
+ * @param  {Object}   res  the instance of response
+ * @param  {Function} next the next handler
+ * @return {null}        
+ */
+exports.suppliers = function (req, res, next) {
+    debugCtrller("/controllers/stockIn/suppliers");
+
+    StockIn.getAllSuppliers(function (err, rows) {
+        if (err) {
+            return res.send(resUtil.generateRes(null, err.statusCode));
+        }
+
+        res.send(resUtil.generateRes(rows, config.statusCode.STATUS_OK));
+    })
+};
+
+/**
  * import stock in data
  * @param  {Object}   req  the instance of request
  * @param  {Object}   res  the instance of response
