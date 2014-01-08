@@ -28,7 +28,10 @@ var tdCont = {
   }
 };
 
-
+/**
+ * load department for auto fill in
+ * @return {null} 
+ */
 function loadAutoFillDepart() {
   $.ajax({
     url: '/manualinputdepts',
@@ -42,6 +45,32 @@ function loadAutoFillDepart() {
         });
         $('#giftSendDepart').autocomplete({
           lookup: departInfo,
+          minChars: 0,
+          onSelect: function(suggestion) {
+            //$('#selection').html('You selected: ' + suggestion.value + ', ' + suggestion.data);
+          }
+        });
+      }
+    }
+  });
+}
+/**
+ * load department for auto fill in
+ * @return {null} 
+ */
+function loadAutoFillSupplier() {
+  $.ajax({
+    url: '/suppliers',
+    type: 'GET',
+    success: function(data) {
+      if (data.statusCode === 0) {
+        var supplierInfo = $.map(data.data, function(value) {
+          return {
+            value: value
+          };
+        });
+        $('#supplierName').autocomplete({
+          lookup: supplierInfo,
           minChars: 0,
           onSelect: function(suggestion) {
             //$('#selection').html('You selected: ' + suggestion.value + ', ' + suggestion.data);
