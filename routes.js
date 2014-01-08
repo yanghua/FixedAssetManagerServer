@@ -139,6 +139,8 @@ module.exports = function (app) {
 
     app.post("/inventories", inventory.inventories);
 
+    app.get("/manualinputdepts", department.allManualInputDepts);
+
     //can't mapping router
     app.get("*", others.fourofour);
 };

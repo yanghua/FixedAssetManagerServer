@@ -43,3 +43,35 @@ exports.getAllDepartment = function (callback) {
         callback(null, rows);
     });
 };
+
+/**
+ * get all manual input departments (stockOut)
+ * @param  {Function} callback the cb func
+ * @return {null}            
+ */
+exports.getAllManualDept = function (callback) {
+    debugProxy("/proxy/department/getAllManualDept");
+    mysqlClient.query({
+        sql     : "SELECT DISTINCT(underDept) FROM STOCKOUT;",
+        params  : null
+    },  function (err, rows) {
+        if (err || !rows) {
+            return callback(new DBEror(), null);
+        }
+
+        callback(null, processDeptStructure(rows));
+    });
+};
+
+/**
+ * inner func: process manual dept list
+ * @param  {Array} deptList the department list
+ * @return {Array}          the processed dept list
+ */
+function processDeptStructure (deptList) {
+    var result = deptList.map(function (item) {
+        return item.underDept; 
+    });
+
+    return result;
+}

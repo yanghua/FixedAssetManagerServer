@@ -45,3 +45,21 @@ exports.getAllDepartments = function (req, res, next) {
         res.send(resUtil.generateRes(deptList, config.statusCode.STATUS_OK));
     });
 };
+
+/**
+ * get all manual input department list
+ * @param  {object}   req  the instance of request
+ * @param  {Object}   res  the instance of response
+ * @param  {Function} next the next handler
+ * @return {null}        
+ */
+exports.allManualInputDepts = function (req, res, next) {
+    debugCtrller("controllers/department/allManualInputDepts");
+    Department.getAllManualDept(function (err, deptList) {
+        if (err) {
+            return res.send(resUtil.generateRes(null, err.statusCode));
+        }
+
+        res.send(resUtil.generateRes(deptList, config.statusCode.STATUS_OK));
+    })
+};

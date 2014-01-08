@@ -44,4 +44,11 @@ describe("department", function () {
         });
     });
 
+    it('is testing func: /manualinputdepts', function (done) {
+        app.request().get("/manualinputdepts").end(function (res) {
+            debugTest(res.bodyJSON());
+            done();
+        });
+    });
+
 });
