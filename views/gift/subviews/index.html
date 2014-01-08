@@ -6,6 +6,7 @@
     .js("/public/libs/js/bootstrap-select.js")
     .js("/public/libs/js/bootbox.min.js")
     .js("/public/libs/js/giftIndex.js")
+    .js("/public/libs/js/jquery.autocomplete.js")
     .done(assets)
     %>
     <!-- style -->
@@ -24,13 +25,16 @@
         $('#outOpearte').show();
         $('#inOpearteOne').hide();
         $('#inOpearte').show();
-        loadPaumenttypes();
+        loadPaymenttypes();
         loadDepartments();
         loadGifts();
         loadStockintypes();
         getStockOutRecord();
         getStockInRecord();
+
     });
+
+    
 
 
 </script>
@@ -65,20 +69,16 @@
                             <div class="input-group" >
                                 申请人: 
                                 <input  class="form-control" style="width:150px;margin-bottom:10px;margin-left:20px;margin-right:20px;" type="text" id="applyUserId" placeholder="申请人" name="applyUserId">
-                                申请部门: 
-                                <select  id="giftApplyDepart" class="selectpicker show-tick" name="applyDeptId">
-                                    <option value="0">--选择部门--</option>
-                                </select>
                                 费用承担部门: 
-                                <select  id="giftSendDepart" class="selectpicker show-tick" name="underDept">
-                                    <option value="0">--选择部门--</option>
-                                </select>
+                                <input  class="form-control" style="width:150px;margin-bottom:10px;margin-left:20px;margin-right:20px;" type="text" id="giftSendDepart" placeholder="费用承担部门" name="underDept">
                             </div>
                             <div class="input-group" >
                                 付款状态: 
                                 <select  id="payStatus" class="selectpicker show-tick " name="ptId">
                                     <option value="0">--付款类型--</option>
                                 </select>
+                                备注: <input  class="form-control" type="text" id="remark" name="remark" >
+                                <input type="text" id="other" style="display:none">
                                 <button type="button" class="btn btn-primary" id="outOpearte" onclick="outOpearteClick()">确定出库</button>
                                 <button type="button" class="btn btn-primary" id="outOpearteOne" onclick="outOpearteClick(1)">确认修改</button>
                             </div>
