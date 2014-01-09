@@ -112,7 +112,7 @@ exports.remove = function (giftId, callback) {
 
     mysqlClient.query({
         sql     : sql,
-        params  : giftId
+        params  : { giftId : giftId }
     },  function (err, rows) {
         if (err || !rows) {
             debugProxy(err);
