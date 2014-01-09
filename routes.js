@@ -134,6 +134,7 @@ module.exports = function (app) {
     app.post("/stockout/insertion", stockOut.insertion);
     app.post("/stockout/modification", stockOut.modification);
     app.post("/stockout/deletion", stockOut.deletion);
+    app.get("/stockout/export",stockOut.exportSO);
 
     app.get("/limitations", limitation.limitations);
     app.post("/limitation/insertion", limitation.insertion);
