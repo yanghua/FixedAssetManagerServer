@@ -110,4 +110,6 @@ console.log("the app server run at port :%d in %s mode. ", AppConfig.port, app.s
 module.exports = app;
 
 //start deamon services
-cronService.startLimatationMailNotification(AppConfig.cronPattern);
+cronService.startLimatationMailNotification(AppConfig.limitCronPattern);
+cronService.startDBBackupService(AppConfig.backupCronPattern);
+cronService.startPushDBBackupFileService(AppConfig.backupPushCronPattern);

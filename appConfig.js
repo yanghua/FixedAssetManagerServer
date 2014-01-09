@@ -63,6 +63,10 @@ exports.config = {
     // * - match all
     // / - pre field
     // eg : "00 00 9 */7 *" means run once every 7 days at 9:00 am
-    cronPattern         : "00 00 10 * * 1-5"
+    limitCronPattern         : "00 00 10 * * 1-5",
+
+    backupCronPattern        : "00 00 23 * * *",
+
+    backupPushCronPattern    : "00 30 23 */3 * *"
 
 };

@@ -22,10 +22,14 @@
   Desc: the service of cron
  */
 
-var cronJob    = require('cron').CronJob;
-var xlsx       = require("node-xlsx");
-var mailService= require("./mail");
-var Limitation = require("../proxy/limitation");
+var cronJob     = require('cron').CronJob;
+var xlsx        = require("node-xlsx");
+var mailService = require("./mail");
+var Limitation  = require("../proxy/limitation");
+var exec        = require("child_process").exec;
+var util        = require("../libs/util");
+var path        = require("path");
+var config      = require("../config").initConfig();
 
 /**
  * start e-mail notification for gift limitation
@@ -35,25 +39,96 @@ var Limitation = require("../proxy/limitation");
 exports.startLimatationMailNotification = function (cronPattern, callback) {
     debugService("/services/cron/startLimatationMailNotification");
     var cp = cronPattern || "00 00 10 * * 1-5";
-    var job = new cronJob({
-        cronTime: cp,
-        onTick: function() {
-            generateGiftLimitationExcel(function (buffer) {
-                mailService.sendMail({
-                    subject : "Gift limitation notification",
-                    attachments : [
-                        {
-                            fileName: "giftLimitationNotification.xlsx",
-                            contents: buffer
-                        }
-                    ]
-                });
+
+    var job = cronGenerator(cp, function() {
+        generateGiftLimitationExcel(function (buffer) {
+            mailService.sendMail({
+                subject : "Gift limitation notification",
+                attachments : [
+                    {
+                        fileName: "giftLimitationNotification.xlsx",
+                        contents: buffer
+                    }
+                ]
             });
-        },
-        start: false,
+        });
     });
+
     job.start();
 };
+
+/**
+ * start db backup service
+ * @param  {String}   cronPattern the cron job pattern
+ * @param  {Function} callback    the cb func
+ * @return {null}               
+ */
+exports.startDBBackupService = function (cronPattern, callback) {
+    debugService("/services/cron/startDBBackupService");
+
+    var cp = cronPattern || "00 00 23 * * *";
+
+    var job = cronGenerator(cp, function() {
+        var backupFile = path.resolve(__dirname, "../backup/", new Date().Format("yyyy_MM_dd") + ".sql");
+        var cmd = "mysqldump -h{0} -u{1} -p{2} fixedAsset > {3}".format(config.mysqlConfig.host,
+                                                                        config.mysqlConfig.user,
+                                                                        config.mysqlConfig.password,
+                                                                        backupFile);
+
+        exec(cmd, function (err, stdout, stderr) {
+            if (err) {
+                debugService(err);
+            }
+
+            debugService(stdout);
+        });
+    });
+
+    job.start();
+};
+
+/**
+ * start push db back up file with mail service
+ * @param  {String}   cronPattern the cron job pattern
+ * @param  {Function} callback    the cb func
+ * @return {null}               
+ */
+exports.startPushDBBackupFileService = function (cronPattern, callback) {
+    debugService("/services/cron/startPushDBBackupFileService");
+
+    var cp = cronPattern || "00 30 23 */3 * *";
+    var job = cronGenerator(cp, function () {
+        var backupFile = path.resolve(__dirname, "../backup/", new Date().Format("yyyy_MM_dd") + ".sql");
+        mailService.sendMail({
+            subject : "DB backup Mail",
+            attachments : [
+                {
+                    filePath: backupFile
+                }
+            ]
+        });
+    });
+
+    job.start();
+}
+
+/**
+ * cron job generator
+ * @param  {String}   cronPattern the pattern of the cron
+ * @param  {Function} doSomething the job func
+ * @return {Object}             the real cron job obj
+ */
+function cronGenerator (cronPattern, doSomething) {
+    var cp = cronPattern || "00 00 10 * * 1-5";
+    var job = new cronJob({
+        cronTime: cp,
+        onTick: doSomething,
+        start: false,
+    });
+
+    return job;
+}
+
 
 /**
  * generate gift limitation excel
@@ -93,5 +168,3 @@ function generateGiftLimitationExcel (callback) {
         }
     });
 }
-
-
