@@ -35,7 +35,7 @@ exports.getAllStockInWithCondition = function(conditions, callback) {
     debugProxy("/proxy/stockIn/getAllStockInWithCondition");
     var sql;
 
-    sql = "SELECT si.*, g.name, sit.typeName, pt.ptName FROM STOCKIN si " +
+    sql = "SELECT si.*, g.name,g.unit,g.price, sit.typeName, pt.ptName FROM STOCKIN si " +
         "LEFT JOIN GIFT g ON si.giftId = g.giftId                       " +
         "LEFT JOIN STOCKINTYPE sit ON si.siTypeId = sit.sitId           " +
         "LEFT JOIN PAYMENTTYPE pt ON si.ptId = pt.ptId                  " +

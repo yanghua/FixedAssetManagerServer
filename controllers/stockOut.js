@@ -28,6 +28,7 @@ var config     = require("../config").initConfig();
 var StockOut   = require("../proxy/stockOut");
 var check      = require("validator").check;
 var sanitize   = require("validator").sanitize;
+var nodeExcel = require('excel-export');
 
 /**
  * get all stockout items
@@ -191,4 +192,93 @@ exports.deletion = function (req, res, next) {
 
         res.send(resUtil.generateRes(null, config.statusCode.STATUS_OK));
     });
+};
+
+/**
+ * export stockout excel
+ * @param  {Object}   req  the instance of request
+ * @param  {Object}   res  the instance of response
+ * @param  {Function} next the next handler
+ * @return {null} 
+ */
+exports.exportSO = function(req, res, next) {
+    debugCtrller("controllers/fixedAsset/exportExcel");
+    var ep = EventProxy.create();
+
+    //静态标题
+    var conf = {};
+    conf.cols = [{
+        caption: '出库日期',
+        type: 'string'
+    }, {
+        caption: '申请人',
+        type: 'string'
+    }, {
+        caption: '类别',
+        type: 'string'
+    }, {
+        caption: '商品名称',
+        type: 'string'
+    }, {
+        caption: '单位',
+        type: 'string'
+    }, {
+        caption: '数量',
+        type: 'string'
+    }, {
+        caption: '单价',
+        type: 'string'
+    }, {
+        caption: '金额',
+        type: 'string'
+    }, {
+        caption: '状态',
+        type: 'string'
+    }, {
+        caption: '费用承担部门',
+        type: 'string'
+    }];
+
+    StockOut.getStockOutWithCondition(function(err, rows) {
+        if (err) {
+            return ep.emitLater("error", err);
+        }
+        ep.emitLater("after_select", rows);
+    });
+
+    var arrayObj = [];
+    ep.once("after_select", function(rows) {
+        for (var i = 0; i < rows.length; i++) {
+            var row = rows[i];
+            arrayObj.push([
+                dataHandler(row.soDate),
+                row.userName,
+                row.gcname,
+                row.name,
+                row.unit,
+                row.num,
+                row.price,
+                row.amount,
+                row.ptName,
+                row.underDept
+            ]);
+        }
+
+        conf.rows = arrayObj;
+        var result = nodeExcel.execute(conf);
+        var fileTitle = "stockOut_";
+        res.setHeader('Content-Type', 'application/vnd.openxmlformats');
+        res.setHeader("Content-Disposition", "attachment; filename= " + fileTitle + (new Date().Format("yyyy-MM-dd")) + ".xlsx");
+        res.end(result, 'binary');
+    });
+    function dataHandler (dataStr) {
+        if (dataStr) {
+            if (dataStr != "0000-00-00") {
+                return (new Date(dataStr)).Format("yyyy-MM-dd");
+            }
+            return "";
+        }else{
+            return "";
+        }
+    }
 };
