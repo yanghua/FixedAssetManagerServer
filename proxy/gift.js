@@ -71,7 +71,6 @@ exports.getGiftWithConditiions = function (conditions, callback) {
 exports.add = function (giftInfo, callback) {
     debugProxy("/proxy/gift/add");
     var param    = giftInfo || {};
-    param.giftId = util.GUID();
 
     mysqlClient.query({
         sql       : "INSERT INTO GIFT(giftId, brand, name, unit, price, expireDate, categoryId) " +

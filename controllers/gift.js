@@ -24,10 +24,12 @@
 
 var EventProxy = require("eventproxy");
 var resUtil    = require("../libs/resUtil");
+var util       = require("../libs/util");
 var config     = require("../config").initConfig();
 var Gift       = require("../proxy/gift");
 var check      = require("validator").check;
 var sanitize   = require("validator").sanitize;
+var Limitation = require("../proxy/limitation");
 
 /**
  * get gifts by query condition
@@ -87,6 +89,8 @@ exports.insertion = function (req, res, next) {
     }
 
     var giftObj = {};
+    giftObj.giftId = util.GUID();
+
     try {
         check(req.body.name).notEmpty();
         check(req.body.categoryId).notEmpty();
@@ -101,13 +105,33 @@ exports.insertion = function (req, res, next) {
         return res.send(resUtil.generateRes(null, config.statusCode.STATUS_INVAILD_PARAMS));
     }
 
+    var ep = EventProxy.create();
+
     Gift.add(giftObj, function (err, rows) {
         if (err) {
-            return res.send(resUtil.generateRes(null, err.statusCode));
+            return ep.emitLater("error", err);
         }
 
+        ep.emitLater("after_addGift");
+    });
+
+    ep.once("after_addGift", function () {
+        Limitation.add({ giftId : giftObj.giftId, limitNum : 10}, function (err, rows) {
+            if (err) {
+                return ep.emitLater("error", err);
+            }
+
+            ep.emitLater("after_addLimitation");
+        })        
+    });
+
+    ep.once("after_addLimitation", function () {
         return res.send(resUtil.generateRes(null, config.statusCode.STATUS_OK));
     });
+
+    ep.fail(function (err) {
+        return res.send(resUtil.generateRes(null, err.statusCode));
+    })
 };
 
 /**
