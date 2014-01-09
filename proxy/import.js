@@ -151,7 +151,7 @@ function insertGiftCategory (conn, callback) {
 
         callback(null, null);
     });
-};
+}
 
 /**
  * insert gift info from import
@@ -163,8 +163,8 @@ function insertGift (conn, callback) {
     debugProxy("/proxy/import/insertGift");
 
     var sql = "INSERT INTO GIFT SELECT UUID(), tsiBrand, tsiName, tsiUnit, tsiPrice, '', t_gc.categoryId FROM ( " +
-              "SELECT tsi.*, g.categoryId FROM TMP_STOCKIN tsi " +
-              "LEFT JOIN GIFT g ON tsi.tsiCategory = g.name " +
+              "SELECT tsi.*, gc.categoryId FROM TMP_STOCKIN tsi " +
+              "LEFT JOIN GIFTCATEGORY gc ON tsi.tsiCategory = gc.name " +
               "GROUP BY tsi.tsiName, tsi.tsiPrice " +
               ") t_gc";
 
@@ -178,7 +178,7 @@ function insertGift (conn, callback) {
 
         callback(null, null);
     });
-};
+}
 
 /**
  * insert payment type from import
@@ -202,7 +202,7 @@ function insertPaymentType (conn, callback) {
 
         callback(null, null);
     });
-};
+}
 
 /**
  * insert into stock in
@@ -213,13 +213,13 @@ function insertPaymentType (conn, callback) {
 function insertStockIn (conn, callback) {
     debugProxy("/proxy/import/insertStockIn");
 
-    var sql = "INSERT INTO STOCKIN                                                          " +
-              "SELECT  UUID(), t_g.giftId, tsiNum, tsiNum * tsiPrice, tsiSupplier, t_g.ptId " +
-              " FROM (                                                                      " +
-              "SELECT tsi.*, g.giftId, p.ptId FROM TMP_STOCKIN tsi                          " +
-              " LEFT JOIN GIFT g ON tsi.tsiCategory = g.name AND tsi.tsiPrice = g.price     " +
-              " LEFT JOIN PAYMENTTYPE p ON tsi.tsiState = p.ptName                          " +
-              ") t_g";
+    var sql = "INSERT INTO STOCKIN                                                                                  " +
+              "SELECT  UUID(), t_g.giftId, tsiNum, tsiNum * tsiPrice, tsiSupplier, '', t_g.ptId, CURDATE(), '', ''  " +
+              " FROM (                                                                                              " +
+              "SELECT tsi.*, g.giftId, p.ptId FROM TMP_STOCKIN tsi                                                  " +
+              " LEFT JOIN GIFT g ON tsi.tsiName = g.name AND tsi.tsiPrice = g.price                             " +
+              " LEFT JOIN PAYMENTTYPE p ON tsi.tsiState = p.ptName                                                  " +
+              ") t_g                                                                                                ";
 
     conn.query(sql, null, function (err, rows) {
         if (err) {
@@ -231,7 +231,7 @@ function insertStockIn (conn, callback) {
 
         callback(null, null);
     });
-};
+}
 
 /**
  * insert single one tmp stock in

@@ -23,13 +23,18 @@
  */
 
 var EventProxy = require("eventproxy");
-var resUtil = require("../libs/resUtil");
-var config = require("../config").initConfig();
-var StockIn = require("../proxy/stockIn");
-var check = require("validator").check;
-var sanitize = require("validator").sanitize;
-var parseXlsx = require("excel");
-var Inventory = require("../proxy/inventory");
+var resUtil    = require("../libs/resUtil");
+var config     = require("../config").initConfig();
+var StockIn    = require("../proxy/stockIn");
+var Import     = require("../proxy/import");
+var check      = require("validator").check;
+var sanitize   = require("validator").sanitize;
+var parseXlsx  = require("excel");
+var Inventory  = require("../proxy/inventory");
+var path       = require("path");
+var fs         = require("fs");
+var parseXlsx  = require("excel");
+var nodeExcel  = require('excel-export');
 
 /**
  * get stock in by conditions
@@ -232,7 +237,7 @@ exports.suppliers = function (req, res, next) {
         }
 
         res.send(resUtil.generateRes(rows, config.statusCode.STATUS_OK));
-    })
+    });
 };
 
 /**
@@ -256,15 +261,11 @@ exports.importSI = function (req, res, next) {
         check(fileName).notEmpty();
         check(tmp_path).notEmpty();
         fileName = sanitize(sanitize(fileName).trim()).xss();
-        if (path.extname(fileName).indexOf("xls") === -1) {
-            throw new InvalidParamError();
-        }
     } catch (e) {
         return res.send(resUtil.generateRes(null, config.statusCode.STATUS_INVAILD_PARAMS));
     }
 
     var xlsxPath = path.resolve(__dirname, "../uploads/", fileName);
-
     var ep = EventProxy.create();
 
     fs.rename(tmp_path, xlsxPath, function (err) {
@@ -291,7 +292,7 @@ exports.importSI = function (req, res, next) {
 
     ep.once("after_parsedExcelData", function (excelData) {
         debugCtrller(excelData[0].length);
-        if (excelData[0].length != 20) {
+        if (excelData[0].length != 10) {
             return ep.emitLater("error", new InvalidParamError());
         }
 
@@ -316,7 +317,7 @@ exports.importSI = function (req, res, next) {
 
     ep.once("completed", function () {
         return res.send(resUtil.generateRes(null, config.statusCode.STATUS_OK));
-    })
+    });
 
     ep.fail(function (err) {
         fs.unlinkSync(xlsxPath);
