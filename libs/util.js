@@ -50,3 +50,15 @@ exports.GUID = function () {
     }
     return guid; 
 };
+
+/**
+ * format String with pattern
+ * @return {String} the formatted str
+ */
+String.prototype.format = function() {
+    var args = arguments;
+    return this.replace(/\{(\d+)\}/g,                
+        function(m,i){
+            return args[i];
+        });
+}
