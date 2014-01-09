@@ -23,18 +23,18 @@
  */
 
 var EventProxy = require("eventproxy");
-var resUtil    = require("../libs/resUtil");
-var config     = require("../config").initConfig();
-var StockIn    = require("../proxy/stockIn");
-var Import     = require("../proxy/import");
-var check      = require("validator").check;
-var sanitize   = require("validator").sanitize;
-var parseXlsx  = require("excel");
-var Inventory  = require("../proxy/inventory");
-var path       = require("path");
-var fs         = require("fs");
-var parseXlsx  = require("excel");
-var nodeExcel  = require('excel-export');
+var resUtil = require("../libs/resUtil");
+var config = require("../config").initConfig();
+var StockIn = require("../proxy/stockIn");
+var Import = require("../proxy/import");
+var check = require("validator").check;
+var sanitize = require("validator").sanitize;
+var parseXlsx = require("excel");
+var Inventory = require("../proxy/inventory");
+var path = require("path");
+var fs = require("fs");
+var parseXlsx = require("excel");
+var nodeExcel = require('excel-export');
 
 /**
  * get stock in by conditions
@@ -99,14 +99,14 @@ exports.insertion = function(req, res, next) {
         check(req.body.siTypeId).notEmpty();
         check(req.body.ptId).notEmpty();
 
-        stockInInfo.giftId   = sanitize(sanitize(req.body.giftId).trim()).xss();
-        stockInInfo.num      = sanitize(sanitize(req.body.num).trim()).xss();
-        stockInInfo.amount   = sanitize(sanitize(req.body.amount).trim()).xss();
+        stockInInfo.giftId = sanitize(sanitize(req.body.giftId).trim()).xss();
+        stockInInfo.num = sanitize(sanitize(req.body.num).trim()).xss();
+        stockInInfo.amount = sanitize(sanitize(req.body.amount).trim()).xss();
         stockInInfo.supplier = sanitize(sanitize(req.body.supplier).trim()).xss();
         stockInInfo.siTypeId = sanitize(sanitize(req.body.siTypeId).trim()).xss();
-        stockInInfo.ptId     = sanitize(sanitize(req.body.ptId).trim()).xss();
-        stockInInfo.remark   = sanitize(sanitize(req.body.remark).trim()).xss();
-        stockInInfo.other    = sanitize(sanitize(req.body.other).trim()).xss();
+        stockInInfo.ptId = sanitize(sanitize(req.body.ptId).trim()).xss();
+        stockInInfo.remark = sanitize(sanitize(req.body.remark).trim()).xss();
+        stockInInfo.other = sanitize(sanitize(req.body.other).trim()).xss();
     } catch (e) {
         return res.send(resUtil.generateRes(null, config.statusCode.STATUS_INVAILD_PARAMS));
     }
@@ -226,12 +226,12 @@ exports.deletion = function(req, res, next) {
  * @param  {Object}   req  the instance of request
  * @param  {Object}   res  the instance of response
  * @param  {Function} next the next handler
- * @return {null}        
+ * @return {null}
  */
-exports.suppliers = function (req, res, next) {
+exports.suppliers = function(req, res, next) {
     debugCtrller("/controllers/stockIn/suppliers");
 
-    StockIn.getAllSuppliers(function (err, rows) {
+    StockIn.getAllSuppliers(function(err, rows) {
         if (err) {
             return res.send(resUtil.generateRes(null, err.statusCode));
         }
@@ -247,15 +247,15 @@ exports.suppliers = function (req, res, next) {
  * @param  {Function} next the next handler
  * @return {null}
  */
-exports.importSI = function (req, res, next) {
+exports.importSI = function(req, res, next) {
     debugCtrller("/controllers/stockIn/importSI");
 
     if (!req.session || !req.session.user) {
         return res.redirect("/login");
     }
 
-    var fileName  = req.files.file_source.name || "";
-    var tmp_path  = req.files.file_source.path || "";
+    var fileName = req.files.file_source.name || "";
+    var tmp_path = req.files.file_source.path || "";
 
     try {
         check(fileName).notEmpty();
@@ -268,7 +268,7 @@ exports.importSI = function (req, res, next) {
     var xlsxPath = path.resolve(__dirname, "../uploads/", fileName);
     var ep = EventProxy.create();
 
-    fs.rename(tmp_path, xlsxPath, function (err) {
+    fs.rename(tmp_path, xlsxPath, function(err) {
         if (err) {
             return ep.emitLater("error", new ServerError());
         }
@@ -276,12 +276,12 @@ exports.importSI = function (req, res, next) {
         ep.emitLater("renamed_file");
     });
 
-    ep.once("renamed_file", function () {
+    ep.once("renamed_file", function() {
         ep.emitLater("after_deletedTmpFile");
     });
 
-    ep.once("after_deletedTmpFile", function () {
-        parseXlsx(xlsxPath, function (err, data) {
+    ep.once("after_deletedTmpFile", function() {
+        parseXlsx(xlsxPath, function(err, data) {
             if (err || !data) {
                 return ep.emitLater("error", new ServerError());
             }
@@ -290,7 +290,7 @@ exports.importSI = function (req, res, next) {
         });
     });
 
-    ep.once("after_parsedExcelData", function (excelData) {
+    ep.once("after_parsedExcelData", function(excelData) {
         debugCtrller(excelData[0].length);
         if (excelData[0].length != 10) {
             return ep.emitLater("error", new InvalidParamError());
@@ -299,14 +299,14 @@ exports.importSI = function (req, res, next) {
         //remove first title array
         excelData.shift();
 
-        Import.importTmpStockIn(excelData, function (err, rows) {
+        Import.importTmpStockIn(excelData, function(err, rows) {
             fs.unlinkSync(xlsxPath);
             ep.emitLater("after_importedIntoTmpTable");
         });
     });
 
-    ep.once("after_importedIntoTmpTable", function () {
-        Import.realImport(function (err, rows) {
+    ep.once("after_importedIntoTmpTable", function() {
+        Import.realImport(function(err, rows) {
             if (err) {
                 return ep.emitLater("error", err);
             }
@@ -315,11 +315,11 @@ exports.importSI = function (req, res, next) {
         });
     });
 
-    ep.once("completed", function () {
+    ep.once("completed", function() {
         return res.send(resUtil.generateRes(null, config.statusCode.STATUS_OK));
     });
 
-    ep.fail(function (err) {
+    ep.fail(function(err) {
         fs.unlinkSync(xlsxPath);
         return res.send(resUtil.generateRes(null, err.statusCode));
     });
@@ -332,12 +332,212 @@ exports.importSI = function (req, res, next) {
  * @param  {Function} next the next handler
  * @return {null}
  */
-exports.exportSI = function (req, res, next) {
+exports.exportSI = function(req, res, next) {
     debugCtrller("/controllers/stockIn/exportSI");
 
-    if (!req.session || !req.session.user) {
-        return res.redirect("/login");
-    }
+    // if (!req.session || !req.session.user) {
+    //     return res.redirect("/login");
+    // }
+    var ep = EventProxy.create();
 
-    //TODO
+    //静态标题
+    var conf = {};
+    conf.cols = [{
+        caption: '入库日期',
+        type: 'string'
+    }, {
+        caption: '类别',
+        type: 'string'
+    }, {
+        caption: '商品名称',
+        type: 'string'
+    }, {
+        caption: '单位',
+        type: 'string'
+    }, {
+        caption: '数量',
+        type: 'string'
+    }, {
+        caption: '单价',
+        type: 'string'
+    }, {
+        caption: '金额',
+        type: 'string'
+    }, {
+        caption: '供应商',
+        type: 'string'
+    }, {
+        caption: '状态',
+        type: 'string'
+    }];
+
+    StockIn.getAllStockInWithCondition( function(err, rows) {
+        if (err) {
+            return ep.emitLater("error", err);
+        }
+        ep.emitLater("after_select", rows);
+    });
+
+    var arrayObj = [];
+    ep.once("after_select", function(rows) {
+        for (var i = 0; i < rows.length; i++) {
+            var row = rows[i];
+            arrayObj.push([
+                dataHandler(row.siDate),
+                row.typeName,
+                row.name,
+                row.unit,
+                row.num,
+                row.price,
+                row.amount,
+                row.supplier,
+                row.ptName
+            ]);
+        }
+
+        conf.rows = arrayObj;
+        var result = nodeExcel.execute(conf);
+        var fileTitle = "StockIn_";
+        res.setHeader('Content-Type', 'application/vnd.openxmlformats');
+        res.setHeader("Content-Disposition", "attachment; filename= " + fileTitle + (new Date().Format("yyyy-MM-dd")) + ".xlsx");
+        res.end(result, 'binary');
+    });
+    function dataHandler (dataStr) {
+        if (dataStr) {
+            if (dataStr != "0000-00-00") {
+                return (new Date(dataStr)).Format("yyyy-MM-dd");
+            }
+            return "";
+        }else{
+            return "";
+        }
+    }
+};
+
+exports.exportSO = function(req, res, next) {
+    debugCtrller("controllers/fixedAsset/exportExcel");
+    var ep = EventProxy.create();
+
+    //静态标题
+    var conf = {};
+    conf.cols = [{
+        caption: '部门',
+        type: 'string'
+    }, {
+        caption: '部门编号',
+        type: 'string'
+    }, {
+        caption: '领用人',
+        type: 'string'
+    }, {
+        caption: '领用人工号',
+        type: 'string'
+    }, {
+        caption: '设备编号',
+        type: 'string'
+    }, {
+        caption: '旧编号',
+        type: 'string'
+    }, {
+        caption: '资产名称',
+        type: 'string'
+    }, {
+        caption: '资产类型',
+        type: 'string'
+    }, {
+        caption: '资产归属',
+        type: 'string'
+    }, {
+        caption: '当前状态',
+        type: 'string'
+    }, {
+        caption: '品牌',
+        type: 'string'
+    }, {
+        caption: '型号',
+        type: 'string'
+    }, {
+        caption: '规格',
+        type: 'string'
+    }, {
+        caption: '金额',
+        type: 'string'
+    }, {
+        caption: '购买日期',
+        type: 'string'
+    }, {
+        caption: '领用日期',
+        type: 'string'
+    }, {
+        caption: '快速服务代码',
+        type: 'string'
+    }, {
+        caption: 'Mac地址',
+        type: 'string'
+    }, {
+        caption: '备注1',
+        type: 'string'
+    }, {
+        caption: '备注2',
+        type: 'string'
+    }];
+
+    SrockIn.getAllStockInWithCondition(companyId, function(err, rows) {
+        if (err) {
+            return ep.emitLater("error", err);
+        }
+        ep.emitLater("after_select", rows);
+    });
+
+    var arrayObj = [];
+    ep.once("after_select", function(rows) {
+        for (var i = 0; i < rows.length; i++) {
+            var row = rows[i];
+            arrayObj.push([
+                row.departmentId,
+                row.departmentName,
+                row.userName,
+                row.userId,
+                row.newId,
+                row.oldId,
+                row.assetName,
+                row.typeId,
+                row.assetBelong,
+                row.currentStatus,
+                row.brand,
+                row.model,
+                row.specifications,
+                row.price,
+                dataHandler(row.purchaseDate),
+                dataHandler(row.possessDate),
+                row.serviceCode,
+                row.mac,
+                row.remark1,
+                row.remark2
+            ]);
+        }
+
+        conf.rows = arrayObj;
+        var result = nodeExcel.execute(conf);
+        var fileTitle;
+        if (companyId - 1) {
+            fileTitle = "yunzhi_";
+        } else {
+            fileTitle = "jinzhi_";
+        }
+
+        res.setHeader('Content-Type', 'application/vnd.openxmlformats');
+        res.setHeader("Content-Disposition", "attachment; filename= " + fileTitle + (new Date().Format("yyyy-MM-dd")) + ".xlsx");
+        res.end(result, 'binary');
+    });
+    function dataHandler (dataStr) {
+        if (dataStr) {
+            if (dataStr != "0000-00-00") {
+                return (new Date(dataStr)).Format("yyyy-MM-dd hh:mm:ss");
+            }
+            return "";
+        }else{
+            return "";
+        }
+    }
 };

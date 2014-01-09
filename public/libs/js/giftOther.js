@@ -36,7 +36,7 @@ function loadAjaxUpload() {
  * @return {null} 
  */
 function exportStockInExcel () {
-	//TO-DO
+	window.location.href= "/stockin/export";
 }
 
 /**
@@ -44,7 +44,7 @@ function exportStockInExcel () {
  * @return {null} 
  */
 function exportStockOutExcel () {
-	//TO-DO
+	window.location.href= "/fixedasset/excelExport/2";
 }
 
 /**
@@ -52,5 +52,5 @@ function exportStockOutExcel () {
  * @return {null} 
  */
 function exportInventoryExcel () {
-	//TO-DO
+	window.location.href= "/fixedasset/excelExport/2";
 }
