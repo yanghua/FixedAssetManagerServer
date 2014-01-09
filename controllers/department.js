@@ -61,5 +61,5 @@ exports.allManualInputDepts = function (req, res, next) {
         }
 
         res.send(resUtil.generateRes(deptList, config.statusCode.STATUS_OK));
-    })
+    });
 };

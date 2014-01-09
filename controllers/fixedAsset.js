@@ -34,7 +34,6 @@ var EventProxy  = require("eventproxy");
 var path        = require("path");
 var fs          = require("fs");
 var parseXlsx   = require("excel");
-var QRCode      = require("qrcode");
 var PDFDocument = require("pdfkit");
 var nodeExcel   = require('excel-export');
 var mailService = require("../services/mail");
