@@ -332,6 +332,7 @@ function getStockOutRecord() {
         for (var i = 0; i < data.data.length; i++) {
           var cellData = data.data[i];
           var row = tdCont.row();
+          var cellGcName = tdCont.cell(cellData.gcname)
           var cellName = tdCont.cell(cellData.name);
           var cellNum = tdCont.cell(cellData.num);
           var cellAmount = tdCont.cell(cellData.amount);
@@ -354,6 +355,7 @@ function getStockOutRecord() {
           linkEdit.click(tdCont.editStockOut(cellData.soId));
           var linkDel = tdCont.cell($("<a href='javascript:void(0);'>删除</a>"));
           linkDel.click(tdCont.delStockOut(cellData.soId));
+          row.append(cellGcName);
           row.append(cellName);
           row.append(cellNum);
           row.append(cellAmount);
