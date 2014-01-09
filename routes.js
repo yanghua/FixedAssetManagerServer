@@ -128,7 +128,7 @@ module.exports = function (app) {
     app.post("/stockin/modification", stockIn.modification);
     app.post("/stockin/deletion", stockIn.deletion);
     app.post("/stockin/import", stockIn.importSI);
-    app.post("/stockin/export", stockIn.exportSI);
+    app.get("/stockin/export", stockIn.exportSI);
 
     app.post("/stockouts", stockOut.stockouts);
     app.post("/stockout/insertion", stockOut.insertion);
