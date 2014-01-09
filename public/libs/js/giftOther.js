@@ -52,5 +52,5 @@ function exportStockOutExcel () {
  * @return {null} 
  */
 function exportInventoryExcel () {
-	window.location.href= "/fixedasset/excelExport/2";
+	window.location.href= "/inventory/export";
 }

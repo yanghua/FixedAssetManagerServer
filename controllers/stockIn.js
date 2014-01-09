@@ -335,9 +335,9 @@ exports.importSI = function(req, res, next) {
 exports.exportSI = function(req, res, next) {
     debugCtrller("/controllers/stockIn/exportSI");
 
-    // if (!req.session || !req.session.user) {
-    //     return res.redirect("/login");
-    // }
+    if (!req.session || !req.session.user) {
+        return res.redirect("/login");
+    }
     var ep = EventProxy.create();
 
     //静态标题
@@ -404,7 +404,7 @@ exports.exportSI = function(req, res, next) {
     });
     function dataHandler (dataStr) {
         if (dataStr) {
-            if (dataStr != "0000-00-00") {
+            if (dataStr.indexOf("0000") < 0) {
                 return (new Date(dataStr)).Format("yyyy-MM-dd");
             }
             return "";
@@ -413,4 +413,7 @@ exports.exportSI = function(req, res, next) {
         }
     }
 };
+
+
+
 
