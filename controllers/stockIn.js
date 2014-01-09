@@ -404,7 +404,7 @@ exports.exportSI = function(req, res, next) {
     });
     function dataHandler (dataStr) {
         if (dataStr) {
-            if (dataStr.indexOf("0000") < 0) {
+            if ((dataStr+"").indexOf("0000") < 0) {
                 return (new Date(dataStr)).Format("yyyy-MM-dd");
             }
             return "";
