@@ -142,6 +142,7 @@ module.exports = function (app) {
     app.post("/limitation/deletion", limitation.deletion);
 
     app.post("/inventories", inventory.inventories);
+    app.get("/inventory/export",inventory.exportInv);
     
     app.get("/manualinputdepts", department.allManualInputDepts);
     app.get("/suppliers", stockIn.suppliers);
