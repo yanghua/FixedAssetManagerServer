@@ -28,6 +28,7 @@ var EventProxy  = require("eventproxy");
 var StockIn     = require("./stockIn");
 var StockOut    = require("./stockOut");
 var Inventory   = require("./inventory");
+var Limitation  = require("./limitation");
 
 /**
  * get gift with condition list
@@ -170,8 +171,18 @@ exports.removeWithGiftId = function (giftId, callback) {
         });
 
     ep.once("after_deletedGiftItems", function () {
-        return callback(null, null);
+        Limitation.remove(giftId, function (err, rows) {
+            if (err) {
+                return ep.emitLater("error", err);
+            }
+
+            ep.emitLater("completed");
+        })        
     });
+
+    ep.once("completed", function () {
+        return callback(null, null);
+    })
 
     ep.fail(function (err) {
         return callback(new DBError(), null);
