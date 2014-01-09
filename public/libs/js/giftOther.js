@@ -44,7 +44,7 @@ function exportStockInExcel () {
  * @return {null} 
  */
 function exportStockOutExcel () {
-	window.location.href= "/fixedasset/excelExport/2";
+	window.location.href= "/stockout/export";
 }
 
 /**
