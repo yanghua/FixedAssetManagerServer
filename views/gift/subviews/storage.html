@@ -21,6 +21,7 @@
         $("#storage").addClass("active");
         loadGifts();
         getStorage();
+        loadLimitation();
         $('#giftTypes').change(function(){ 
             //alert( $('#giftTypes').val());
             getStorage($('#giftTypes').val());
@@ -28,7 +29,7 @@
     });
 </script>
 <div id="main_div" class="panel">
-   <div class="row-fluid">
+ <div class="row-fluid">
     <div class="span12">
         <div class="tabbable" id="tabs-410411">
             <h1>库存查询</h1>
@@ -36,55 +37,70 @@
                 <li class="active">
                     <a href="#panel-1" data-toggle="tab">库存查询</a>
                 </li>
-                 <!--    <li>
-                        <a href="#panel-3" data-toggle="tab">入库管理</a>
-                    </li> -->
-                </ul>
-                <div class="tab-content">
-                    <div class="tab-pane active fade in" id="panel-1">
-                        <div>
-                            <div class="form-group">
-                                <legend>库存查询</legend>
-                                <div class="input-group" >
-                                    
-                                    <select  id="giftTypes"  class="selectpicker show-tick">
-                                        <option value="">-- 全部记录 --</option>
-                                    </select>
-                                </div>
+                <li>
+                <a href="#panel-3" data-toggle="tab">库存提醒设置</a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane active fade in" id="panel-1">
+                    <div>
+                        <div class="form-group">
+                            <legend>库存查询</legend>
+                            <div class="input-group" >
+
+                                <select  id="giftTypes"  class="selectpicker show-tick">
+                                    <option value="">-- 全部记录 --</option>
+                                </select>
                             </div>
                         </div>
-                        
-                        <div class="panel panel-default" >
-                            <div class="panel-heading" >库存</div>
-                            <table class="table table-striped">
-                                <thead>
-                                    <tr>
-                                        <th>礼品</th>
-                                        <th>单位</th>
-                                        <th>价格</th>
-                                        <th>剩余库存</th>
-                                        <th>礼品类别</th>
-                                        <th>到期日期</th>
-                                    </tr>
-                                </thead>
-                                <tbody id='storageResult'>
-
-                                </tbody>
-                            </table>
-                        </div>
-
                     </div>
 
-                    <div class="tab-pane" id="panel-3">
+                    <div class="panel panel-default" >
+                        <div class="panel-heading" >库存</div>
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>礼品</th>
+                                    <th>单位</th>
+                                    <th>价格</th>
+                                    <th>剩余库存</th>
+                                    <th>礼品类别</th>
+                                    <th>到期日期</th>
+                                </tr>
+                            </thead>
+                            <tbody id='storageResult'>
 
+                            </tbody>
+                        </table>
                     </div>
 
+                </div>
+
+                <div class="tab-pane" id="panel-3">
+                    <legend>库存提醒设置</legend>
+                    <div class="panel panel-default" >
+                        <div class="panel-heading" >库存提醒</div>
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>礼品</th>
+                                    <th>限制数量</th>
+                                    <th>修改</th>
+                                </tr>
+                            </thead>
+                            <tbody id='limitationAttr'>
+
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
 
             </div>
 
         </div>
-    </div>            
+
+    </div>
+</div>            
 
 
 </div>

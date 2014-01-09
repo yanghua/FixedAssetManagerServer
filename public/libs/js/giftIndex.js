@@ -201,7 +201,7 @@ function loadAutoFillSupplier() {
     bootbox.alert("请选择礼品!");
     return ;
   }
-  if($('#giftSize').val() <= 0 || !$('#giftSize').val() || !isDigit($('#giftSize').val()) ){
+  if($('#giftSize').val() <= 0 || !$('#giftSize').val() || !isDigit($('#giftSize').val()) || $('#giftSize').val() > $("#giftSizeWhole").val()){
     bootbox.alert("请输入正确的个数!");
     return ;
   }
@@ -275,7 +275,7 @@ function inOpearteClick(edit) {
     bootbox.alert("请选择礼品!");
     return ;
   }
-  if($('#giftSize2').val() <= 0 || !$('#giftSize2').val() || !isDigit($('#giftSize2').val()) ){
+  if($('#giftSize2').val() <= 0 || !$('#giftSize2').val() || !isDigit($('#giftSize2').val())){
     bootbox.alert("请输入正确的个数!");
     return ;
   }
@@ -297,7 +297,7 @@ function inOpearteClick(edit) {
     alertString = "修改成功!";
     inUrl = "/stockin/modification";
   } else {
-    alertString = "出库成功!";
+    alertString = "入库成功!";
     inUrl = "/stockin/insertion";
   }
   $.ajax({
@@ -489,6 +489,7 @@ function loadGifts() {
         $('#giftTypeIn').selectpicker();
         $("#giftType").change(function() {
           $("#giftAcount").val(data.data[$("#giftType").prop("selectedIndex") - 1].price * $("#giftSize").val());
+          loadCurrentGiftInv(data.data[$("#giftType").prop("selectedIndex") - 1].giftId);
         });
         $("#giftSize").keyup(function() {
           $("#giftAcount").val(data.data[$("#giftType").prop("selectedIndex") - 1].price * $("#giftSize").val());
@@ -522,4 +523,23 @@ function loadStockintypes() {
       }
     }
   });
+}
+
+function loadCurrentGiftInv (giftId) {
+  $.ajax({
+    type:"POST",
+    url:"/inventories",
+    data:{"giftId":giftId},
+    success:function (data) {
+      if(data.statusCode === 0){
+        if(data.data.length>0){
+          $("#giftCount").html(data.data[0].num);
+          $("#giftSizeWhole").val(data.data[0].num);
+        }else{
+          $("#giftCount").html(0);
+        }
+        
+      }
+    }
+  })
 }

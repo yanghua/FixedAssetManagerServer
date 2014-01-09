@@ -34,7 +34,8 @@
         loadAutoFillDepart();
         loadAutoFillSupplier();
 
-        });
+
+    });
 
 
 </script>
@@ -42,8 +43,8 @@
     <div class="row-fluid">
         <div class="span12">
             <div class="tabbable" id="tabs-410411">
-               <h1>出库入库</h1>
-               <ul class="nav nav-tabs">
+             <h1>出库入库</h1>
+             <ul class="nav nav-tabs">
                 <li class="active">
                     <a href="#panel-1" data-toggle="tab">出库管理</a>
                 </li>
@@ -56,19 +57,28 @@
                     <form class="outStorage">
                         <div class="form-group">
                             <legend>出库管理</legend>
+                            <div style="float:right;height:150px;font-size:20px;margin-right:50px">
+                                <div class="alert alert-danger" >
+                                  当前库存剩余:<p>
+                                  <label style="font-size:35px"><span id="giftCount" class="glyphicon glyphicon-gift">123</span></label>
+                                </div>
+                            </div>
+
                             <div class="input-group" >
                                 <input id="soId" name="soId" style="display:none">
                                 <select  id="giftType" name="giftId"  class="selectpicker show-tick">
                                     <option value="0">-- 请选择礼品 --</option>
                                 </select>
                                 <input  class="form-control" type="text" id="onePrice" style="display:none">
-                                <input  class="form-control" type="text" id="giftSize" name="num" placeholder="礼品数量">
+                                <input  class="form-control" type="number" id="giftSize" name="num" placeholder="礼品数量">
+                                <input  class="form-control" type="number" id="giftSizeWhole" style="display:none">
                                 <label>总额: </label>
                                 <input type="text" id="giftAcount" class="form-control" name="amount" readonly="true">
                             </div>
+
                             <div class="input-group" >
-                                申请人: 
-                                <input  class="form-control" style="width:150px;margin-bottom:10px;margin-left:20px;margin-right:20px;" type="text" id="applyUserId" placeholder="申请人" name="applyUserId">
+                                申请人ID: 
+                                <input  class="form-control" style="width:150px;margin-bottom:10px;margin-right:20px;" type="text" id="applyUserId" placeholder="申请人ID" name="applyUserId">
                                 费用承担部门: 
                                 <input  class="form-control" style="width:150px;margin-bottom:10px;margin-left:20px;margin-right:20px;" type="text" id="giftSendDepart" placeholder="费用承担部门" name="underDept">
                             </div>
@@ -82,36 +92,38 @@
                                 <button type="button" class="btn btn-primary" id="outOpearte" onclick="outOpearteClick()">确定出库</button>
                                 <button type="button" class="btn btn-primary" id="outOpearteOne" onclick="outOpearteClick(1)">确认修改</button>
                             </div>
-                            
                         </div>
-                        <div class="form-group">
-                           <legend>出库查询</legend>
-                       </div>
+                    </form>
+                    
+                    <div class="form-group">
+                    <legend>出库查询</legend>
+                 </div>
 
 
-                       <div class="panel panel-default" id="underName">
-                        <div class="panel-heading" >出库记录</div>
-                        <table class="table table-striped">
-                            <thead>
-                                <tr>
-                                    <th>礼品类型</th>
-                                    <th>礼品名称</th>
-                                    <th>数量</th>
-                                    <th>金额</th>
-                                    <th>申请人</th>
-                                    <th>费用承担部门</th>
-                                    <th>付款状态</th>
-                                    <th>操作日期</th>
-                                    <th>修改</th>
-                                    <th>删除</th>
-                                </tr>
-                            </thead>
-                            <tbody id='stockOutRecodes'>
 
-                            </tbody>
-                        </table>
-                    </div>
-                </form>
+                 <div class="panel panel-default" id="underName">
+                    <div class="panel-heading" >出库记录</div>
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>礼品类型</th>
+                                <th>礼品名称</th>
+                                <th>数量</th>
+                                <th>金额</th>
+                                <th>申请人</th>
+                                <th>费用承担部门</th>
+                                <th>付款状态</th>
+                                <th>操作日期</th>
+                                <th>修改</th>
+                                <th>删除</th>
+                            </tr>
+                        </thead>
+                        <tbody id='stockOutRecodes'>
+
+                        </tbody>
+                    </table>
+                </div>
+                
                 
 
             </div>
@@ -119,7 +131,7 @@
             <div class="tab-pane" id="panel-3">
                 <div class="controls controls-row" >
                     <form class="inStorage">
-                     <div class="form-group">
+                       <div class="form-group">
                         <legend>入库管理</legend>
                         <div class="input-group" >
                             <input id="siId" name="siId" style="display:none">
@@ -144,8 +156,8 @@
                             <select  id="payStatusIn" class="selectpicker show-tick " name="ptId">
                                 <option value="0">--付款类型--</option>
                             </select>
-                             备注: <input  class="form-control" type="text" id="remark" name="remark" >
-                             <input type="text" id="other" style="display:none" name="other">
+                            备注: <input  class="form-control" type="text" id="remark" name="remark" >
+                            <input type="text" id="other" style="display:none" name="other">
                             <button type="button" class="btn btn-primary" id="inOpearte" onclick="inOpearteClick()">确定入库</button>
                             <button type="button" class="btn btn-primary" id="inOpearteOne" onclick="inOpearteClick(1)">确定修改</button>
                         </div>
