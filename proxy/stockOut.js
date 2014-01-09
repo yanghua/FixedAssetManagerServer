@@ -35,10 +35,11 @@ exports.getStockOutWithCondition = function (conditions, callback) {
     debugProxy("/proxy/stockOut/getStockOutWithCondition");
     var sql;
 
-    sql = "SELECT so.*, g.name, u.userName, pt.ptName FROM STOCKOUT so " +
+    sql = "SELECT so.*, g.name,gc.name gcname,g.price,g.unit, u.userName, pt.ptName FROM STOCKOUT so " +
           "LEFT JOIN GIFT g ON so.giftId = g.giftId " +
           "LEFT JOIN USER u ON so.applyUserId = u.userId " +
           "LEFT JOIN PAYMENTTYPE pt ON so.ptId = pt.ptId " +
+          "LEFT JOIN GIFTCATEGORY gc ON g.categoryId = gc.categoryId "+
           "WHERE 1 = 1 ";
 
     if (conditions) {
