@@ -177,12 +177,12 @@ exports.removeWithGiftId = function (giftId, callback) {
             }
 
             ep.emitLater("completed");
-        })        
+        });
     });
 
     ep.once("completed", function () {
         return callback(null, null);
-    })
+    });
 
     ep.fail(function (err) {
         return callback(new DBError(), null);

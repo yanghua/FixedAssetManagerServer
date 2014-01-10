@@ -110,7 +110,7 @@ exports.startPushDBBackupFileService = function (cronPattern, callback) {
     });
 
     job.start();
-}
+};
 
 /**
  * cron job generator

@@ -60,5 +60,5 @@ String.prototype.format = function() {
     return this.replace(/\{(\d+)\}/g,                
         function(m,i){
             return args[i];
-        });
-}
+    });
+};

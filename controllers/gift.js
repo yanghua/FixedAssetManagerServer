@@ -122,7 +122,7 @@ exports.insertion = function (req, res, next) {
             }
 
             ep.emitLater("after_addLimitation");
-        })        
+        });
     });
 
     ep.once("after_addLimitation", function () {
@@ -131,7 +131,7 @@ exports.insertion = function (req, res, next) {
 
     ep.fail(function (err) {
         return res.send(resUtil.generateRes(null, err.statusCode));
-    })
+    });
 };
 
 /**
