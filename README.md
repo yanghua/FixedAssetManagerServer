@@ -77,6 +77,9 @@ root
    |-screenshots                    --终端图片截图(iOS/Android)
    |-common                         --系统公用文件定义
    |-services                       --各种service集合
+   |-backup                         --数据库备份文件目录
+   |-uploads                        --文件上传目录
+   |-test                           --测试文件
    
 ```
 
@@ -98,6 +101,8 @@ root
 * net-ping
 * debug
 * excel-export
+* node-xlsx
+* cron
 
 devDependencies
 
@@ -106,6 +111,7 @@ devDependencies
 * grunt
 * grunt-contrib-uglify
 * grunt-contrib-jshint
+* grunt-contrib-csslint
 
 ## more detail
 [使用Node.js完成的第一个项目的实践总结](http://blog.csdn.net/yanghua_kobe/article/details/17199417)
