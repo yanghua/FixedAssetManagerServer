@@ -255,7 +255,7 @@ function loadGiftCategorys() {
           linkDel.click(tdCont.delCategory(cellData.categoryId));
           row.append(cellName);
           row.append(linkEdit);
-          row.append(linkDel);
+          //row.append(linkDel);
           $("#giftCategoryAttr").append(row);
         };
       }
