@@ -18,6 +18,9 @@ npm install
 #generate assets for static resource
 make build
 
+#give the uploads dir the write premission
+sudo chmod o+w uploads
+
 pm2 kill
 #make sure you have setted 'NODE_ENV'
 #more detail see: docs/node_install_ubuntu.sh
