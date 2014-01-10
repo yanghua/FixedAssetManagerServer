@@ -92,7 +92,12 @@ module.exports = function (grunt) {
         csslint : {
             default_cssLint : {
                 options : {
-                    //TODO
+                    "important"                     : false,
+                    "ids"                           : false,
+                    "fallback-colors"               : false,
+                    "box-model"                     : false,
+                    "compatible-vendor-prefixes"    : false,
+                    "box-sizing"                    : false
                 },
                 src : [
                         "public/stylesheets/home.css",

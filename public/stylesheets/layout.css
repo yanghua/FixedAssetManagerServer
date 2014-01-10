@@ -23,29 +23,23 @@ body {
   max-width: none !important;
   width: 970px;
 }
-
 /* Demonstrate the grids */
 .col-xs-4 {
   padding-top: 15px;
   padding-bottom: 15px;
   background-color: #eee;
   border: 1px solid #ddd;
-  background-color: rgba(86,61,124,.15);
   border: 1px solid rgba(86,61,124,.2);
 }
-
 .container .navbar-header,
 .container .navbar-collapse {
   margin-right: 0;
-  margin-left: 0;
-  
+  margin-left: 0; 
 }
-
 /* Always float the navbar header */
 .navbar-header {
   float: left;
 }
-
 /* Undo the collapsing navbar */
 .navbar-collapse {
   display: block !important;
@@ -53,15 +47,12 @@ body {
   padding-bottom: 0;
   overflow: visible !important;
 }
-
 .navbar-toggle {
   display: none;
 }
-
 .navbar-brand {
   margin-left: -15px;
 }
-
 /* Always apply the floated nav */
 .navbar-nav {
   float: left;
@@ -71,15 +62,12 @@ body {
   float: left;
 }
 .navbar-nav > li > a {
-
   padding: 22px;
 }
-
 /* Redeclare since we override the float above */
-.navbar-nav.navbar-right {
+.navbar-nav .navbar-right {
   float: right;
 }
-
 /* Undo custom dropdowns */
 .navbar .open .dropdown-menu {
   position: absolute;
@@ -149,7 +137,7 @@ add to show new ui
 
 #main_div{
   width: 1000px;
-  _height:700px;
+  height:700px;
   min-height: 700px;
   background-color: #fff;
   margin: 0 auto;
