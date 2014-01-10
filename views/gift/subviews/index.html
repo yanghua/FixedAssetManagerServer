@@ -1,70 +1,70 @@
-<% layout('gift/layout') -%>
+    <% layout('gift/layout') -%>
 
-<head>
-    <!-- script -->
-    <%- Loader("/public/libs/js/giftIndex.min.js")
-    .js("/public/libs/js/bootstrap-select.js")
-    .js("/public/libs/js/bootbox.min.js")
-    .js("/public/libs/js/giftIndex.js")
-    .js("/public/libs/js/jquery.autocomplete.js")
-    .done(assets)
-    %>
-    <!-- style -->
-    <%- Loader("/public/stylesheets/giftIndex.min.css")
-    .css("/public/stylesheets/giftIndex.css")
-    .css("/public/stylesheets/bootstrap-select.css")
-    .done(assets)
-    %>
-</head>
+    <head>
+        <!-- script -->
+        <%- Loader("/public/libs/js/giftIndex.min.js")
+        .js("/public/libs/js/bootstrap-select.js")
+        .js("/public/libs/js/bootbox.min.js")
+        .js("/public/libs/js/giftIndex.js")
+        .js("/public/libs/js/jquery.autocomplete.js")
+        .done(assets)
+        %>
+        <!-- style -->
+        <%- Loader("/public/stylesheets/giftIndex.min.css")
+        .css("/public/stylesheets/giftIndex.css")
+        .css("/public/stylesheets/bootstrap-select.css")
+        .done(assets)
+        %>
+    </head>
 
-<script type="text/javascript">
-    $(document).ready(function() {
-        $("#w_nav>li[class='active']").removeAttr("class");
-        $("#index").addClass("active");
-        $('#outOpearteOne').hide();
-        $('#outOpearte').show();
-        $('#inOpearteOne').hide();
-        $('#inOpearte').show();
-        loadPaymenttypes();
-        //loadDepartments();
-        loadGifts();
-        loadStockintypes();
-        getStockOutRecord();
-        getStockInRecord();
-        loadAutoFillDepart();
-        loadAutoFillSupplier();
-
-
-    });
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $("#w_nav>li[class='active']").removeAttr("class");
+            $("#index").addClass("active");
+            $('#outOpearteOne').hide();
+            $('#outOpearte').show();
+            $('#inOpearteOne').hide();
+            $('#inOpearte').show();
+            loadPaymenttypes();
+            //loadDepartments();
+            loadGifts();
+            loadStockintypes();
+            getStockOutRecord();
+            getStockInRecord();
+            loadAutoFillDepart();
+            loadAutoFillSupplier();
 
 
-</script>
-<div id="main_div" class="panel ">
-    <div class="row-fluid">
-        <div class="span12">
-            <div class="tabbable" id="tabs-410411">
-             <h1>出库入库</h1>
-             <ul class="nav nav-tabs">
-                <li class="active">
-                    <a href="#panel-1" data-toggle="tab">出库管理</a>
-                </li>
-                <li>
-                    <a href="#panel-3" data-toggle="tab">入库管理</a>
-                </li>
-            </ul>
-            <div class="tab-content">
-                <div class="tab-pane active fade in" id="panel-1">
-                    <form class="outStorage">
-                        <div class="form-group">
-                            <legend>出库管理</legend>
-                            <div style="float:right;height:150px;font-size:20px;margin-right:50px">
-                                <div class="alert alert-danger" >
-                                  当前库存剩余:<p>
-                                  <label style="font-size:35px"><span id="giftCount" class="glyphicon glyphicon-gift">123</span></label>
-                                </div>
-                            </div>
+        });
 
-                            <div class="input-group" >
+
+    </script>
+    <div id="main_div" class="panel ">
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="tabbable" id="tabs-410411">
+                   <h1>出库入库</h1>
+                   <ul class="nav nav-tabs">
+                    <li class="active">
+                        <a href="#panel-1" data-toggle="tab">出库管理</a>
+                    </li>
+                    <li>
+                        <a href="#panel-3" data-toggle="tab">入库管理</a>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane active fade in" id="panel-1">
+                        <form class="outStorage">
+                            <div class="form-group">
+                                <legend>出库管理</legend>
+                                <div style="float:right;height:150px;font-size:20px;margin-right:50px">
+                                    <div class="alert alert-danger" >
+                                      当前库存剩余:<p>
+                                      <label style="font-size:35px"><span id="giftCount" class="glyphicon glyphicon-gift">0</span></label>
+                                  </div>
+                              </div>
+
+                              <div class="input-group" >
                                 <input id="soId" name="soId" style="display:none">
                                 <select  id="giftType" name="giftId"  class="selectpicker show-tick">
                                     <option value="0">-- 请选择礼品 --</option>
@@ -78,125 +78,154 @@
 
                             <div class="input-group" >
                                 申请人ID: 
-                                <input  class="form-control" style="width:150px;margin-bottom:10px;margin-right:20px;" type="text" id="applyUserId" placeholder="申请人ID" name="applyUserId">
-                                费用承担部门: 
-                                <input  class="form-control" style="width:150px;margin-bottom:10px;margin-left:20px;margin-right:20px;" type="text" id="giftSendDepart" placeholder="费用承担部门" name="underDept">
+                                <input  class="form-control" style="width:155px;margin-bottom:10px;" type="text" id="applyUserId" placeholder="申请人ID" name="applyUserId">
+
+                                <input type="text" style="width:200px;" class="form-control" id="userNameInput" placeholder="输入用户姓名" />
+                                <button type="button" onclick="assetCheckUserIdByUserName2()" class="btn btn-default" id="checkUserIdByName">查询人员工号</button>
+                            </div>
+
+                            <div class="input-group" >
+                                承担部门: 
+                                <input  class="form-control" style="width:155px;margin-bottom:10px;margin-right:20px;" type="text" id="giftSendDepart" placeholder="费用承担部门" name="underDept">
                             </div>
                             <div class="input-group" >
                                 付款状态: 
-                                <select  id="payStatus" class="selectpicker show-tick " name="ptId">
+                                <select  id="payStatus" data-width="155px" class="selectpicker show-tick " name="ptId">
                                     <option value="0">--付款类型--</option>
                                 </select>
-                                备注: <input  class="form-control" type="text" id="remark" name="remark" >
+
+                            </div>
+                            <div class="input-group">
+                                备&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;注:<input  class="form-control" type="text" id="remark" name="remark" >
                                 <input type="text" id="other" style="display:none" name="other">
                                 <button type="button" class="btn btn-primary" id="outOpearte" onclick="outOpearteClick()">确定出库</button>
                                 <button type="button" class="btn btn-primary" id="outOpearteOne" onclick="outOpearteClick(1)">确认修改</button>
                             </div>
                         </div>
                     </form>
-                    
+
                     <div class="form-group">
-                    <legend>出库查询</legend>
-                 </div>
-
-
-
-                 <div class="panel panel-default" id="underName">
-                    <div class="panel-heading" >出库记录</div>
-                    <table class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th>礼品类型</th>
-                                <th>礼品名称</th>
-                                <th>数量</th>
-                                <th>金额</th>
-                                <th>申请人</th>
-                                <th>费用承担部门</th>
-                                <th>付款状态</th>
-                                <th>操作日期</th>
-                                <th>修改</th>
-                                <th>删除</th>
-                            </tr>
-                        </thead>
-                        <tbody id='stockOutRecodes'>
-
-                        </tbody>
-                    </table>
-                </div>
-                
-                
-
-            </div>
-
-            <div class="tab-pane" id="panel-3">
-                <div class="controls controls-row" >
-                    <form class="inStorage">
-                       <div class="form-group">
-                        <legend>入库管理</legend>
-                        <div class="input-group" >
-                            <input id="siId" name="siId" style="display:none">
-                            <select  id="giftTypeIn" name="giftId"  class="selectpicker show-tick">
-                                <option value="0">-- 请选择礼品 --</option>
-                            </select>
-                            <input  class="form-control" type="text" id="onePrice2" style="display:none">
-                            <input  class="form-control" type="text" id="giftSize2" name="num" placeholder="礼品数量">
-                            <label>总额: </label>
-                            <input type="text" id="giftAcount2" class="form-control" name="amount" readonly="true">
-                        </div>
-                        <div class="input-group" >
-                            供应商: 
-                            <input  class="form-control" style="width:150px;margin-bottom:10px;margin-left:20px;margin-right:20px;" type="text" id="supplierName" placeholder="供应商" name="supplier">
-                            入库类型: 
-                            <select  id="siTypeIdSelect" class="selectpicker show-tick" name="siTypeId">
-                                <option value="0">--入库类型--</option>
-                            </select>
-                        </div>
-                        <div class="input-group" >
-                            付款状态: 
-                            <select  id="payStatusIn" class="selectpicker show-tick " name="ptId">
-                                <option value="0">--付款类型--</option>
-                            </select>
-                            备注: <input  class="form-control" type="text" id="remark" name="remark" >
-                            <input type="text" id="other" style="display:none" name="other">
-                            <button type="button" class="btn btn-primary" id="inOpearte" onclick="inOpearteClick()">确定入库</button>
-                            <button type="button" class="btn btn-primary" id="inOpearteOne" onclick="inOpearteClick(1)">确定修改</button>
-                        </div>
-                        
+                        <legend>出库查询</legend>
                     </div>
-                </form>
 
-                
-                <div class="panel panel-default" id="dataSearchView" >
 
-                    <div class="panel-heading" id = "viewTitle"></div>
-                    <table class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th>礼品名称</th>
-                                <th>数量</th>
-                                <th>总额</th>
-                                <th>供应商</th>
-                                <th>操作</th>
-                                <th>日期</th>
-                                <th>修改</th>
-                                <th>删除</th>
-                            </tr>
-                        </thead>
-                        <tbody id='stockInRecodes'>
 
-                        </tbody>
-                    </table>
-                    <div id='viewPaginator' style="float:left;padding-top:10px" ></div>
+                    <div class="panel panel-default" id="underName">
+                        <div class="panel-heading" >出库记录</div>
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>礼品类型</th>
+                                    <th>礼品名称</th>
+                                    <th>数量</th>
+                                    <th>金额</th>
+                                    <th>申请人</th>
+                                    <th>费用承担部门</th>
+                                    <th>付款状态</th>
+                                    <th>操作日期</th>
+                                    <th>修改</th>
+                                    <th>删除</th>
+                                </tr>
+                            </thead>
+                            <tbody id='stockOutRecodes'>
+
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    
+
+                </div>
+
+                <div class="tab-pane" id="panel-3">
+                    <div class="controls controls-row" >
+                        <form class="inStorage">
+                         <div class="form-group">
+                            <legend>入库管理</legend>
+                            <div class="input-group" >
+                                <input id="siId" name="siId" style="display:none">
+                                <select  id="giftTypeIn" name="giftId"  class="selectpicker show-tick">
+                                    <option value="0">-- 请选择礼品 --</option>
+                                </select>
+                                <input  class="form-control" type="text" id="onePrice2" style="display:none">
+                                <input  class="form-control" type="text" id="giftSize2" name="num" placeholder="礼品数量">
+                                <label>总额: </label>
+                                <input type="text" id="giftAcount2" class="form-control" name="amount" readonly="true">
+                            </div>
+                            <div class="input-group" >
+                                供应商: 
+                                <input  class="form-control" style="width:150px;margin-bottom:10px;margin-left:15px;margin-right:20px;" type="text" id="supplierName" placeholder="供应商" name="supplier">
+                            </div>
+                            <div class="input-group" >
+                                入库类型: 
+                                <select  id="siTypeIdSelect" class="selectpicker show-tick" name="siTypeId">
+                                    <option value="0">--入库类型--</option>
+                                </select>
+                            </div>
+                            <div class="input-group" >
+                                付款状态: 
+                                <select  id="payStatusIn" class="selectpicker show-tick " name="ptId">
+                                    <option value="0">--付款类型--</option>
+                                </select>
+                            </div>
+                            <div class="input-group" >
+                                备&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;注:<input  class="form-control" type="text" id="remark" name="remark" >
+                                <input type="text" id="other" style="display:none" name="other">
+                                <button type="button" class="btn btn-primary" id="inOpearte" onclick="inOpearteClick()">确定入库</button>
+                                <button type="button" class="btn btn-primary" id="inOpearteOne" onclick="inOpearteClick(1)">确定修改</button>
+                            </div>
+                            
+                        </div>
+                    </form>
+
+                    
+                    <div class="panel panel-default" id="dataSearchView" >
+
+                        <div class="panel-heading" id = "viewTitle"></div>
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>礼品名称</th>
+                                    <th>数量</th>
+                                    <th>总额</th>
+                                    <th>供应商</th>
+                                    <th>操作</th>
+                                    <th>日期</th>
+                                    <th>修改</th>
+                                    <th>删除</th>
+                                </tr>
+                            </thead>
+                            <tbody id='stockInRecodes'>
+
+                            </tbody>
+                        </table>
+                        <div id='viewPaginator' style="float:left;padding-top:10px" ></div>
+                    </div>
                 </div>
             </div>
+
         </div>
 
-    </div>
+
+    </div>   
+</div>
+<!-- Modal -->
+<div class="modal fade" id="userInfoModle" tabindex="-1" role="dialog" aria-labelledby="userInfoModleLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalLabel">用户工号选择</h4>
+                请直接点击人员信息,人员工号将自动填写.
+            </div>
+            <div class="modal-body" id="userInfoDetails">
+
+            </div>
+
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->         
+
+
 
 </div>
-
-</div>
-</div>            
-
-</div>
-

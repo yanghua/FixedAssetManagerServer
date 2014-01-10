@@ -25,6 +25,10 @@ var tdCont = {
     return function() {
       delStockInFunc(siId);
     }
+  },  userIdClick: function(userId) {
+    return function() {
+      addUserIdToInput(userId);
+    };
   }
 };
 
@@ -542,4 +546,48 @@ function loadCurrentGiftInv (giftId) {
       }
     }
   })
+}
+
+/**
+ * check userid by username
+ * @return {null}
+ */
+function assetCheckUserIdByUserName2() {
+  assetCheckUserIdByUserName($("#userNameInput").val());
+}
+
+/**
+ * check userid by username
+ * @return {null}
+ */
+function assetCheckUserIdByUserName(inputText) {
+  $.ajax({
+    type: "GET",
+    url: "/fixedasset/getUserId/" + inputText,
+    success: function(data) {
+      if (data.statusCode === 0 && data.data.length > 0) {
+        $('#userInfoModle').modal('show');
+        $("#userInfoDetails").html("");
+        var htmlsnip = "";
+        for (var i = 0; i < data.data.length; i++) {
+          var userInfo = data.data[i];
+          var userid = userInfo.userId;
+          var link = $("<a href='javascript:void(0);'>" + userInfo.userName + "(" + userInfo.userId + ")--" + userInfo.department.replace(/@/g, " ") + "</a>");
+          link.click(tdCont.userIdClick(userid));
+          var row = tdCont.row();
+          var cka = tdCont.cell(link);
+          row.append(cka);
+          $("#userInfoDetails").append(row);
+        }
+      }
+    }
+  });
+}
+/**
+ * add selected userid to input box
+ * @param {string} userId userId
+ */
+function addUserIdToInput(userId) {
+  $('#userInfoModle').modal('hide');
+  $("#applyUserId").val(userId);
 }

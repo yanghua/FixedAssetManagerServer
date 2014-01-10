@@ -1,17 +1,27 @@
 #giftSize,
 #giftSize2,
 #giftAcount2,
-#remark,
-#giftAcount{
+#giftAcount,
+#userNameInput{
 	width:150px;
 	margin-bottom:10px;
 	margin-left:20px;
 	margin-right:20px;
 }
-#outOpearte,
 #outOpearteOne,
 #inOpearte,
-#inOpearteOne{
-	margin-left:20px;
+#inOpearteOne,
+#checkUserIdByName{
+	margin-left:5px;
+	margin-bottom:10px;
+}
+
+#remark{
+	width:155px;
+	margin-bottom:10px;
+	margin-left:5px;
+}
+#outOpearte{
+	margin-left:15px;
 	margin-bottom:10px;
 }
