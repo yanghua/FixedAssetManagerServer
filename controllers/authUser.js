@@ -48,7 +48,7 @@ exports.create = function (req, res, next) {
         req.body.pwd = sanitize(sanitize(req.body.pwd).trim()).xss();
         req.body.uName = sanitize(sanitize(req.body.uName).trim()).xss();
     } catch (e) {
-        res.send(resUtil.generateRes(null, config.statusCode.STATUS_INVAILD_PARAMS));
+        return res.send(resUtil.generateRes(null, config.statusCode.STATUS_INVAILD_PARAMS));
     }
 
     AuthUser.create(req.body, function (err, rows) {
@@ -56,7 +56,7 @@ exports.create = function (req, res, next) {
             return res.send(resUtil.generateRes(null, err.statusCode));
         }
 
-        res.send(resUtil.generateRes(null, config.statusCode.STATUS_OK));
+        return res.send(resUtil.generateRes(null, config.statusCode.STATUS_OK));
     });
 };
 
@@ -78,6 +78,6 @@ exports.allUsers = function (req, res, next) {
             return res.send(resUtil.generateRes(null, err.statusCode));
         }
 
-        res.send(resUtil.generateRes(rows, config.statusCode.STATUS_OK));
+        return res.send(resUtil.generateRes(rows, config.statusCode.STATUS_OK));
     });
 };
