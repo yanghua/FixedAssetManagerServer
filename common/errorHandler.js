@@ -35,7 +35,6 @@ exports.appErrorProcess = function (app) {
     app.configure("production", function () {
         //error hanlder
         app.error(function(err, req, res, next) {
-            console.log(err);
             console.log("error:" + err.stack || err.message);
             mailServie.sendMail({
               subject : "FixedAssetManager_Server[App Error]",
