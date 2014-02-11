@@ -24,63 +24,54 @@
  */
 
 var config = require("../config").initConfig();
-
-function BaseError(message) {
-    this.name       = "BaseError";
-    this.message    = message || "Base Error.";
-    this.statusCode = -1;
-}
-
-BaseError.prototype = new Error();
-BaseError.prototype.constructor = BaseError;
+var assert = require("assert");
+var util   = require("util");
 
 function DataNotFoundError(message) {
+    Error.call(this);
     this.name       = "DataNotFoundError";
     this.message    = message || "Data not found Error.";
     this.statusCode = config.statusCode.STATUS_NOTFOUND;
 }
 
-DataNotFoundError.prototype = new BaseError();
-DataNotFoundError.prototype.constructor = DataNotFoundError;
-
+util.inherits(DataNotFoundError, Error);
 
 function ServerError(message) {
+    Error.call(this);
     this.name       = "ServerError";
     this.message    = message || "Server Error";
     this.statusCode = config.statusCode.STATUS_SERVER_ERROR;
 }
 
-ServerError.prototype = new BaseError();
-ServerError.prototype.constructor = ServerError;
+util.inherits(ServerError, Error);
 
 function InvalidParamError(message) {
+    Error.call(this);
     this.name       = "InvalidParamError";
     this.message    = message || "InvalidParam Error";
     this.statusCode = config.statusCode.STATUS_INVAILD_PARAMS;
 }
 
-InvalidParamError.prototype = new BaseError();
-InvalidParamError.prototype.constructor = InvalidParamError;
+util.inherits(InvalidParamError, Error);
 
 function PageNotFoundError (message) {
+    Error.call(this);
     this.name       = "PageNotFoundError";
     this.message    = message || "InvalidParam Error";
+    this.statusCode = 404;
 }
 
-PageNotFoundError.prototype = new BaseError();
-PageNotFoundError.prototype.constructor = PageNotFoundError;
+util.inherits(PageNotFoundError, Error);
 
 function DBError (message) {
+    Error.call(this);
     this.name       = "DBError";
     this.message    = message || "DBError";
     this.statusCode = config.statusCode.STATUS_DBERROR;
 }
 
-DBError.prototype = new DBError();
-DBError.prototype.constructor = DBError;
+util.inherits(DBError, Error);
 
-
-global.BaseError         = BaseError;
 global.ServerError       = ServerError;
 global.InvalidParamError = InvalidParamError;
 global.DataNotFoundError = DataNotFoundError;
