@@ -34,7 +34,7 @@ var EventProxy  = require("eventproxy");
 exports.create = function (userInfo, callback) {
     debugProxy("/proxy/authUser/create");
 
-    if (!(newUser.uid && newUser.pwd && newUser.token && newUser.token && newUser.uName)) {
+    if (!(userInfo.uid && userInfo.pwd && userInfo.token && userInfo.token && userInfo.uName)) {
         return callback(new InvalidParamError(), null);
     }
 
@@ -53,7 +53,7 @@ exports.create = function (userInfo, callback) {
             //add
             mysqlClient.query({
                 sql     : "INSERT INTO AUTHUSER VALUES(:uid, :pwd, :token, :lastLoginTime, :uName)",
-                params  : newUser
+                params  : userInfo
             },  function (err, rows) {
                 if (err || !rows || rows.affectedRows === 0) {
                     return callback(new ServerError(), null);
