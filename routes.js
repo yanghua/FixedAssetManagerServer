@@ -90,7 +90,7 @@ module.exports = function (app) {
     app.get("/fixedasset/getUserId/:userName",fixedAsset.getUserIdByUserName);
     app.post("/signup", authUser.create);
     app.post("/modifypwd", authUser.modifyPassword);
-    // app.get("/authusers", authUser.allUsers);
+    app.get("/users", authUser.allUsers);
 
 
     app.post("/fixedasset/inspection", fixedAsset.inspection);

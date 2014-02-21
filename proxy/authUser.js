@@ -98,6 +98,28 @@ exports.modifyPwd = function (userInfo, callback) {
 };
 
 /**
+ * modify last login time
+ * @param  {Object}   userInfo the modifying user info
+ * @param  {Function} callback the cb func
+ * @return {null}            
+ */
+exports.modifyLastLoginTime = function (userInfo, callback) {
+    debugProxy("/proxy/authUser/modifyLastLoginTime");
+
+    mysqlClient.query({
+        sql     : "UPDATE AUTHUSER SET lastLoginTime = :lastLoginTime WHERE uid = :uid",
+        params  : userInfo
+    },  function (err, rows) {
+        if (err || !rows) {
+            debugProxy(err);
+            return callback(new ServerError(), null);
+        }
+
+        return callback(null, null);
+    });
+}
+
+/**
  * get all users
  * @param  {Function} callback the call back func
  * @return {null}            
@@ -105,7 +127,7 @@ exports.modifyPwd = function (userInfo, callback) {
 exports.getAllUsers = function (callback) {
     debugProxy("/proxy/authUser/getAllUsers");
     mysqlClient.query({
-        sql       : "SELECT * FROM AUTHUSER WHERE uid != 'admin'",
+        sql       : "SELECT uid, lastLoginTime, uName FROM AUTHUSER",
         params    : null
     },function (err, rows) {
         if (err || !rows) {
