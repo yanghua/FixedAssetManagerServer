@@ -98,6 +98,7 @@ exports.modifyPassword = function (req, res, next) {
         old_pwd = sanitize(sanitize(old_pwd).trim()).xss();
         new_pwd = sanitize(sanitize(new_pwd).trim()).xss();
     } catch (e) {
+        debugCtrller("enter catch block...");
         return res.send(resUtil.generateRes(null, config.statusCode.STATUS_INVAILD_PARAMS));
     }
 
@@ -107,17 +108,20 @@ exports.modifyPassword = function (req, res, next) {
 
     Login.getUserAuthInfoByUserId(userId, function (err, userAuthInfo) {
         if (err || !userAuthInfo) {
+            debugCtrller(err);
             return ep.emitLater("error", err);
         }
 
         if (userAuthInfo.token === salt && userAuthInfo.pwd === encryptPwd) {
             return ep.emitLater("after_checkedOldPwd");
         } else {
+            debugCtrller("getUserAuthInfoByUserId-->InvalidParamError");
             return ep.emitLater("error", new InvalidParamError());
         }
     });
 
     ep.once("after_checkedOldPwd", function () {
+        debugCtrller("after_checkedOldPwd");
         var newEncryptPwd = SHA3(new_pwd + salt).toString();
         AuthUser.modifyPwd({ uid : userId, pwd : newEncryptPwd}, function (err, rows) {
             if (err) {

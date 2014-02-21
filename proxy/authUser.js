@@ -84,7 +84,7 @@ exports.create = function (userInfo, callback) {
 exports.modifyPwd = function (userInfo, callback) {
     debugProxy("/proxy/authUser/modifyPwd");
 
-    mysqlUtil.query({
+    mysqlClient.query({
         sql     : "UPDATE AUTHUSER SET pwd = :pwd WHERE uid = :uid",
         params  : userInfo
     },  function (err, rows) {
