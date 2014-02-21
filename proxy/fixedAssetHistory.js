@@ -66,12 +66,14 @@ exports.getHistoryListByFAId = function (faId, callback) {
     debugProxy(faId);
 
     mysqlClient.query({
-        sql     : "SELECT ae.*,u.userName,aet.aetName FROM ASSETEVENT ae " +
-                  "  LEFT JOIN ASSETEVENTYPE aet " +
-                  "    ON ae.aetpId = aet.aetId " +
-                  "  LEFT JOIN USER u " +
-                  "    ON ae.userId = u.userId " +
-                  " WHERE atId = :atId " + 
+        sql     : "SELECT ae.*,u.userName,aet.aetName,au.uName FROM ASSETEVENT ae " +
+                  "  LEFT JOIN ASSETEVENTYPE aet  " +
+                  "    ON ae.aetpId = aet.aetId   " +
+                  "  LEFT JOIN USER u             " +
+                  "    ON ae.userId = u.userId    " +
+                  "  LEFT JOIN AUTHUSER au        " +
+                  "    ON au.uid = u.operateId    " +
+                  " WHERE atId = :atId            " + 
                   " ORDER BY aeTime DESC LIMIT 10",
         params  : {
             atId    : faId
