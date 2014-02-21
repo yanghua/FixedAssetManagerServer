@@ -43,18 +43,23 @@ function randomImgSrc (jqObj) {
  */
 function postAuthUserForm () {
     var pwd = $("#input_pwd").val();
+    var newpwd = $("#input_pwd2").val();
     if (pwd.length === 0) {
         return false;
     }
+    if (newpwd.length === 0) {
+        return false;
+    }
     var crypedPwd = CryptoJS.SHA256(pwd) + "";
+    var crypedNewPwd = CryptoJS.SHA256(newpwd) + "";
     $.ajax({
         url     : "/modifypwd",
         type    : "POST",
         async   : false,
         cache   : false,
         data    : {
-            "oldPwd"      : $("#input_pwd").val(),
-            "newPwd"      : $("#input_pwd2").val(),
+            "oldPwd"      : crypedPwd,
+            "newPwd"      : crypedNewPwd,
         },
         success : function (statusCode) {
             if (statusCode) {
