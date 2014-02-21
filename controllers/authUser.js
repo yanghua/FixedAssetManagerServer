@@ -119,15 +119,18 @@ exports.modifyPassword = function (req, res, next) {
     ep.once("after_checkedOldPwd", function () {
         var newEncryptPwd = SHA3(new_pwd + salt).toString();
         AuthUser.modifyPwd({ uid : userId, pwd : newEncryptPwd}, function (err, rows) {
-            
+            if (err) {
+                return ep.emitLater("error", err);
+            }
+
+            return res.send(resUtil.generateRes(null, config.statusCode.STATUS_OK));
         });
     });
 
     //error handler
     ep.fail(function (err) {
-        return callback(err, null);
+        return res.send(resUtil.generateRes(null, err.statusCode));
     });
-
 
 }
 

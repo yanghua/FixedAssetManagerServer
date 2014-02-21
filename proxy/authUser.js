@@ -49,13 +49,16 @@ exports.create = function (userInfo, callback) {
     });
 
     ep.once("after_checkUserExists", function (isUserExist) {
-        if (isUserExist) {
+        debugProxy("isUserExist: " + isUserExist);
+        if (!isUserExist) {
             //add
             mysqlClient.query({
                 sql     : "INSERT INTO AUTHUSER VALUES(:uid, :pwd, :token, :lastLoginTime, :uName)",
                 params  : userInfo
             },  function (err, rows) {
                 if (err || !rows || rows.affectedRows === 0) {
+                    debugProxy(err);
+                    console.dir(rows);
                     return callback(new ServerError(), null);
                 }
 
@@ -69,6 +72,28 @@ exports.create = function (userInfo, callback) {
     //error handler
     ep.fail(function (err) {
         return callback(err, null);
+    });
+};
+
+/**
+ * modify password
+ * @param  {Object}   userInfo the new password info
+ * @param  {Function} callback the cb func
+ * @return {null}            
+ */
+exports.modifyPwd = function (userInfo, callback) {
+    debugProxy("/proxy/authUser/modifyPwd");
+
+    mysqlUtil.query({
+        sql     : "UPDATE AUTHUSER SET pwd = :pwd WHERE uid = :uid",
+        params  : userInfo
+    },  function (err, rows) {
+        if (err || !rows) {
+            debugProxy(err);
+            return callback(new ServerError(), null);
+        }
+
+        return callback(null, null);
     });
 };
 
@@ -108,10 +133,11 @@ exports.checkUserExists = function (uid, callback) {
         sql     : "SELECT COUNT(1) as 'count' FROM AUTHUSER WHERE uid = :uid",
         params  : { uid : uid }
     },  function (err, rows) {
-        if (err || !rows || !rows.count) {
+        if (err || !rows) {
+            debugProxy(err);
             return callback(new ServerError(), null);
         }
 
-        return callback(null, rows.count != 0);
+        return callback(null, rows[0].count != 0);
     });
 };
