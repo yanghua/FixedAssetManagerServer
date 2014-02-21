@@ -55,6 +55,20 @@ exports.addUser = function (req, res, next) {
     }
     res.render("subviews/addUser");
 }
+/**
+ * show editpwd view
+ * @param  {object}   req  the request object
+ * @param  {object}   res  the response object
+ * @param  {Function} next the next handler
+ * @return {null}     
+ */
+exports.editpwd = function (req, res, next) {
+    debugCtrller("controllers/editpwd");
+    if (!req.session || !req.session.user) {
+        return res.redirect("/login");
+    }
+    res.render("subviews/editPwd");
+}
 
 /**
  * handler sign in

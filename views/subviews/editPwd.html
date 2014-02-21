@@ -1,0 +1,32 @@
+<% layout('layout') -%>
+<head>
+<!-- script -->
+<%- Loader("/public/libs/js/editPwd.min.js")
+	.js("/public/libs/js/bootbox.min.js")
+	.js("/public/libs/js/editPwd.js")
+	.js("/public/libs/CryptoJS_v3.1.2/rollups/sha256.js")
+	.done(assets)
+	%>
+<!-- style -->
+<%- Loader("/public/stylesheet/editPwd.min.css")
+	.css("/public/stylesheets/login.css")
+	.done(assets)
+	%></head>
+
+<script type="text/javascript">
+
+</script>
+
+<div class="main_div">
+	<div class="main_div2">
+		<form id="signinForm" class="form-signin" onsubmit="return postAuthUserForm();">
+			<h2 class="form-signin-heading">修改密码</h2>
+			<input id="input_pwd" type="password" class="form-control" placeholder="旧密码" required>
+			<input id="input_pwd2" type="password" class="form-control" placeholder="新密码" required>
+			<button id="submitBtn" class="btn btn-lg btn-primary btn-block margin-topForLoginBtn" type="submit" >修改密码</button>
+			<div id="div_tip" class="alert alert-danger fade in margin-topForTipDiv">
+				<span id="span_tipMsg"></span>
+			</div>
+		</form>
+	</div>
+</div>
