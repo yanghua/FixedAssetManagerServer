@@ -22,12 +22,13 @@
   Desc: the controller of authUser
  */
 
-var check    = require("validator").check;
-var sanitize = require("validator").sanitize;
-var resUtil  = require("../libs/resUtil");
-var AuthUser = require("../proxy/authUser");
-var SHA256   = require("crypto-js/sha256");
-var SHA3     = require("crypto-js/sha3");
+var check      = require("validator").check;
+var sanitize   = require("validator").sanitize;
+var resUtil    = require("../libs/resUtil");
+var AuthUser   = require("../proxy/authUser");
+var SHA256     = require("crypto-js/sha256");
+var SHA3       = require("crypto-js/sha3");
+var EventProxy = require("eventproxy");
 require("../libs/DateUtil");
 
 /**
@@ -69,6 +70,64 @@ exports.create = function (req, res, next) {
         return res.send(resUtil.generateRes(null, config.statusCode.STATUS_OK));
     });
 };
+
+/**
+ * modify password
+ * @param  {Object}   req  the instance of request
+ * @param  {Object}   res  the instance of response
+ * @param  {Function} next the next handler
+ * @return {null}        
+ */
+exports.modifyPassword = function (req, res, next) {
+    debugCtrller("controllers/authUser/modifyPassword");
+    if (!req.session || !req.session.user) {
+        return res.redirect("/login");
+    }
+
+    var old_pwd = req.body.oldPwd;
+    var new_pwd = req.body.newPwd;
+    var userId  = req.session.user.userId;
+
+    try {
+        check(old_pwd).notEmpty();
+        check(new_pwd).notEmpty();
+
+        old_pwd = sanitize(sanitize(old_pwd).trim()).xss();
+        new_pwd = sanitize(sanitize(new_pwd).trim()).xss();
+    } catch (e) {
+        return res.send(resUtil.generateRes(null, config.statusCode.STATUS_INVAILD_PARAMS));
+    }
+
+    var salt       = SHA256(userId).toString();
+    var encryptPwd = SHA3(old_pwd + salt).toString();
+    var ep         = EventProxy.create();
+
+    Login.getUserAuthInfoByUserId(userId, function (err, userAuthInfo) {
+        if (err || !userAuthInfo) {
+            return ep.emitLater("error", err);
+        }
+
+        if (userAuthInfo.token === salt && userAuthInfo.pwd === encryptPwd) {
+            return ep.emitLater("after_checkedOldPwd");
+        } else {
+            return ep.emitLater("error", new InvalidParamError());
+        }
+    });
+
+    ep.once("after_checkedOldPwd", function () {
+        var newEncryptPwd = SHA3(new_pwd + salt).toString();
+        AuthUser.modifyPwd({ uid : userId, pwd : newEncryptPwd}, function (err, rows) {
+            
+        });
+    });
+
+    //error handler
+    ep.fail(function (err) {
+        return callback(err, null);
+    });
+
+
+}
 
 /**
  * get all users
