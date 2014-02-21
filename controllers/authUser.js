@@ -28,6 +28,7 @@ var resUtil  = require("../libs/resUtil");
 var AuthUser = require("../proxy/authUser");
 var SHA256   = require("crypto-js/sha256");
 var SHA3     = require("crypto-js/sha3");
+var config   = require("../config").initConfig();
 require("../libs/DateUtil");
 
 /**

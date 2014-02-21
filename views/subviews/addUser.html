@@ -1,0 +1,33 @@
+<% layout('layout') -%>
+<head>
+<!-- script -->
+<%- Loader("/public/libs/js/addUser.min.js")
+	.js("/public/libs/js/bootbox.min.js")
+	.js("/public/libs/js/addUser.js")
+	.js("/public/libs/CryptoJS_v3.1.2/rollups/sha256.js")
+	.done(assets)
+	%>
+<!-- style -->
+<%- Loader("/public/stylesheet/login.min.css")
+	.css("/public/stylesheets/login.css")
+	.done(assets)
+	%></head>
+
+<script type="text/javascript">
+
+</script>
+
+<div class="main_div">
+	<div class="main_div2">
+		<form id="signinForm" class="form-signin" onsubmit="return postAuthUserForm();">
+			<h2 class="form-signin-heading">新增用户</h2>
+			<input id="input_userId" type="text" class="form-control" placeholder="工 号" required autofocus>
+			<input id="input_pwd" type="password" class="form-control" placeholder="密 码" required>
+			<input id="input_uname" class="form-control" placeholder="用户名" required>
+			<button id="submitBtn" class="btn btn-lg btn-primary btn-block margin-topForLoginBtn" type="submit" >添加</button>
+			<div id="div_tip" class="alert alert-danger fade in margin-topForTipDiv">
+				<span id="span_tipMsg"></span>
+			</div>
+		</form>
+	</div>
+</div>

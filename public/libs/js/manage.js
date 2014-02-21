@@ -259,7 +259,7 @@ function loadAssetEvevt(aetid) {
           for (var i = 0; i < data.data.length; ++i) {
             $("#historyul").append();
             var eve = data.data[i];
-            var temp = "<li class='list-group-item'>";
+            var temp = "<li class='list-group-item'> 操作人员:"+uName+"-->";
             var eTime = eve.aeTime.substring(0, 10);
             switch (eve.aetpId) {
               case 3:
