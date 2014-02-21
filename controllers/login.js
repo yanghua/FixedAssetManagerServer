@@ -29,6 +29,9 @@ var check      = require("validator").check;
 var sanitize   = require("validator").sanitize;
 var SHA256     = require("crypto-js/sha256");
 var SHA3       = require("crypto-js/sha3");
+var EventProxy = require("eventproxy");
+var AuthUser   = require("../proxy/authUser");
+require("../libs/DateUtil");
 
 /**
  * show login page
@@ -110,8 +113,6 @@ exports.signIn = function (req, res, next) {
 
         var salt      = SHA256(userId).toString();
         var encryptPwd = SHA3(passwd + salt).toString();
-        console.log("#########SA:"+salt);
-        console.log("#########PW:"+encryptPwd);
 
         //check
         if (userId === userAuthInfo.uid && encryptPwd === userAuthInfo.pwd
@@ -121,7 +122,28 @@ exports.signIn = function (req, res, next) {
             user.uName       = userAuthInfo.uName; 
             req.session.user = user;
 
-            return res.send("1");
+            //update lastLoginTime
+            var ep = EventProxy.create();
+            AuthUser.modifyLastLoginTime({
+                uid           : req.session.user.userId,
+                lastLoginTime : new Date().Format("yyyy-MM-dd hh:mm:ss")
+            }, function (err, row) {
+                if (err) {
+                    return ep.emitLater("error", err);
+                }
+
+                return ep.emitLater("after_updateLoginTime");
+            });
+
+            ep.once("after_updateLoginTime", function () {
+                return res.send("1");
+            });
+
+            //error handler
+            ep.fail(function (err) {
+                return res.send("0");
+            });
+
         } else {
             return res.send("0");
         }
