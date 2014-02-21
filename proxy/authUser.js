@@ -65,6 +65,11 @@ exports.create = function (userInfo, callback) {
             return callback(new ServerError(), null);
         }
     });
+
+    //error handler
+    ep.fail(function (err) {
+        return callback(err, null);
+    });
 };
 
 /**
