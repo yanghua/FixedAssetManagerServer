@@ -120,14 +120,15 @@ exports.modifyLastLoginTime = function (userInfo, callback) {
 }
 
 /**
- * get all users
+ * get all online users // the user whose lastlogintime between now and now sub 30 mins
  * @param  {Function} callback the call back func
  * @return {null}            
  */
-exports.getAllUsers = function (callback) {
+exports.getAllOnlineUsers = function (callback) {
     debugProxy("/proxy/authUser/getAllUsers");
     mysqlClient.query({
-        sql       : "SELECT uid, lastLoginTime, uName FROM AUTHUSER",
+        sql       : "SELECT uid, lastLoginTime, uName FROM AUTHUSER " + 
+                    " WHERE lastLoginTime >= date_sub(now(), interval 30 minute)",
         params    : null
     },function (err, rows) {
         if (err || !rows) {

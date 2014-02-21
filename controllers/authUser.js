@@ -140,19 +140,19 @@ exports.modifyPassword = function (req, res, next) {
 };
 
 /**
- * get all users
+ * get all online users
  * @param  {object}   req  the instance of request
  * @param  {object}   res  the instance of response
  * @param  {Function} next the next handler
  * @return {null}        
  */
-exports.allUsers = function (req, res, next) {
+exports.onlineUsers = function (req, res, next) {
     debugCtrller("controllers/authUser/allUsers");
     if (!req.session || !req.session.user) {
         return res.redirect("/login");
     }
 
-    AuthUser.getAllUsers(function (err, rows) {
+    AuthUser.getAllOnlineUsers(function (err, rows) {
         if (err) {
             return res.send(resUtil.generateRes(null, err.statusCode));
         }
