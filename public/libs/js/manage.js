@@ -159,7 +159,7 @@ function loadAssetDetails(qrCode) {
           $assetDetailsul.append(temp + '采购日期:' + det.purchaseDate.substring(0, 10) + '</li>');
         }
         if (det.possessDate && det.possessDate != '0000-00-00') {
-          $assetDetailsul.append(temp + '领用日期:' + det.possessDate + '</li>');
+          $assetDetailsul.append(temp + '领用日期:' + det.possessDate.substring(0, 10) + '</li>');
         }
         if (det.serviceCode) {
           $assetDetailsul.append(temp + '快速服务代码:' + det.serviceCode + '</li>');
