@@ -28,6 +28,14 @@
    %>
 </head>
 
+<script type="text/javascript">
+  $(document).ready(function(){
+    if("<%= current_user.userId %>"!=="01110043"){
+      $("#giftManage").hide();
+    }
+  });
+</script>
+
 
 <body>
   <div id="container">
