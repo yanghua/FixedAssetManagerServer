@@ -33,6 +33,7 @@
     if("<%= current_user.userId %>"!=="01110043"){
       $("#giftManage").hide();
       $("#addnewUser").hide();
+      $("#itisnothing").hide();
     }
   });
 </script>
@@ -77,7 +78,7 @@
           <a href="#" class="dropdown-toggle" data-toggle="dropdown">设置 <b class="caret"></b></a>
           <ul class="dropdown-menu">
             <li id="addnewUser"><a href="/adduser">新增用户</a></li>
-            <li class="divider"></li>
+            <li id="itisnothing" class="divider"></li>
             <li><a href="/editpwd">修改密码</a></li>
           </ul>
         </li>
