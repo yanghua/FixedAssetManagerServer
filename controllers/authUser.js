@@ -132,7 +132,7 @@ exports.modifyPassword = function (req, res, next) {
         return res.send(resUtil.generateRes(null, err.statusCode));
     });
 
-}
+};
 
 /**
  * get all users
