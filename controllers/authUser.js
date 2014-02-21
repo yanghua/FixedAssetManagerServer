@@ -26,6 +26,9 @@ var check    = require("validator").check;
 var sanitize = require("validator").sanitize;
 var resUtil  = require("../libs/resUtil");
 var AuthUser = require("../proxy/authUser");
+var SHA256   = require("crypto-js/sha256");
+var SHA3     = require("crypto-js/sha3");
+require("../libs/DateUtil");
 
 /**
  * create a user
@@ -40,18 +43,25 @@ exports.create = function (req, res, next) {
         return res.redirect("/login");
     }
 
+    var newUser = {};
+
     try {
         check(req.body.uid).notEmpty();
         check(req.body.pwd).notEmpty();
         check(req.body.uName).notEmpty();
-        req.body.uid = sanitize(sanitize(req.body.uid).trim()).xss();
-        req.body.pwd = sanitize(sanitize(req.body.pwd).trim()).xss();
-        req.body.uName = sanitize(sanitize(req.body.uName).trim()).xss();
+        newUser.uid   = sanitize(sanitize(req.body.uid).trim()).xss();
+        newUser.pwd   = sanitize(sanitize(req.body.pwd).trim()).xss();
+        newUser.uName = sanitize(sanitize(req.body.uName).trim()).xss();
     } catch (e) {
         return res.send(resUtil.generateRes(null, config.statusCode.STATUS_INVAILD_PARAMS));
     }
 
-    AuthUser.create(req.body, function (err, rows) {
+    var pwdInfo           = processPassword(newUser.uid, newUser.pwd);
+    newUser.token         = pwdInfo.salt;
+    newUser.pwd           = pwdInfo.encryptPwd;                       //override pwd field by encypting!!!
+    newUser.lastLoginTime = new Date().Format("yyyy-MM-dd hh:mm:ss");
+
+    AuthUser.create(newUser, function (err, rows) {
         if (err) {
             return res.send(resUtil.generateRes(null, err.statusCode));
         }
@@ -81,3 +91,25 @@ exports.allUsers = function (req, res, next) {
         return res.send(resUtil.generateRes(rows, config.statusCode.STATUS_OK));
     });
 };
+
+
+/**
+ * process password (add salt then encrypt)
+ * @param  {String} uid  the user id
+ * @param  {String} hashedPwd hashed password
+ * @return {Object}           an object that packaged salt and encrypt pwd
+ */
+function processPassword (uid, hashedPwd) {
+    if (!uid || !hashedPwd) {
+        return null;
+    }
+
+    var salt       = SHA256(uid).toString();
+    debugCtrller(salt);
+    var encryptPwd = SHA3(hashedPwd + salt).toString();
+
+    return {
+        salt        : salt,
+        encryptPwd  : encryptPwd
+    };
+}

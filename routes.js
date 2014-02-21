@@ -36,7 +36,7 @@ var others            = require("./controllers/others");
 var login             = require("./controllers/login");
 var logout            = require("./controllers/logout");
 var company           = require("./controllers/company");
-// var authUser          = require("./controllers/authUser");
+var authUser          = require("./controllers/authUser");
 
 var giftCategory      = require("./controllers/giftCategory");
 var stockInType       = require("./controllers/stockInType");
@@ -87,7 +87,7 @@ module.exports = function (app) {
     app.get("/fixedasset/conditionInfo", fixedAsset.conditionInfo);
     app.post("/fixedasset/retrieve", fixedAsset.retrieve);
     app.get("/fixedasset/getUserId/:userName",fixedAsset.getUserIdByUserName);
-    // app.post("/authuser/create", authUser.create);
+    app.post("/signup", authUser.create);
     // app.get("/authusers", authUser.allUsers);
 
 

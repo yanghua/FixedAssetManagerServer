@@ -63,3 +63,4 @@ exports.getUserAuthInfoByUserId = function(userId, callback) {
         
     });
 };
+

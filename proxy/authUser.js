@@ -23,7 +23,7 @@
  */
 
 var mysqlClient = require("../libs/mysqlUtil");
-var SHA256      = require("crypto-js/sha256");
+var EventProxy  = require("eventproxy");
 
 /**
  * create a user
@@ -33,19 +33,37 @@ var SHA256      = require("crypto-js/sha256");
  */
 exports.create = function (userInfo, callback) {
     debugProxy("/proxy/authUser/create");
-    mysqlClient.query({
-        sql     : "INSERT INTO AUTHUSER VALUES(:uid, :pwd, :uName)",
-        params  : {
-            uid   : userInfo.uid,
-            pwd   : SHA256(userInfo.pwd),
-            uName : userInfo.uName
-        }
-    },  function (err, rows) {
-        if (err || !rows || rows.affectedRows === 0) {
-            return callback(new ServerError(), null);
+
+    if (!(newUser.uid && newUser.pwd && newUser.token && newUser.token && newUser.uName)) {
+        return callback(new InvalidParamError(), null);
+    }
+
+    var ep = EventProxy.create();
+    //check user exists
+    require("./authUser").checkUserExists(userInfo.uid, function (err, isUserExist) {
+        if (err) {
+            return ep.emitLater("error", new ServerError());
         }
 
-        callback(null, null);
+        return ep.emitLater("after_checkUserExists", isUserExist);
+    });
+
+    ep.once("after_checkUserExists", function (isUserExist) {
+        if (isUserExist) {
+            //add
+            mysqlClient.query({
+                sql     : "INSERT INTO AUTHUSER VALUES(:uid, :pwd, :token, :lastLoginTime, :uName)",
+                params  : newUser
+            },  function (err, rows) {
+                if (err || !rows || rows.affectedRows === 0) {
+                    return callback(new ServerError(), null);
+                }
+
+                return callback(null, null);
+            });
+        } else {
+            return callback(new ServerError(), null);
+        }
     });
 };
 
@@ -65,5 +83,30 @@ exports.getAllUsers = function (callback) {
         }
 
         callback(null, rows);
+    });
+};
+
+/**
+ * check user exists
+ * @param  {String}   uid      the user's id
+ * @param  {Function} callback the cb func
+ * @return {null}            
+ */
+exports.checkUserExists = function (uid, callback) {
+    debugProxy("/proxy/authUser/checkUserExists");
+
+    if (!uid) {
+        return callback(new InvalidParamError(), null);
+    }
+
+    mysqlClient.query({
+        sql     : "SELECT COUNT(1) as 'count' FROM AUTHUSER WHERE uid = :uid",
+        params  : { uid : uid }
+    },  function (err, rows) {
+        if (err || !rows || !rows.count) {
+            return callback(new ServerError(), null);
+        }
+
+        return callback(null, rows.count != 0);
     });
 };
