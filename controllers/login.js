@@ -79,8 +79,12 @@ exports.signIn = function (req, res, next) {
             return res.send("2");
         }
 
+        var salt      = SHA256(userId).toString();
+        var encryptPwd = SHA3(passwd + salt).toString();
+
         //check
-        if (userId === userAuthInfo.uid && passwd === userAuthInfo.pwd) {
+        if (userId === userAuthInfo.uid && encryptPwd === userAuthInfo.pwd
+            && salt === userAuthInfo.token) {
             var user         = {};
             user.userId      = userId;
             user.uName       = userAuthInfo.uName; 
