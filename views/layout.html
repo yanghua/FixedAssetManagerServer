@@ -64,8 +64,13 @@
           <a href="#">
             <%= current_user.uName %>你好</a>
         </li>
-        <li>
-          <a href="#">设置</a>
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">设置 <b class="caret"></b></a>
+          <ul class="dropdown-menu">
+            <li><a href="/adduser">新增用户</a></li>
+            <li class="divider"></li>
+            <li><a href="/editpwd">修改密码</a></li>
+          </ul>
         </li>
         <li>
           <a href="/signout">退出</a>
