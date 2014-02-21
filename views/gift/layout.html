@@ -27,14 +27,17 @@
    .done(assets)
    %>
  </head>
- <body>
-  <div class="navbar navbar-default navbar-fixed-top" role="navigation">
-   <div class="container" id="">
-    <div class="navbar-header">
-     <a class="brand" href="/"><img src="/public/images/wisedu.png" title=""></a>
-     <div id="nav_title"><%= config.giftname %></div>
-   </div>
-   <div class="navbar-collapse collapse">
+
+
+<body>
+  <div id="container">
+    <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+      <div class="container" id="">
+        <div class="navbar-header">
+          <a class="brand" href="/"><img src="/public/images/wisedu.png" title=""></a>
+          <div id="nav_title"><%= config.giftname %></div>
+        </div>
+         <div class="navbar-collapse collapse">
      <ul id="w_nav" class="nav navbar-nav">
       <!-- <li id="home" class="active"><a href="/">首 页</a></li> -->
       <li id="index"><a href="/gift">出库入库</a></li>
@@ -48,24 +51,15 @@
         <li><a href="/signout">退出</a></li>
       </ul> -->
     </div>
-    <!--/.nav-collapse -->
-  </div>
-</div>
-<div class="container">
- <div class="row">
-  <%- body %>
-</div>
-</div>
-
-<div id="footer">
-  <div style="background:#ededed;height:50px;width:100%;position:fixed;left:auto;right:auto;bottom:0;_position:absolute;_top:e-xpression(document.documentElement.clientHeight + document.documentElement.scrollTop - this.offsetHeight);text-align:center;">
-    <div class="container">
-      <p class="muted">
-       礼品管理
-     </p>
+      </div>
     </div>
 
+    <div id="content">
+      <%- body %>
+    </div>
   </div>
-</div>
+  <div id="footer">
+    <div id="copyright">欢迎访问 <%= config.giftname %> Copyright ©2014</div>
+  </div>
 </body>
 </html>

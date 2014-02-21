@@ -1,18 +1,17 @@
 <% layout('layout') -%>
 <head>
-	<!-- script -->
-	<%- Loader("/public/libs/js/create.min.js")
+<!-- script -->
+<%- Loader("/public/libs/js/create.min.js")
 	.js("/public/libs/js/create.js")
 	.js("/public/libs/js/bootstrap-select.js")
 	.js("/public/libs/js/bootbox.min.js")
 	.done(assets)
 	%>
-	<!-- style -->
-	<%- Loader("/public/stylesheets/create.min.css")
+<!-- style -->
+<%- Loader("/public/stylesheets/create.min.css")
 	.css("/public/stylesheets/bootstrap-select.css")
 	.done(assets)
-	%>
-</head>
+	%></head>
 
 <script type="text/javascript">
 	$(document).ready(function(){
@@ -30,80 +29,83 @@
 		}
 	});
 </script>
-<div id="main_div" >
-	
-	<div id="formdiv">
-		<div id="form-content"  aria-hidden="false">
-			<div class="modal-header">
-				<h1>资产入库</h1>
-			</div>
-			<div>
-				<form class="contact">
-					<fieldset>
-						<div class="modal-body">
-							<ul class="nav nav-list">
-								<label for="">资产编号</label>
-								<li> <input id="newId"  class="form-control" type="text" name="newId" >  </li>
-								<label>旧编号</label>
-								<li> <input id="oldId" class="form-control" type="text" name="oldId"></li>
-								<label for="">资产类型</label>
-								<li> 
-									<select name="typeId" id="fatypeSelect" class="selectpicker show-tick">
-									</select>
-									<select name="companyId" id="conpanySelect" class="selectpicker show-tick">
-									</select>
-								</li>
-								<label for="">资产名称</label>
-								<li> <input id="assetName"  class="form-control" type="text" name="assetName"> </li>
-								<label for="">资产归属</label>
-								<li> <input id="assetBelong" class="form-control" type="text" name="assetBelong"> </li>
-								<label >当前状态</label>
-								<li> <input id="currentStatus"class="form-control" type="text" name="currentStatus"> </li>
-								<label for="">品牌</label>
-								<li> <input id="brand" class="form-control" type="text" name="brand"> </li>
-								<label for="">型号</label>
-								<li> <input id="model" class="form-control" type="text" name="model"> </li>
-								<label for="">规格</label>
-								<li> <input id="specifications" class="form-control" type="text" name="specifications"> </li>
-								<label for="">价格</label>
-								<li> 
+
+<div id="formdiv">
+	<div id="form-content"  aria-hidden="false">
+		<div class="modal-header">
+			<h1>资产入库</h1>
+		</div>
+		<div>
+			<form class="contact">
+				<fieldset>
+					<div class="modal-body">
+						<ul class="nav nav-list">
+							<label for="">资产编号</label>
+							<li>
+								<input id="newId"  class="form-control" type="text" name="newId" ></li>
+							<label>旧编号</label>
+							<li>
+								<input id="oldId" class="form-control" type="text" name="oldId"></li>
+							<label for="">资产类型</label>
+							<li>
+								<select name="typeId" id="fatypeSelect" class="selectpicker show-tick"></select>
+								<select name="companyId" id="conpanySelect" class="selectpicker show-tick"></select>
+							</li>
+							<label for="">资产名称</label>
+							<li>
+								<input id="assetName"  class="form-control" type="text" name="assetName"></li>
+							<label for="">资产归属</label>
+							<li>
+								<input id="assetBelong" class="form-control" type="text" name="assetBelong"></li>
+							<label >当前状态</label>
+							<li>
+								<input id="currentStatus"class="form-control" type="text" name="currentStatus"></li>
+							<label for="">品牌</label>
+							<li>
+								<input id="brand" class="form-control" type="text" name="brand"></li>
+							<label for="">型号</label>
+							<li>
+								<input id="model" class="form-control" type="text" name="model"></li>
+							<label for="">规格</label>
+							<li>
+								<input id="specifications" class="form-control" type="text" name="specifications"></li>
+							<label for="">价格</label>
+							<li>
 								<div class="input-group">
 									<span class="input-group-addon">$</span>
 									<input id="price" type="text" class="form-control" name="price">
 									<span class="input-group-addon">.00</span>
 								</div>
-								</li>
-								<label for="">快速服务代码</label>
-								<li> <input id="serviceCode" class="form-control" type="text" name="serviceCode"> </li>
-								<label for="">Mac地址</label>
-								<li> <input id="mac" class="form-control" type="text" name="mac"> </li>
-								<label for="">备注1</label>
-								<li> <input id="remark1" class="form-control" type="text" name="remark1"> </li>
-								<label for="">备注2</label>
-								<li> <input  class="form-control" type="text" name="remark2"> </li>
-								<div style="display:none">
+							</li>
+							<label for="">快速服务代码</label>
+							<li>
+								<input id="serviceCode" class="form-control" type="text" name="serviceCode"></li>
+							<label for="">Mac地址</label>
+							<li>
+								<input id="mac" class="form-control" type="text" name="mac"></li>
+							<label for="">备注1</label>
+							<li>
+								<input id="remark1" class="form-control" type="text" name="remark1"></li>
+							<label for="">备注2</label>
+							<li>
+								<input  class="form-control" type="text" name="remark2"></li>
+							<div style="display:none">
 								<input  id="userId" class="form-control" type="text" name="userId">
 								<input  id="departmentId" class="form-control" type="text" name="departmentId">
 								<input  id="purchaseDate" class="form-control" type="text" name="purchaseDate">
 								<input  id="possessDate" class="form-control" type="text" name="possessDate">
 								<input  id="reject" class="form-control" type="text" name="reject">
 								<input  id="rejectDate" class="form-control" type="text" name="rejectDate">
-								<input  id="qrcode" class="form-control" type="text" name="qrcode">
-								</div>
-							</ul> 
-						</div>
-					</fieldset>
-				</form>
-			</div>
-			<div class="modal-footer">
-				
-				<button type="button" id="submit" class="btn btn-success" data-container="body" data-toggle="popover" data-placement="bottom" data-content="设备信息插入成功" data-original-title="" title="">
-					确认入库
-				</button>
-				<a href="/fixedasset/manage" class="btn" data-dismiss="modal">返回查询页面</a>
-			</div>
+								<input  id="qrcode" class="form-control" type="text" name="qrcode"></div>
+						</ul>
+					</div>
+				</fieldset>
+			</form>
+		</div>
+		<div class="modal-footer">
+
+			<button type="button" id="submit" class="btn btn-success" data-container="body" data-toggle="popover" data-placement="bottom" data-content="设备信息插入成功" data-original-title="" title="">确认入库</button>
+			<a href="/fixedasset/manage" class="btn" data-dismiss="modal">返回查询页面</a>
 		</div>
 	</div>
-
-
 </div>

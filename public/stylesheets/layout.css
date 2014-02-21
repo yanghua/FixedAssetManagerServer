@@ -18,11 +18,50 @@ body {
  * grid system, and navbar.
  */
 
- /* Reset the container */
- .container {
+html, body, #container { height: 100%;  padding: 0;margin: 0 auto; font-size: 14px }
+body > #container { height: auto; min-height: 100%; font-size: 14px;}
+#content { padding-top:60px;padding-bottom: 50px; }
+#footer { clear: both; position: relative; z-index: 10; height: 50px; margin-top: -50px; }
+/* 样式部分 */
+a, a:link, a:visited {text-decoration: underoline; }
+p { margin-bottom: 1em; }
+#about { padding: 50px;outline:none;}
+#footer { background:#ededed; font-size: 150%; text-align: left; line-height: 3em; }
+    
+#copyright{
+  width: 1000px;
+  margin: 0 auto;
+  font-size: 14px;
+  line-height: 50px;
+}
+
+#container{
   max-width: none !important;
   width: 970px;
 }
+
+* Finesse the page header spacing */
+.page-header {
+  margin-bottom: 30px;
+}
+.page-header .lead {
+  margin-bottom: 10px;
+}
+
+
+/* Non-responsive overrides
+ *
+ * Utilitze the following CSS to disable the responsive-ness of the container,
+ * grid system, and navbar.
+ */
+
+ /* Reset the container */
+ .container {
+  max-width: none !important;
+  width: 1000px;
+
+}
+
 /* Demonstrate the grids */
 .col-xs-4 {
   padding-top: 15px;
