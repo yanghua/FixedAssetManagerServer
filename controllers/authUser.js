@@ -30,7 +30,8 @@ var AuthUser   = require("../proxy/authUser");
 var SHA256     = require("crypto-js/sha256");
 var SHA3       = require("crypto-js/sha3");
 var EventProxy = require("eventproxy");
-var config   = require("../config").initConfig();
+var config     = require("../config").initConfig();
+var Login      = require("../proxy/login");
 require("../libs/DateUtil");
 
 /**
