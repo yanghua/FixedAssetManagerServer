@@ -28,6 +28,7 @@ var captchagen = require('captchagen');
 var check      = require("validator").check;
 var sanitize   = require("validator").sanitize;
 var SHA256     = require("crypto-js/sha256");
+var SHA3       = require("crypto-js/sha3");
 
 /**
  * show login page
