@@ -1,7 +1,6 @@
 body {
   padding-top: 40px;
   padding-bottom: 40px;
-  background-color: #eee;
 }
 
 .form-signin {
@@ -51,4 +50,9 @@ body {
 }
 .margin-topForTipDiv {
   margin-top: 20px;
+}
+.main_div2{
+  padding-top: 10px;
+  width: 300px;
+  margin: 0 auto;
 }

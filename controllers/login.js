@@ -41,6 +41,20 @@ exports.showLogin = function (req, res, next) {
     debugCtrller("controllers/login/showLogin");
     res.render("login");
 };
+/**
+ * show addUser view
+ * @param  {object}   req  the request object
+ * @param  {object}   res  the response object
+ * @param  {Function} next the next handler
+ * @return {null}     
+ */
+exports.addUser = function (req, res, next) {
+    debugCtrller("controllers/addUser");
+    if (!req.session || !req.session.user) {
+        return res.redirect("/login");
+    }
+    res.render("subviews/addUser");
+}
 
 /**
  * handler sign in
@@ -82,6 +96,8 @@ exports.signIn = function (req, res, next) {
 
         var salt      = SHA256(userId).toString();
         var encryptPwd = SHA3(passwd + salt).toString();
+        console.log("#########SA:"+salt);
+        console.log("#########PW:"+encryptPwd);
 
         //check
         if (userId === userAuthInfo.uid && encryptPwd === userAuthInfo.pwd
