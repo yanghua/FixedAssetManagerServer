@@ -73,6 +73,7 @@ module.exports = function (app) {
     app.get("/fixedasset/batchCreate", fixedAsset.batchCreate);
     app.get("/fixedasset/excelExport/:companyId", fixedAsset.exportExcel);
     app.get("/addUser",login.addUser);
+    app.get("/editpwd",login.editpwd);
 
     //apis
     app.get("/user/:userId", user.getUserById);
