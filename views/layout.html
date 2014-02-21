@@ -41,7 +41,7 @@
   function showUserOnline () {
     $('#userOnlineModle').modal('show');
     $.ajax({
-        url:"/users",
+        url:"/onlineusers",
         type:"GET",
         success:function (data) {
           if(data.statusCode === 0 && data.data.length >0 ){
