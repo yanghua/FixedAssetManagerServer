@@ -24,6 +24,7 @@
    .js('/public/libs/jquery/jquery.simplePagination.js')
    .js('/public/libs/bootstrap/js/bootstrap.js')
    .js('/public/libs/js/bootstrap-paginator.js')
+   .js('/public/libs/js/moment.min.js')
    .done(assets)
    %>
 </head>
@@ -36,6 +37,27 @@
       $("#itisnothing").hide();
     }
   });
+  
+  function showUserOnline () {
+    $('#userOnlineModle').modal('show');
+    $.ajax({
+        url:"/onlineusers",
+        type:"GET",
+        success:function (data) {
+          if(data.statusCode === 0 && data.data.length >0 ){
+              temp ="";
+              for (var i = data.data.length - 1; i >= 0; i--) {
+               
+                temp += "<tr><td>"+data.data[i].uid+"</td>";
+                temp += "<td>"+data.data[i].uName+"</td>";
+                temp += "<td>"+moment(data.data[i].lastLoginTime).format("YYYY-MM-D , H:mm:ss")+"</td>";
+                temp +="</tr>";
+              };
+              $("#userOnlineBody").html(temp);
+          }
+        }
+    })
+  }
 </script>
 
 
@@ -83,6 +105,9 @@
           </ul>
         </li>
         <li>
+          <a href="javascript:showUserOnline()">在线用户</a>
+        </li>
+        <li>
           <a href="/signout">退出</a>
         </li>
       </ul>
@@ -97,6 +122,34 @@
   <div id="footer">
     <div id="copyright">欢迎访问 <%= config.name %> Copyright ©2014</div>
   </div>
+
+  <!-- Modal -->
+  <div class="modal fade" id="userOnlineModle" tabindex="-1" role="dialog" aria-labelledby="userInfoModleLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title" id="myModalLabel">当前在线用户</h4>
+          
+        </div>
+        <div class="modal-body" id="userInfoDetails">
+          <table class="table">
+        <thead>
+          <tr>
+            <th>工号</th>
+            <th>用户名</th>
+            <th>登陆时间</th>
+          </tr>
+        </thead>
+        <tbody id="userOnlineBody">
+          
+        </tbody>
+      </table>
+        </div>
+    
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->
 </body>
 
 </html>
