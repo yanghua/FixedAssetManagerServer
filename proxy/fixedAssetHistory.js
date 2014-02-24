@@ -78,7 +78,7 @@ exports.getHistoryListByFAId = function (faId, callback) {
         params  : {
             atId    : faId
         }
-    }, function(err, rows) {
+    }, function (err, rows) {
         if (err) {
             debugProxy("error:" + err);
             return callback(new ServerError(), null);
@@ -87,4 +87,34 @@ exports.getHistoryListByFAId = function (faId, callback) {
         callback(null, rows);
     });
 
+};
+
+/**
+ * get operate record list from now to current session cycle
+ * @param {Object} timeConditions the query condition about time
+ * @param  {Function} callback the cb func
+ * @return {null}            
+ */
+exports.getOperateRecordsWithTimeSection = function(timeConditions, callback) {
+    debugProxy("/proxy/fixedAssetHistory/getOperateRecordsForwardCurrentSession");
+
+    mysqlClient.query({
+        sql     : "SELECT ae.*,u.userName,aet.aetName,au.uName FROM ASSETEVENT ae " +
+                  "  LEFT JOIN ASSETEVENTYPE aet  " +
+                  "    ON ae.aetpId = aet.aetId   " +
+                  "  LEFT JOIN USER u             " +
+                  "    ON ae.userId = u.userId    " +
+                  "  LEFT JOIN AUTHUSER au        " +
+                  "    ON au.uid = ae.operateId   " +
+                  " WHERE aeTime between :startTime and :endTime " + 
+                  " ORDER BY aeTime DESC ",
+        params  : timeConditions
+    },  function (err, rows) {
+        if (err) {
+            debugProxy(err);
+            return callback(new ServerError(), null);
+        }
+
+        return callback(null, rows);
+    });
 };

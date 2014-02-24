@@ -88,9 +88,8 @@ module.exports = function (app) {
     app.get("/fixedasset/conditionInfo", fixedAsset.conditionInfo);
     app.post("/fixedasset/retrieve", fixedAsset.retrieve);
     app.get("/fixedasset/getUserId/:userName",fixedAsset.getUserIdByUserName);
-    app.post("/signup", authUser.create);
-    app.post("/modifypwd", authUser.modifyPassword);
     app.get("/onlineusers", authUser.onlineUsers);
+    app.get("/operaterecords", fixedAssetHistory.operateRecordForwardASession);
 
 
     app.post("/fixedasset/inspection", fixedAsset.inspection);
@@ -99,6 +98,8 @@ module.exports = function (app) {
     app.post("/fixedasset/:faId/recycle", fixedAsset.recycle);
     app.post("/fixedasset/:faId/modification", fixedAsset.modification);
     app.post("/fixedasset/:faId/allocation", fixedAsset.allocation);
+    app.post("/signup", authUser.create);
+    app.post("/modifypwd", authUser.modifyPassword);
 
     /************************************Gift********************************/
 
