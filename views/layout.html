@@ -3,33 +3,33 @@
 <head>
   <!-- meta -->
   <meta charset="utf-8" />
-  <meta name='description' content='<%= config.description %>'>
+  <meta name='description' content='<%= config.description %>
+  '>
   <title><%= config.name %></title>
   <%
   var headers = config.site_headers || [];
   for (var i = 0, l = headers.length; i < l; i++) {
    %>
-   <%- headers[i] %>
-   <%  } %>
-   <!-- style -->
-   <%- Loader("/public/stylesheets/layout.min.css")
+  <%- headers[i] %>
+  <%  } %>
+  <!-- style -->
+  <%- Loader("/public/stylesheets/layout.min.css")
    .css("/public/libs/bootstrap/css/bootstrap.css")
    .css("/public/stylesheets/layout.css")
    .css("/public/stylesheets/simplePagination.css")
    .done(assets)
    %>
-   <!-- script -->
-   <%- Loader("/public/libs/js/layout.min.js")
+  <!-- script -->
+  <%- Loader("/public/libs/js/layout.min.js")
    .js('/public/libs/jquery/jquery-1.10.2.min.js')
    .js('/public/libs/jquery/jquery.simplePagination.js')
    .js('/public/libs/bootstrap/js/bootstrap.js')
    .js('/public/libs/js/bootstrap-paginator.js')
    .js('/public/libs/js/moment.min.js')
    .done(assets)
-   %>
-</head>
+   %></head>
 
-<script type="text/javascript">
+  <script type="text/javascript">
   $(document).ready(function(){
     if("<%= current_user.userId %>"!=="01110043"){
       $("#giftManage").hide();
@@ -40,6 +40,7 @@
   
   function showUserOnline () {
     $('#userOnlineModle').modal('show');
+    $("#userOnlineBody").html("");
     $.ajax({
         url:"/onlineusers",
         type:"GET",
@@ -47,109 +48,193 @@
           if(data.statusCode === 0 && data.data.length >0 ){
               temp ="";
               for (var i = data.data.length - 1; i >= 0; i--) {
-               
                 temp += "<tr><td>"+data.data[i].uid+"</td>";
                 temp += "<td>"+data.data[i].uName+"</td>";
                 temp += "<td>"+moment(data.data[i].lastLoginTime).format("YYYY-MM-D , H:mm:ss")+"</td>";
                 temp +="</tr>";
               };
               $("#userOnlineBody").html(temp);
+          }else{
+            $("#userOnlineBody").html("暂无记录");
           }
         }
     })
   }
-</script>
 
+  function showUserHistory(){
+    $('#userHistoryRecords').modal('show');
+    $.ajax({
+      url:'/operaterecords',
+      type:'GET',
+      success:function (data) {
+        if (data.statusCode === 0) {
+          if(data.statusCode === 0 && data.data.length >0 ){
+              temp ="";
+              for (var i = data.data.length - 1; i >= 0; i--) {
+                temp += "<tr><td>"+dealOperationType(data.data[i].aetpId)+"</td>";
+                temp += "<td>"+data.data[i].userName+"</td>";
+                temp += "<td>"+moment(data.data[i].aeTime).format("YYYY-MM-D , H:mm:ss")+"</td>";
+                temp +="</tr>";
+              };
+              $("#userHistoryRecordsBody").html(temp);
+          }else{
+            $("#userHistoryRecordsBody").html("暂无记录");
+          }
+        }
+      }
+    })
+  }
+  function loginOut() {
+    window.location.replace("/signout");
+  }
+  function dealOperationType (typeId) {
+    switch(typeId)
+    {
+    case 1:
+      return "入库";
+      break;
+    case 2:
+      return "报废";
+      break;
+    case 3:
+      return "派发";
+      break;
+    case 4:
+      return "收回";
+      break;
+    default:
+      return "未知";
+    }
+  }
+      
+</script>
 
 <body>
   <div id="container">
     <div class="navbar navbar-default navbar-fixed-top" role="navigation">
       <div class="container" id="">
         <div class="navbar-header">
-          <a class="brand" href="/"><img src="/public/images/wisedu.png" title=""></a>
-          <div id="nav_title"><%= config.name %></div>
+          <a class="brand" href="/">
+            <img src="/public/images/wisedu.png" title=""></a>
+          <div id="nav_title">
+            <%= config.name %></div>
         </div>
         <div class="navbar-collapse collapse">
-        <ul id="w_nav" class="nav navbar-nav">
-          <!-- <li id="home" class="active">  
-          <a href="/">首 页</a>
-        </li>
-        -->
-        <li id="print">
-          <a href="/fixedasset/printservice/1">打印服务</a>
-        </li>
-        <li id="manage">
-          <a href="/fixedasset/manage">资产管理</a>
-        </li>
-        <li id="add">
-          <a href="/fixedasset/create">资产入库</a>
-        </li>
-        <li id="batchAdd">
-          <a href="/fixedasset/batchCreate">导入导出</a>
-        </li>
-        <li id="giftManage">
-          <a href="/gift" target="_blank">礼物系统</a>
-        </li>
-      </ul>
-      <ul class="nav navbar-nav navbar-right">
-        <li>
-          <a href="#">
-            <%= current_user.uName %>你好</a>
-        </li>
-        <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown">设置 <b class="caret"></b></a>
-          <ul class="dropdown-menu">
-            <li id="addnewUser"><a href="/adduser">新增用户</a></li>
-            <li id="itisnothing" class="divider"></li>
-            <li><a href="/editpwd">修改密码</a></li>
-          </ul>
-        </li>
-        <li>
-          <a href="javascript:showUserOnline()">在线用户</a>
-        </li>
-        <li>
-          <a href="/signout">退出</a>
-        </li>
-      </ul>
-    </div>
+          <ul id="w_nav" class="nav navbar-nav">
+            <!-- <li id="home" class="active">
+            <a href="/">首 页</a>
+          </li>
+          -->
+          <li id="print">
+            <a href="/fixedasset/printservice/1">打印服务</a>
+          </li>
+          <li id="manage">
+            <a href="/fixedasset/manage">资产管理</a>
+          </li>
+          <li id="add">
+            <a href="/fixedasset/create">资产入库</a>
+          </li>
+          <li id="batchAdd">
+            <a href="/fixedasset/batchCreate">导入导出</a>
+          </li>
+          <li id="giftManage">
+            <a href="/gift" target="_blank">礼物系统</a>
+          </li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+          <li>
+            <a href="#">
+              <%= current_user.uName %>你好</a>
+          </li>
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+              设置 <b class="caret"></b>
+            </a>
+            <ul class="dropdown-menu">
+              <li id="addnewUser">
+                <a href="/adduser">新增用户</a>
+              </li>
+              <li id="itisnothing" class="divider"></li>
+              <li>
+                <a href="/editpwd">修改密码</a>
+              </li>
+            </ul>
+          </li>
+          <li>
+            <a href="javascript:showUserOnline()">在线用户</a>
+          </li>
+          <li>
+            <a href="javascript:showUserHistory()">退出</a>
+          </li>
+        </ul>
       </div>
     </div>
+  </div>
 
-    <div id="content">
-      <%- body %>
+  <div id="content">
+    <%- body %></div>
+</div>
+<div id="footer">
+  <div id="copyright">
+    欢迎访问
+    <%= config.name %>Copyright ©2014</div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="userOnlineModle" tabindex="-1" role="dialog" aria-labelledby="userInfoModleLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="myModalLabel">当前在线用户</h4>
+
+      </div>
+      <div class="modal-body" id="userInfoDetails">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>工号</th>
+              <th>用户名</th>
+              <th>登陆时间</th>
+            </tr>
+          </thead>
+          <tbody id="userOnlineBody"></tbody>
+        </table>
+      </div>
+
     </div>
-  </div>
-  <div id="footer">
-    <div id="copyright">欢迎访问 <%= config.name %> Copyright ©2014</div>
-  </div>
+    <!-- /.modal-content --> </div>
+  <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+<!-- Modal -->
+<div class="modal fade" id="userHistoryRecords" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="myModalLabel">当前用户操作记录</h4>
 
-  <!-- Modal -->
-  <div class="modal fade" id="userOnlineModle" tabindex="-1" role="dialog" aria-labelledby="userInfoModleLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-          <h4 class="modal-title" id="myModalLabel">当前在线用户</h4>
-          
-        </div>
-        <div class="modal-body" id="userInfoDetails">
-          <table class="table">
-        <thead>
-          <tr>
-            <th>工号</th>
-            <th>用户名</th>
-            <th>登陆时间</th>
-          </tr>
-        </thead>
-        <tbody id="userOnlineBody">
-          
-        </tbody>
-      </table>
-        </div>
-    
-      </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-  </div><!-- /.modal -->
+      </div>
+      <div class="modal-body">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>动作</th>
+              <th>被操作人员</th>
+              <th>操作时间</th>
+            </tr>
+          </thead>
+          <tbody id="userHistoryRecordsBody"></tbody>
+        </table>
+      </div>
+      <div class="modal-footer"><button id="goToOutBtn" type="button" class="btn btn-primary" onclick="loginOut()">确认退出</button></div>
+
+    </div>
+    <!-- /.modal-content --> </div>
+  <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
 </body>
 
 </html>
