@@ -90,7 +90,7 @@ exports.operateRecordForwardASession = function (req, res, next) {
             st.setMinutes(st - 30);                       //default use a session time section
             timeQueryConditions.startTime = st.Format("yyyy-MM-dd hh:mm:ss");
         } else {
-            timeQueryConditions.startTime = userInfo.lastLoginTime;
+            timeQueryConditions.startTime = new Date(userInfo.lastLoginTime).Format("yyyy-MM-dd hh:mm:ss");
         }
 
         debugCtrller("startTime is %s", timeQueryConditions.startTime);

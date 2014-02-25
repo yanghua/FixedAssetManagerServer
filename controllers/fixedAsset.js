@@ -231,7 +231,7 @@ exports.insertion = function (req, res, next) {
         historyRecord.userId = faInfo.faDetail.userId;
         historyRecord.aeDesc = "";
         historyRecord.operateId = req.session.user.userId;
-        historyRecord.aeTime = new Date().Format("yyyy-MM-dd");
+        historyRecord.aeTime = new Date().Format("yyyy-MM-dd hh:mm:ss");
 
         FAHistory.insertHistoryRecord(historyRecord, function (err, data) {
             if (err) {
@@ -301,7 +301,7 @@ exports.recycle = function (req, res, next) {
         historyRecord.userId = userId;
         historyRecord.aeDesc = "";
         historyRecord.operateId = req.session.user.userId;
-        historyRecord.aeTime = new Date().Format("yyyy-MM-dd");
+        historyRecord.aeTime = new Date().Format("yyyy-MM-dd hh:mm:ss");
 
         FAHistory.insertHistoryRecord(historyRecord, function (err, data) {
             if (err) {
@@ -385,7 +385,7 @@ exports.modification = function (req, res, next) {
         historyRecord.userId = userId;
         historyRecord.aeDesc = "";
         historyRecord.operateId = req.session.user.userId;
-        historyRecord.aeTime = new Date().Format("yyyy-MM-dd");
+        historyRecord.aeTime = new Date().Format("yyyy-MM-dd hh:mm:ss");
 
         FAHistory.insertHistoryRecord(historyRecord, function (err, data) {
             if (err) {
@@ -478,7 +478,7 @@ exports.allocation = function (req, res, next) {
         historyRecord.userId = userId;
         historyRecord.aeDesc = "";
         historyRecord.operateId = req.session.user.userId;
-        historyRecord.aeTime = new Date().Format("yyyy-MM-dd");
+        historyRecord.aeTime = new Date().Format("yyyy-MM-dd hh:mm:ss");
 
         FAHistory.insertHistoryRecord(historyRecord, function (err, data) {
             if (err) {
