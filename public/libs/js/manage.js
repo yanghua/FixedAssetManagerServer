@@ -168,7 +168,7 @@ function loadAssetDetails(qrCode) {
           $assetDetailsul.append(temp + 'MAC地址:' + det.mac + '</li>');
         }
         if (det.reject > 0) {
-          $assetDetailsul.append(temp + '已报废 <button type="button" onclick="onMakeSureClick()" class="btn btn-warning">取消报废</button>' + '</li>');
+          $assetDetailsul.append(temp + '已报废' + '</li>');
           if (det.rejectDate && det.rejectDate != '0000-00-00') {
             $assetDetailsul.append(temp + '报废时间:' + det.rejectDate + '</li>');
           }
@@ -343,18 +343,23 @@ var searchNoUserContainer = {
   operateClick: function(assetId, userId) {
     return function() {
       $("#operateModal").modal('show');
+      $("#recycleButton").unbind();
       $("#recycleButton").click(function() {
         loadReturnAsset(assetId, null);
       });
+      $("#rejectButton").unbind();
       $("#rejectButton").click(function() {
         loadRejectAsset(assetId);
       });
+      $("#editAssetButton").unbind();
       $("#editAssetButton").click(function() {
         loadEditAsset(assetId);
       });
+      $("#assetAlloctionToSomeOne").unbind();
       $("#assetAlloctionToSomeOne").click(function() {
         assetAllocateToSomeOne(assetId);
       });
+      $("#checkUserIdByName").unbind();
       $("#checkUserIdByName").click(function() {
         assetCheckUserIdByUserName($("#userNameInput").val(), null);
       });
@@ -555,27 +560,32 @@ function loadEditAsset(assetId) {
  * @return {null}
  */
 function assetAllocateToSomeOne(assetId) {
-  if ($("#assetDepUnderSearch").val() === "0" || !$("#assetUserIdAllocation").val()) {
-    bootbox.alert("请选择部门或输入人员工号后操作!");
-  } else {
-    $.ajax({
-      type: "POST",
-      data: {
-        'userId': $("#assetUserIdAllocation").val(),
-        'deptId': $("#assetDepUnderSearch").val(),
-        'faId': assetId
-      },
-      url: "/fixedasset/" + assetId + "/allocation",
-      success: function(data) {
-        if (data.statusCode === 0) {
-          bootbox.alert("操作成功！");
-          loadUnderName($("#baseInput").val());
-        } else {
-          bootbox.alert("操作失败，请联系管理员！");
-        }
-      }
-    });
+  if ($("#assetDepUnderSearch").val() === "0" ) {
+    bootbox.alert("请选择部门后操作!");
+    return;
   }
+  if (!$("#assetUserIdAllocation").val()) {
+    bootbox.alert("请输入人员工号后操作!");
+    return;
+  }
+  $.ajax({
+    type: "POST",
+    data: {
+      'userId': $("#assetUserIdAllocation").val(),
+      'deptId': $("#assetDepUnderSearch").val(),
+      'faId': assetId
+    },
+    url: "/fixedasset/" + assetId + "/allocation",
+    success: function(data) {
+      if (data.statusCode === 0) {
+        bootbox.alert("操作成功！");
+        loadUnderName($("#baseInput").val());
+      } else {
+        bootbox.alert("操作失败，请联系管理员！");
+      }
+    }
+  });
+  
 }
 
 /**
