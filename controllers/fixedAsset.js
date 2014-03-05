@@ -169,7 +169,7 @@ exports.rejection = function (req, res, next) {
         historyRecord.aetpId = 2;                //reject
         historyRecord.userId = faInfo.faDetail.userId;
         historyRecord.aeDesc = "";
-        historyRecord.operateId = req.session.user.userId;
+        historyRecord.operateId = req.session.user ? req.session.user.userId : "mobile";
         historyRecord.aeTime = new Date().Format("yyyy-MM-dd hh:mm:ss");
 
         FAHistory.insertHistoryRecord(historyRecord, function (err, data) {
@@ -230,7 +230,7 @@ exports.insertion = function (req, res, next) {
         historyRecord.aetpId = 1;                //insert
         historyRecord.userId = faInfo.faDetail.userId;
         historyRecord.aeDesc = "";
-        historyRecord.operateId = req.session.user.userId;
+        historyRecord.operateId = req.session.user ? req.session.user.userId : "mobile";
         historyRecord.aeTime = new Date().Format("yyyy-MM-dd hh:mm:ss");
 
         FAHistory.insertHistoryRecord(historyRecord, function (err, data) {
@@ -300,7 +300,7 @@ exports.recycle = function (req, res, next) {
         historyRecord.aetpId = 4;                //retake
         historyRecord.userId = userId;
         historyRecord.aeDesc = "";
-        historyRecord.operateId = req.session.user.userId;
+        historyRecord.operateId = req.session.user ? req.session.user.userId : "mobile";
         historyRecord.aeTime = new Date().Format("yyyy-MM-dd hh:mm:ss");
 
         FAHistory.insertHistoryRecord(historyRecord, function (err, data) {
@@ -384,7 +384,7 @@ exports.modification = function (req, res, next) {
         historyRecord.aetpId = 4;                //retake
         historyRecord.userId = userId;
         historyRecord.aeDesc = "";
-        historyRecord.operateId = req.session.user.userId;
+        historyRecord.operateId = req.session.user ? req.session.user.userId : "mobile";
         historyRecord.aeTime = new Date().Format("yyyy-MM-dd hh:mm:ss");
 
         FAHistory.insertHistoryRecord(historyRecord, function (err, data) {
@@ -477,7 +477,7 @@ exports.allocation = function (req, res, next) {
         historyRecord.aetpId = 3;                //allocation
         historyRecord.userId = userId;
         historyRecord.aeDesc = "";
-        historyRecord.operateId = req.session.user.userId;
+        historyRecord.operateId = req.session.user ? req.session.user.userId : "mobile";
         historyRecord.aeTime = new Date().Format("yyyy-MM-dd hh:mm:ss");
 
         FAHistory.insertHistoryRecord(historyRecord, function (err, data) {
