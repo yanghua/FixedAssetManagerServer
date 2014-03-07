@@ -397,23 +397,26 @@ function retrieveSearch(pageIndex) {
           for (var i = 0; i < data.data.fixedAssets.length; ++i) {
             var cellData = data.data.fixedAssets[i];
             var row = searchNoUserContainer.createRowContainer();
-            var cellNum = searchNoUserContainer.createCellContainer(cellData.newId);
-            var cellId = searchNoUserContainer.createCellContainer(cellData.assetName);
-            var cellName = searchNoUserContainer.createCellContainer(cellData.specifications);
-            var cellDetail;
+            var cellNewId = searchNoUserContainer.createCellContainer(cellData.newId);
+            var cellAssetName = searchNoUserContainer.createCellContainer(cellData.assetName);
+            var cellSpecification = searchNoUserContainer.createCellContainer(cellData.specifications);
+            var cellOldId = searchNoUserContainer.createCellContainer(cellData.oldId);
+            var cellUserInfo;
             if (cellData.userId) {
-              cellDetail = searchNoUserContainer.createCellContainer(cellData.userId + "(" + cellData.userName + ")");
+              cellUserInfo = searchNoUserContainer.createCellContainer(cellData.userId + "(" + cellData.userName + ")");
             } else {
-              cellDetail = searchNoUserContainer.createCellContainer(null);
+              cellUserInfo = searchNoUserContainer.createCellContainer(null);
             }
             var link = $("<a href='javascript:void(0);'>操作</a>");
             link.click(searchNoUserContainer.operateClick(cellData.newId, cellData.userId));
             var cellOperation = searchNoUserContainer.createCellContainer(link);
 
-            row.append(cellNum);
-            row.append(cellId);
-            row.append(cellName);
-            row.append(cellDetail);
+            row.append(cellNewId);
+            row.append(cellOldId);
+            row.append(cellAssetName);
+
+            row.append(cellSpecification);
+            row.append(cellUserInfo);
             row.append(cellOperation);
             $("#dataSearchDetail").append(row);
             if (data.data.total.totalCount > 50) {
